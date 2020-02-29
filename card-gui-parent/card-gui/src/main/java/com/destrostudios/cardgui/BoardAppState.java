@@ -23,36 +23,35 @@ import java.util.HashMap;
  */
 public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseAppState implements ActionListener {
 
-    public BoardAppState(Board<CardModelType> board, Node rootNode) {
+    public BoardAppState(Board<CardModelType> board, Node rootNode, BoardSettings settings) {
         this.board = board;
         this.rootNode = rootNode;
+        this.settings = settings;
     }
     private Board<CardModelType> board;
     private Node rootNode;
     private Application application;
     private RayCasting rayCasting;
-    private HashMap<BoardObject, Node> boardObjectNodes = new HashMap<BoardObject, Node>();
+    private HashMap<BoardObject, Node> boardObjectNodes = new HashMap<>();
     private BoardObject<CardModelType> draggedBoardObject;
     private Node draggedNode;
-    private BoardObjectFilter nonDraggedNodeFilter = new BoardObjectFilter() {
-        
-        @Override
-        public boolean isValid(BoardObject boardObject) {
-            return (boardObject != draggedBoardObject);
-        }
-    };
     private TargetArrow targetArrow;
-    private float draggedCardProjectionZ = 0.8f;
+    private BoardSettings settings;
 
     @Override
     protected void initialize(Application app) {
         application = app;
         rayCasting = new RayCasting(application);
         targetArrow = new TargetArrow(application.getAssetManager());
-        application.getInputManager().addMapping("mouse_click_left", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-        application.getInputManager().addMapping("mouse_click_middle", new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
-        application.getInputManager().addMapping("mouse_click_right", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-        application.getInputManager().addListener(this, "mouse_click_left", "mouse_click_middle", "mouse_click_right");
+        application.getInputManager().addMapping(settings.getInputActionPrefix() + "mouse_click_left", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        application.getInputManager().addMapping(settings.getInputActionPrefix() + "mouse_click_middle", new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
+        application.getInputManager().addMapping(settings.getInputActionPrefix() + "mouse_click_right", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+        application.getInputManager().addListener(
+            this,
+            settings.getInputActionPrefix() + "mouse_click_left",
+            settings.getInputActionPrefix() + "mouse_click_middle",
+            settings.getInputActionPrefix() + "mouse_click_right"
+        );
     }
 
     @Override
@@ -77,7 +76,7 @@ public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseA
         }
         if (draggedNode != null) {
             Vector2f cursorPosition = application.getInputManager().getCursorPosition();
-            Vector3f cursorWorldLocation = application.getCamera().getWorldCoordinates(cursorPosition, draggedCardProjectionZ);
+            Vector3f cursorWorldLocation = application.getCamera().getWorldCoordinates(cursorPosition, settings.getDraggedCardProjectionZ());
 
             Interactivity interactivity = draggedBoardObject.getInteractivity();
             switch (interactivity.getType()) {
@@ -124,54 +123,52 @@ public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseA
 
     @Override
     public void onAction(String name, boolean isPressed, float lastTimePerFrame) {
-        switch(name) {
-            case "mouse_click_left":
-                if (isPressed) {
-                    BoardObject boardObject = getHoveredBoardObject(BoardObjectFilter.CARD);
-                    if (boardObject == null) {
-                        boardObject = getHoveredBoardObject(BoardObjectFilter.ZONE);
-                    }
-                    if (boardObject != null) {
-                        Interactivity interactivity = boardObject.getInteractivity();
-                        if (interactivity != null) {
-                            switch (interactivity.getType()) {
-                                case CLICK:
-                                    boardObject.triggerInteraction(null);
-                                    break;
-                                case DRAG:
-                                    setDraggedBoardObject(boardObject);
-                                    break;
-                                case AIM:
-                                    setDraggedBoardObject(boardObject);
-                                    rootNode.attachChild(targetArrow.getGeometry());
-                                    break;
-                            }
-                        }
-                    }
-                } else {
-                    if (draggedBoardObject != null) {
-                        switch (draggedBoardObject.getInteractivity().getType()) {
+        if (name.equals(settings.getInputActionPrefix() + "mouse_click_left")) {
+            if (isPressed) {
+                BoardObject boardObject = getHoveredBoardObject(BoardObjectFilter.CARD);
+                if (boardObject == null) {
+                    boardObject = getHoveredBoardObject(BoardObjectFilter.ZONE);
+                }
+                if (boardObject != null) {
+                    Interactivity interactivity = boardObject.getInteractivity();
+                    if (interactivity != null) {
+                        switch (interactivity.getType()) {
+                            case CLICK:
+                                boardObject.triggerInteraction(null);
+                                break;
                             case DRAG:
-                                draggedBoardObject.triggerInteraction(null);
+                                setDraggedBoardObject(boardObject);
                                 break;
-
                             case AIM:
-                                BoardObject hoveredBoardObject = getHoveredInteractivityTarget(true);
-                                if (hoveredBoardObject != null) {
-                                    draggedBoardObject.triggerInteraction(hoveredBoardObject);
-                                }
+                                setDraggedBoardObject(boardObject);
+                                rootNode.attachChild(targetArrow.getGeometry());
                                 break;
                         }
-                        draggedNode = null;
-                        if (draggedBoardObject instanceof TransformedBoardObject) {
-                            TransformedBoardObject transformedBoardObject = (TransformedBoardObject) draggedBoardObject;
-                            transformedBoardObject.setTransformationEnabled(true);
-                        }
-                        draggedBoardObject = null;
-                        rootNode.detachChild(targetArrow.getGeometry());
                     }
                 }
-                break;
+            } else {
+                if (draggedBoardObject != null) {
+                    switch (draggedBoardObject.getInteractivity().getType()) {
+                        case DRAG:
+                            draggedBoardObject.triggerInteraction(null);
+                            break;
+
+                        case AIM:
+                            BoardObject hoveredBoardObject = getHoveredInteractivityTarget(true);
+                            if (hoveredBoardObject != null) {
+                                draggedBoardObject.triggerInteraction(hoveredBoardObject);
+                            }
+                            break;
+                    }
+                    draggedNode = null;
+                    if (draggedBoardObject instanceof TransformedBoardObject) {
+                        TransformedBoardObject transformedBoardObject = (TransformedBoardObject) draggedBoardObject;
+                        transformedBoardObject.setTransformationEnabled(true);
+                    }
+                    draggedBoardObject = null;
+                    rootNode.detachChild(targetArrow.getGeometry());
+                }
+            }
         }
     }
 
@@ -185,10 +182,9 @@ public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseA
     }
     
     private BoardObject getHoveredInteractivityTarget(boolean filterValidTargets) {
-        BoardObjectFilter targetFilter = nonDraggedNodeFilter;
+        BoardObjectFilter targetFilter = null;
         if (filterValidTargets && (draggedBoardObject.getInteractivity() instanceof BoardObjectFilter)) {
-            BoardObjectFilter interactivityFilter = (BoardObjectFilter) draggedBoardObject.getInteractivity();
-            targetFilter = BoardObjectFilter.getCompositeFilter(targetFilter, interactivityFilter);
+            targetFilter = (BoardObjectFilter) draggedBoardObject.getInteractivity();
         }
         return getHoveredBoardObject(targetFilter);
     }
@@ -210,10 +206,6 @@ public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseA
             }
         }
         return null;
-    }
-
-    public void setDraggedCardProjectionZ(float draggedCardProjectionZ) {
-        this.draggedCardProjectionZ = draggedCardProjectionZ;
     }
 
     // TODO: Other appstate interface methods

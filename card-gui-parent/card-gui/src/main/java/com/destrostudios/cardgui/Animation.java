@@ -7,7 +7,7 @@ public class Animation implements GameLoopListener {
     }
 
     public boolean isBlocking() {
-        return (!isFinished());
+        return !isFinished();
     }
 
     public void update(float lastTimePerFrame) {

@@ -153,7 +153,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
             playerZones[i] = new PlayerZones(deckZone, handZone, boardZone);
         }
 
-        stateManager.attach(new BoardAppState(board, rootNode));
+        stateManager.attach(new BoardAppState(board, rootNode, new BoardSettings()));
     }
     
     private void updateBoard() {

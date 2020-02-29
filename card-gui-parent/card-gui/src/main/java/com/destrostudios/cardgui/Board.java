@@ -2,7 +2,6 @@ package com.destrostudios.cardgui;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 /**
  *
@@ -16,11 +15,15 @@ public class Board<CardModelType extends BoardObjectModel> implements GameLoopLi
     }
     private int nextId;
     private HashMap<Integer, BoardObject> boardObjects = new HashMap<>();
-    private LinkedList<CardZone> zones = new LinkedList<>();
     private BoardObjectVisualizer<CardZone> zoneVisualizer;
     private BoardObjectVisualizer<Card<CardModelType>> cardVisualizer;
     private AnimationQueue animationQueue = new AnimationQueue();
-    
+
+    public void addZone(CardZone zone) {
+        zone.setBoard(this);
+        register(zone);
+    }
+
     public void register(BoardObject boardObject) {
         if (boardObject.getId() == -1) {
             boardObject.setId(nextId);
@@ -35,12 +38,6 @@ public class Board<CardModelType extends BoardObjectModel> implements GameLoopLi
 
     public BoardObject getBoardObject(Integer id) {
         return boardObjects.get(id);
-    }
-    
-    public void addZone(CardZone zone) {
-        register(zone);
-        zone.setBoard(this);
-        zones.add(zone);
     }
 
     public void triggerEvent(GameEvent event) {

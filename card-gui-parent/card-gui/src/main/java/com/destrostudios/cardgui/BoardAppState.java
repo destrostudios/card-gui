@@ -10,11 +10,11 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+
 import java.util.HashMap;
 
 /**
@@ -35,6 +35,7 @@ public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseA
     private HashMap<BoardObject, Node> boardObjectNodes = new HashMap<>();
     private BoardObject<CardModelType> draggedBoardObject;
     private Node draggedNode;
+    private DraggedNodeTilter draggedNodeTilter;
     private TargetArrow targetArrow;
     private BoardSettings settings;
 
@@ -42,15 +43,20 @@ public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseA
     protected void initialize(Application app) {
         application = app;
         rayCasting = new RayCasting(application);
+        draggedNodeTilter = new DraggedNodeTilter(settings);
         targetArrow = new TargetArrow(application.getAssetManager());
-        application.getInputManager().addMapping(settings.getInputActionPrefix() + "mouse_click_left", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-        application.getInputManager().addMapping(settings.getInputActionPrefix() + "mouse_click_middle", new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
-        application.getInputManager().addMapping(settings.getInputActionPrefix() + "mouse_click_right", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+        initializeInputs();
+    }
+
+    private void initializeInputs() {
+        application.getInputManager().addMapping(settings.getInputActionPrefix() + "_mouse_click_left", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        application.getInputManager().addMapping(settings.getInputActionPrefix() + "_mouse_click_middle", new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
+        application.getInputManager().addMapping(settings.getInputActionPrefix() + "_mouse_click_right", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         application.getInputManager().addListener(
             this,
-            settings.getInputActionPrefix() + "mouse_click_left",
-            settings.getInputActionPrefix() + "mouse_click_middle",
-            settings.getInputActionPrefix() + "mouse_click_right"
+            settings.getInputActionPrefix() + "_mouse_click_left",
+            settings.getInputActionPrefix() + "_mouse_click_middle",
+            settings.getInputActionPrefix() + "_mouse_click_right"
         );
     }
 
@@ -75,26 +81,27 @@ public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseA
             }
         }
         if (draggedNode != null) {
-            Vector2f cursorPosition = application.getInputManager().getCursorPosition();
-            Vector3f cursorWorldLocation = application.getCamera().getWorldCoordinates(cursorPosition, settings.getDraggedCardProjectionZ());
+            Vector2f cursorPositionScreen = application.getInputManager().getCursorPosition();
+            Vector3f cursorPositionWorld = application.getCamera().getWorldCoordinates(cursorPositionScreen, settings.getDraggedCardProjectionZ());
 
             Interactivity interactivity = draggedBoardObject.getInteractivity();
             switch (interactivity.getType()) {
                 case DRAG:
-                    draggedNode.setLocalTranslation(cursorWorldLocation);
-                    // Set rotation so the node faces the camera (2d-like)
-                    draggedNode.setLocalRotation(application.getCamera().getRotation());
-                    draggedNode.rotate(-FastMath.HALF_PI, 0, FastMath.PI);
+                    draggedNode.setLocalTranslation(cursorPositionWorld);
+                    draggedNode.lookAt(cursorPositionWorld, Vector3f.UNIT_Y);
+                    if (settings.isDraggedCardTiltEnabled()) {
+                        draggedNodeTilter.update(draggedNode, cursorPositionScreen, application.getCamera().getUp(), lastTimePerFrame);
+                    }
                     if (draggedBoardObject instanceof TransformedBoardObject) {
                         TransformedBoardObject transformedBoardObject = (TransformedBoardObject) draggedBoardObject;
                         transformedBoardObject.position().setCurrentValue(draggedNode.getLocalTranslation());
                         transformedBoardObject.rotation().setCurrentValue(draggedNode.getLocalRotation());
                     }
                     break;
-                
+
                 case AIM:
                     Vector3f sourceLocation = draggedNode.getLocalTranslation();
-                    Vector3f targetLocation = cursorWorldLocation;
+                    Vector3f targetLocation = cursorPositionWorld;
                     AimToTargetInteractivity dragToTargetInteractivity = (AimToTargetInteractivity) interactivity;
                     if (dragToTargetInteractivity.getTargetSnapMode() != TargetSnapMode.NEVER) {
                         BoardObject hoveredBoardObject = getHoveredInteractivityTarget(dragToTargetInteractivity.getTargetSnapMode() == TargetSnapMode.VALID);
@@ -123,7 +130,7 @@ public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseA
 
     @Override
     public void onAction(String name, boolean isPressed, float lastTimePerFrame) {
-        if (name.equals(settings.getInputActionPrefix() + "mouse_click_left")) {
+        if (name.equals(settings.getInputActionPrefix() + "_mouse_click_left")) {
             if (isPressed) {
                 BoardObject boardObject = getHoveredBoardObject(BoardObjectFilter.CARD);
                 if (boardObject == null) {

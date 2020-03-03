@@ -1,6 +1,7 @@
 package com.destrostudios.cardgui;
 
 import com.jme3.math.Quaternion;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.util.TempVars;
@@ -17,6 +18,18 @@ public class FloatInterpolate {
             float movedDistance = (speed * lastTimePerFrame);
             if (movedDistance < Math.abs(totalDistance)) {
                 return (currentValue + (Math.signum(totalDistance) * movedDistance));
+            }
+        }
+        return targetValue;
+    }
+
+    public static Vector2f get(Vector2f currentValue, Vector2f targetValue, float speed, float lastTimePerFrame) {
+        Vector2f difference = targetValue.subtract(currentValue);
+        float totalDistance = difference.length();
+        if (totalDistance > 0) {
+            float movedDistance = (speed * lastTimePerFrame);
+            if (movedDistance < totalDistance) {
+                return currentValue.add(difference.normalizeLocal().multLocal(movedDistance));
             }
         }
         return targetValue;

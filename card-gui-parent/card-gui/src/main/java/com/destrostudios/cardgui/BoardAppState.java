@@ -10,6 +10,7 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -88,7 +89,8 @@ public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseA
             switch (interactivity.getType()) {
                 case DRAG:
                     draggedNode.setLocalTranslation(cursorPositionWorld);
-                    draggedNode.lookAt(cursorPositionWorld, Vector3f.UNIT_Y);
+                    draggedNode.setLocalRotation(application.getCamera().getRotation());
+                    draggedNode.rotate(-FastMath.HALF_PI, 0, FastMath.PI);
                     if (settings.isDraggedCardTiltEnabled()) {
                         draggedNodeTilter.update(draggedNode, cursorPositionScreen, application.getCamera().getUp(), lastTimePerFrame);
                     }

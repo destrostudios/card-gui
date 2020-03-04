@@ -87,7 +87,6 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         TargetArrowModel targetArrowModel = aimTargetArrow.getModel();
         targetArrowModel.setSourceLocation(draggedNode.getLocalTranslation());
         targetArrowModel.setTargetLocation(targetLocation);
-        aimTargetArrow.checkForVisualisationUpdate();
     }
 
     private void updateBoardObjects(float lastTimePerFrame) {

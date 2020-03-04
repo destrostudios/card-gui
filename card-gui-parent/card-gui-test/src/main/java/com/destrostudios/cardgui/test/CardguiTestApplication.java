@@ -221,7 +221,6 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
             cardModel.setColor(myCard.getColor());
             cardModel.setName(myCard.getName());
             cardModel.setDamaged(myCard.isDamaged());
-            board.triggerEvent(new ModelUpdatedEvent(card));
             board.triggerEvent(new MoveCardEvent(card, cardZone, interval.mult(index)));
             card.setInteractivity(interactivity);
             index++;

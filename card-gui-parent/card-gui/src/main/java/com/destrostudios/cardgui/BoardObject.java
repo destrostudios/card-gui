@@ -8,7 +8,6 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
 
     private int id = -1;
     private ModelType model;
-    private boolean checkForVisualisationUpdate;
     private Interactivity<ModelType> interactivity;
 
     @Override
@@ -24,17 +23,12 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
         return model;
     }
 
-    public void checkForVisualisationUpdate() {
-        checkForVisualisationUpdate = true;
-    }
-
     public void onVisualisationUpdate() {
         model.onUpdate();
-        checkForVisualisationUpdate = false;
     }
 
     public boolean needsVisualisationUpdate() {
-        return checkForVisualisationUpdate && model.wasChanged();
+        return (model != null) && model.wasChanged();
     }
 
     public void setId(int id) {

@@ -1,6 +1,7 @@
 package com.destrostudios.cardgui.transformations;
 
 import com.destrostudios.cardgui.FloatInterpolate;
+import com.destrostudios.cardgui.JMonkeyUtil;
 import com.destrostudios.cardgui.transformations.speeds.TimeBasedPositionTransformationSpeed3f;
 import com.jme3.math.Vector3f;
 
@@ -26,6 +27,11 @@ public class SimpleTargetPositionTransformation3f extends SimpleTargetedTransfor
     @Override
     protected Vector3f getNewValue(Vector3f currentValue, Vector3f targetValue, float speed, float lastTimePerFrame) {
         return FloatInterpolate.get(currentValue, targetValue, speed, lastTimePerFrame);
+    }
+
+    @Override
+    protected boolean isValueEquals(Vector3f value1, Vector3f value2) {
+        return value1.distanceSquared(value2) < JMonkeyUtil.FLT_EPSILON_SQUARED;
     }
 
     @Override

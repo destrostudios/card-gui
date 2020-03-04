@@ -10,12 +10,16 @@ public abstract class SimpleTargetedTransformation<ValueType> extends TargetedTr
     protected TransformationSpeed<ValueType> transformationSpeed;
 
     public void setTargetValue(ValueType targetValue, boolean resetSpeed) {
-        if (!targetValue.equals(this.targetValue)) {
+        if (!isValueEquals(targetValue, this.targetValue)) {
             setTargetValue(targetValue);
             if (resetSpeed) {
                 resetSpeed();
             }
         }
+    }
+
+    protected boolean isValueEquals(ValueType value1, ValueType value2) {
+        return value1.equals(value2);
     }
 
     public void resetSpeed() {

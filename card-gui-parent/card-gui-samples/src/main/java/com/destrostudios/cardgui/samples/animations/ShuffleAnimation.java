@@ -40,15 +40,12 @@ public class ShuffleAnimation extends StagedAnimation {
 
                 @Override
                 protected void updateRotationTransform(int index, TransformedBoardObject transformedBoardObject, SimpleTargetRotationTransformation rotationTransformation) {
-                    // Set rotation relative to camera
                     Quaternion targetRotation = application.getCamera().getRotation().clone();
                     TempVars vars = TempVars.get();
-                    Quaternion faceToCamera = vars.quat1;
-                    faceToCamera.fromAngles(FastMath.HALF_PI, -FastMath.HALF_PI, 0);
-                    targetRotation.multLocal(faceToCamera);
+                    targetRotation.multLocal(vars.quat1.fromAngles(-FastMath.HALF_PI, 0, FastMath.PI));
                     vars.release();
 
-                    //rotationTransformation.setTargetValue(targetRotation, false);
+                    rotationTransformation.setTargetValue(targetRotation, false);
                 }
             },
             new FixedTransformAnimation<SimpleTargetPositionTransformation3f, SimpleTargetRotationTransformation>(transformedBoardObjects, true) {
@@ -62,9 +59,11 @@ public class ShuffleAnimation extends StagedAnimation {
                 protected void updatePositionTransform(int index, TransformedBoardObject transformedBoardObject, SimpleTargetPositionTransformation3f positionTransformation) {
                     Vector3f targetPosition = getTargetPosition();
                     float maximumX = 0.5f;
-                    float cardsPerHalf = (transformedBoardObjects.size() / 2);
+                    float cardsPerHalf = (transformedBoardObjects.size() / 2f);
                     float x = ((randomOrder.get(index) - cardsPerHalf) * (maximumX / cardsPerHalf));
-                    targetPosition.addLocal(x, 0, 0);
+                    targetPosition.addLocal(application.getCamera().getLeft().normalize().multLocal(x));
+                    // Random "Z" each frame to create shuffling effect
+                    targetPosition.addLocal(application.getCamera().getDirection().normalize().multLocal(FastMath.nextRandomFloat() * 0.1f));
                     positionTransformation.setTargetValue(targetPosition, false);
                 }
 
@@ -88,8 +87,8 @@ public class ShuffleAnimation extends StagedAnimation {
 
     private Vector3f getTargetPosition() {
         AppSettings settings = application.getContext().getSettings();
-        Vector3f origin = application.getCamera().getWorldCoordinates(new Vector2f((settings.getWidth() / 2), (settings.getHeight() / 2)), 0.0f);
-        Vector3f direction = application.getCamera().getWorldCoordinates(new Vector2f((settings.getWidth() / 2), (settings.getHeight() / 2)), 0.3f).subtract(origin).normalizeLocal();
+        Vector3f origin = application.getCamera().getWorldCoordinates(new Vector2f((settings.getWidth() / 2f), (settings.getHeight() / 2f)), 0);
+        Vector3f direction = application.getCamera().getDirection();
         return origin.addLocal(direction.multLocal(2));
     }
 

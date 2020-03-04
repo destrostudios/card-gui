@@ -9,7 +9,4 @@ import com.destrostudios.cardgui.Interactivity;
  */
 public abstract class ClickInteractivity<ModelType extends BoardObjectModel> extends Interactivity<ModelType> {
 
-    public ClickInteractivity() {
-        super(Type.CLICK);
-    }
 }

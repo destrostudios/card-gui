@@ -1,15 +1,14 @@
 package com.destrostudios.cardgui.test;
 
 import com.destrostudios.cardgui.*;
+import com.destrostudios.cardgui.boardobjects.TargetArrow;
 import com.destrostudios.cardgui.events.*;
 import com.destrostudios.cardgui.interactivities.*;
 import com.destrostudios.cardgui.samples.animations.*;
+import com.destrostudios.cardgui.samples.boardobjects.targetarrow.SimpleTargetArrowVisualizer;
 import com.destrostudios.cardgui.samples.visualisation.*;
-import com.destrostudios.cardgui.targetarrow.TargetSnapMode;
-import com.destrostudios.cardgui.test.game.MyCard;
-import com.destrostudios.cardgui.test.game.MyCards;
-import com.destrostudios.cardgui.test.game.MyGame;
-import com.destrostudios.cardgui.test.game.MyPlayer;
+import com.destrostudios.cardgui.TargetSnapMode;
+import com.destrostudios.cardgui.test.game.*;
 import com.destrostudios.cardgui.zones.*;
 import com.destrostudios.cardgui.test.files.FileAssets;
 import com.jme3.app.SimpleApplication;
@@ -41,7 +40,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
         app.setSettings(settings);
         app.start();
     }
-    private Board<MyCardModel> board;
+    private Board board;
     private MyGame game;
     private PlayerZones[] playerZones;
     private HashMap<MyCard, Card<MyCardModel>> visualCards = new HashMap<>();
@@ -99,9 +98,10 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
         }
         game = new MyGame(players);
     }
-    
+
     private void initBoardGui() {
-        board = new Board<>(new DebugZoneVisualizer() {
+        board = new Board();
+        board.register(CardZone.class, new DebugZoneVisualizer() {
 
             @Override
             protected Vector2f getSize(CardZone zone) {
@@ -116,7 +116,8 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                 }
                 return super.getSize(zone);
             }
-        }, new SimpleCardVisualizer<MyCardModel>() {
+        });
+        board.register(Card.class, new SimpleCardVisualizer<MyCardModel>() {
 
             @Override
             public PaintableImage paintCard(MyCardModel cardModel) {
@@ -136,6 +137,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                 return paintableImage;
             }
         });
+        board.register(TargetArrow.class, new SimpleTargetArrowVisualizer());
 
         int playersCount = game.getPlayers().length;
         playerZones = new PlayerZones[playersCount];
@@ -155,7 +157,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
 
         stateManager.attach(new BoardAppState(board, rootNode, new BoardSettings()));
     }
-    
+
     private void updateBoard() {
         for (int i=0;i<game.getPlayers().length;i++) {
             final int opponentPlayerIndex = ((i + 1) % 2);

@@ -1,8 +1,7 @@
 package com.destrostudios.cardgui;
 
-import com.destrostudios.cardgui.interactivities.AimToTargetInteractivity;
-import com.destrostudios.cardgui.targetarrow.TargetArrow;
-import com.destrostudios.cardgui.targetarrow.TargetSnapMode;
+import com.destrostudios.cardgui.boardobjects.*;
+import com.destrostudios.cardgui.interactivities.*;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.collision.CollisionResult;
@@ -22,22 +21,22 @@ import java.util.HashMap;
  *
  * @author Carl
  */
-public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseAppState implements ActionListener {
+public class BoardAppState extends BaseAppState implements ActionListener {
 
-    public BoardAppState(Board<CardModelType> board, Node rootNode, BoardSettings settings) {
+    public BoardAppState(Board board, Node rootNode, BoardSettings settings) {
         this.board = board;
         this.rootNode = rootNode;
         this.settings = settings;
     }
-    private Board<CardModelType> board;
+    private Board board;
     private Node rootNode;
     private Application application;
     private RayCasting rayCasting;
     private HashMap<BoardObject, Node> boardObjectNodes = new HashMap<>();
-    private BoardObject<CardModelType> draggedBoardObject;
+    private BoardObject draggedBoardObject;
     private Node draggedNode;
     private DraggedNodeTilter draggedNodeTilter;
-    private TargetArrow targetArrow;
+    private TargetArrow aimTargetArrow;
     private BoardSettings settings;
 
     @Override
@@ -45,7 +44,8 @@ public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseA
         application = app;
         rayCasting = new RayCasting(application);
         draggedNodeTilter = new DraggedNodeTilter(settings);
-        targetArrow = new TargetArrow(application.getAssetManager());
+        aimTargetArrow = new TargetArrow();
+        aimTargetArrow.setModel(new TargetArrowModel());
         initializeInputs();
     }
 
@@ -64,13 +64,39 @@ public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseA
     @Override
     public void update(float lastTimePerFrame) {
         super.update(lastTimePerFrame);
+        Vector2f cursorPositionScreen = application.getInputManager().getCursorPosition();
+        Vector3f cursorPositionWorld = application.getCamera().getWorldCoordinates(cursorPositionScreen, settings.getDraggedCardProjectionZ());
+        if ((draggedBoardObject != null) && (draggedBoardObject.getInteractivity() instanceof AimToTargetInteractivity)) {
+            updateAimTargetArrow(cursorPositionWorld);
+        }
+        updateBoardObjects(lastTimePerFrame);
+        if ((draggedBoardObject != null) && (draggedBoardObject.getInteractivity() instanceof DragToPlayInteractivity)) {
+            updateDragTransformation(cursorPositionScreen, cursorPositionWorld, lastTimePerFrame);
+        }
+    }
+
+    private void updateAimTargetArrow(Vector3f cursorPositionWorld) {
+        AimToTargetInteractivity dragToTargetInteractivity = (AimToTargetInteractivity) draggedBoardObject.getInteractivity();
+        Vector3f targetLocation = cursorPositionWorld;
+        if (dragToTargetInteractivity.getTargetSnapMode() != TargetSnapMode.NEVER) {
+            BoardObject hoveredBoardObject = getHoveredInteractivityTarget(dragToTargetInteractivity.getTargetSnapMode() == TargetSnapMode.VALID);
+            if (hoveredBoardObject != null) {
+                targetLocation = boardObjectNodes.get(hoveredBoardObject).getLocalTranslation();
+            }
+        }
+        TargetArrowModel targetArrowModel = aimTargetArrow.getModel();
+        targetArrowModel.setSourceLocation(draggedNode.getLocalTranslation());
+        targetArrowModel.setTargetLocation(targetLocation);
+        aimTargetArrow.checkForVisualisationUpdate();
+    }
+
+    private void updateBoardObjects(float lastTimePerFrame) {
+        for (BoardObject boardObject : board.getLastFrameRemovedBoardObjects()) {
+            removeNode(boardObject);
+        }
         board.update(lastTimePerFrame);
         for (BoardObject boardObject : board.getBoardObjects()) {
             Node node = getOrCreateNode(boardObject);
-            if (boardObject == draggedBoardObject) {
-                continue;
-            }
-
             if (boardObject.needsVisualisationUpdate()) {
                 board.getVisualizer(boardObject).updateVisualisation(node, boardObject, application.getAssetManager());
                 boardObject.onVisualisationUpdate();
@@ -81,39 +107,19 @@ public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseA
                 node.setLocalRotation(transformedBoardObject.rotation().getCurrentValue());
             }
         }
-        if (draggedNode != null) {
-            Vector2f cursorPositionScreen = application.getInputManager().getCursorPosition();
-            Vector3f cursorPositionWorld = application.getCamera().getWorldCoordinates(cursorPositionScreen, settings.getDraggedCardProjectionZ());
+    }
 
-            Interactivity interactivity = draggedBoardObject.getInteractivity();
-            switch (interactivity.getType()) {
-                case DRAG:
-                    draggedNode.setLocalTranslation(cursorPositionWorld);
-                    draggedNode.setLocalRotation(application.getCamera().getRotation());
-                    draggedNode.rotate(-FastMath.HALF_PI, 0, FastMath.PI);
-                    if (settings.isDraggedCardTiltEnabled()) {
-                        draggedNodeTilter.update(draggedNode, cursorPositionScreen, application.getCamera().getUp(), lastTimePerFrame);
-                    }
-                    if (draggedBoardObject instanceof TransformedBoardObject) {
-                        TransformedBoardObject transformedBoardObject = (TransformedBoardObject) draggedBoardObject;
-                        transformedBoardObject.position().setCurrentValue(draggedNode.getLocalTranslation());
-                        transformedBoardObject.rotation().setCurrentValue(draggedNode.getLocalRotation());
-                    }
-                    break;
-
-                case AIM:
-                    Vector3f sourceLocation = draggedNode.getLocalTranslation();
-                    Vector3f targetLocation = cursorPositionWorld;
-                    AimToTargetInteractivity dragToTargetInteractivity = (AimToTargetInteractivity) interactivity;
-                    if (dragToTargetInteractivity.getTargetSnapMode() != TargetSnapMode.NEVER) {
-                        BoardObject hoveredBoardObject = getHoveredInteractivityTarget(dragToTargetInteractivity.getTargetSnapMode() == TargetSnapMode.VALID);
-                        if (hoveredBoardObject != null) {
-                            targetLocation = boardObjectNodes.get(hoveredBoardObject).getLocalTranslation();
-                        }
-                    }
-                    targetArrow.updateGeometry(sourceLocation, targetLocation);
-                    break;
-            }
+    private void updateDragTransformation(Vector2f cursorPositionScreen, Vector3f cursorPositionWorld, float lastTimePerFrame) {
+        draggedNode.setLocalTranslation(cursorPositionWorld);
+        draggedNode.setLocalRotation(application.getCamera().getRotation());
+        draggedNode.rotate(-FastMath.HALF_PI, 0, FastMath.PI);
+        if (settings.isDraggedCardTiltEnabled()) {
+            draggedNodeTilter.update(draggedNode, cursorPositionScreen, application.getCamera().getUp(), lastTimePerFrame);
+        }
+        if (draggedBoardObject instanceof TransformedBoardObject) {
+            TransformedBoardObject transformedBoardObject = (TransformedBoardObject) draggedBoardObject;
+            transformedBoardObject.position().setCurrentValue(draggedNode.getLocalTranslation());
+            transformedBoardObject.rotation().setCurrentValue(draggedNode.getLocalRotation());
         }
     }
 
@@ -130,6 +136,12 @@ public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseA
         return node;
     }
 
+    private void removeNode(BoardObject boardObject) {
+        Node node = boardObjectNodes.get(boardObject);
+        rootNode.detachChild(node);
+        boardObjectNodes.remove(boardObject);
+    }
+
     @Override
     public void onAction(String name, boolean isPressed, float lastTimePerFrame) {
         if (name.equals(settings.getInputActionPrefix() + "_mouse_click_left")) {
@@ -140,42 +152,32 @@ public class BoardAppState<CardModelType extends BoardObjectModel> extends BaseA
                 }
                 if (boardObject != null) {
                     Interactivity interactivity = boardObject.getInteractivity();
-                    if (interactivity != null) {
-                        switch (interactivity.getType()) {
-                            case CLICK:
-                                boardObject.triggerInteraction(null);
-                                break;
-                            case DRAG:
-                                setDraggedBoardObject(boardObject);
-                                break;
-                            case AIM:
-                                setDraggedBoardObject(boardObject);
-                                rootNode.attachChild(targetArrow.getGeometry());
-                                break;
-                        }
+                    if (interactivity instanceof ClickInteractivity) {
+                        boardObject.triggerInteraction(null);
+                    } else if (interactivity instanceof DragToPlayInteractivity) {
+                        setDraggedBoardObject(boardObject);
+                    } else if (interactivity instanceof AimToTargetInteractivity) {
+                        setDraggedBoardObject(boardObject);
+                        board.register(aimTargetArrow);
                     }
                 }
             } else {
                 if (draggedBoardObject != null) {
-                    switch (draggedBoardObject.getInteractivity().getType()) {
-                        case DRAG:
-                            draggedBoardObject.triggerInteraction(null);
-                            break;
-
-                        case AIM:
-                            BoardObject hoveredBoardObject = getHoveredInteractivityTarget(true);
-                            if (hoveredBoardObject != null) {
-                                draggedBoardObject.triggerInteraction(hoveredBoardObject);
-                            }
-                            break;
+                    if (draggedBoardObject.getInteractivity() instanceof DragToPlayInteractivity) {
+                        draggedBoardObject.triggerInteraction(null);
+                    } else if (draggedBoardObject.getInteractivity() instanceof AimToTargetInteractivity) {
+                        BoardObject hoveredBoardObject = getHoveredInteractivityTarget(true);
+                        if (hoveredBoardObject != null) {
+                            draggedBoardObject.triggerInteraction(hoveredBoardObject);
+                        }
+                        board.unregister(aimTargetArrow);
                     }
-                    draggedNode = null;
                     if (draggedBoardObject instanceof TransformedBoardObject) {
                         TransformedBoardObject transformedBoardObject = (TransformedBoardObject) draggedBoardObject;
                         transformedBoardObject.setTransformationEnabled(true);
                     }
+                    draggedNode = null;
                     draggedBoardObject = null;
-                    rootNode.detachChild(targetArrow.getGeometry());
                 }
             }
         }

@@ -1,4 +1,4 @@
-package com.destrostudios.cardgui.targetarrow;
+package com.destrostudios.cardgui.samples.boardobjects.targetarrow;
 
 import com.destrostudios.cardgui.Util;
 import com.jme3.math.Vector3f;
@@ -10,9 +10,9 @@ import java.util.LinkedList;
  *
  * @author Carl
  */
-public class TargetArrowMesh extends Mesh {
+public class SimpleTargetArrowMesh extends Mesh {
 
-    public TargetArrowMesh(int resolution, float width, float arcHeight) {
+    public SimpleTargetArrowMesh(int resolution, float width, float arcHeight) {
         this.resolution = resolution;
         this.width = width;
         this.arcHeight = arcHeight;

@@ -2,21 +2,18 @@ package com.destrostudios.cardgui;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  *
  * @author Carl
  */
-public class Board<CardModelType extends BoardObjectModel> implements GameLoopListener {
+public class Board implements GameLoopListener {
 
-    public Board(BoardObjectVisualizer<CardZone> zoneVisualizer, BoardObjectVisualizer<Card<CardModelType>> cardVisualizer) {
-        this.zoneVisualizer = zoneVisualizer;
-        this.cardVisualizer = cardVisualizer;
-    }
     private int nextId;
     private HashMap<Integer, BoardObject> boardObjects = new HashMap<>();
-    private BoardObjectVisualizer<CardZone> zoneVisualizer;
-    private BoardObjectVisualizer<Card<CardModelType>> cardVisualizer;
+    private LinkedList<BoardObject> lastFrameRemovedBoardObjects = new LinkedList<>();
+    private HashMap<Class<? extends BoardObject>, BoardObjectVisualizer> boardObjectVisualizers = new HashMap<>();
     private AnimationQueue animationQueue = new AnimationQueue();
 
     public void addZone(CardZone zone) {
@@ -32,8 +29,22 @@ public class Board<CardModelType extends BoardObjectModel> implements GameLoopLi
         }
     }
 
+    public void unregister(BoardObject boardObject) {
+        boardObjects.remove(boardObject.getId());
+        boardObject.setId(-1);
+        lastFrameRemovedBoardObjects.add(boardObject);
+    }
+
+    public <T extends BoardObject> void register(Class<T> boardObjectClass, BoardObjectVisualizer<? extends T> boardObjectVisualizer) {
+        boardObjectVisualizers.put(boardObjectClass, boardObjectVisualizer);
+    }
+
     public Collection<BoardObject> getBoardObjects() {
         return boardObjects.values();
+    }
+
+    public LinkedList<BoardObject> getLastFrameRemovedBoardObjects() {
+        return lastFrameRemovedBoardObjects;
     }
 
     public BoardObject getBoardObject(Integer id) {
@@ -50,6 +61,7 @@ public class Board<CardModelType extends BoardObjectModel> implements GameLoopLi
 
     @Override
     public void update(float lastTimePerFrame) {
+        lastFrameRemovedBoardObjects.clear();
         for (BoardObject boardObject : boardObjects.values()) {
             boardObject.update(lastTimePerFrame);
         }
@@ -66,13 +78,12 @@ public class Board<CardModelType extends BoardObjectModel> implements GameLoopLi
         }
     }
 
-    public BoardObjectVisualizer getVisualizer(BoardObject boardObject) {
-        if (boardObject instanceof Card) {
-            return cardVisualizer;
-        } else if (boardObject instanceof CardZone) {
-            return zoneVisualizer;
-        }
-        return null;
+    public <T extends BoardObject> BoardObjectVisualizer<T> getVisualizer(T boardObject) {
+        return boardObjectVisualizers.entrySet().stream()
+                .filter(entry -> entry.getKey().isAssignableFrom(boardObject.getClass()))
+                .findAny()
+                .map(entry -> (BoardObjectVisualizer<T>) entry.getValue())
+                .orElse(null);
     }
 
     public boolean isAnimationQueueBlocking() {

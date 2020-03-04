@@ -1,4 +1,4 @@
-package com.destrostudios.cardgui.targetarrow;
+package com.destrostudios.cardgui;
 
 /**
  *

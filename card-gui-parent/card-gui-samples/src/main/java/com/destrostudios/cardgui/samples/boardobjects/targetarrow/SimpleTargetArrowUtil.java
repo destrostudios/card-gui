@@ -23,6 +23,7 @@ public class SimpleTargetArrowUtil {
         Texture texture = assetManager.loadTexture(new TextureKey(settings.getTexturePath(), false));
         texture.setWrap(Texture.WrapMode.Repeat);
         material.setTexture("ColorMap", texture);
+        material.setColor("Color", settings.getColor());
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         material.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
         geometry.setMaterial(material);

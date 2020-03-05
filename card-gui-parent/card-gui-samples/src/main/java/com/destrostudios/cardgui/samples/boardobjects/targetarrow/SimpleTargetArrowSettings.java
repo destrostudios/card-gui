@@ -1,5 +1,6 @@
 package com.destrostudios.cardgui.samples.boardobjects.targetarrow;
 
+import com.jme3.math.ColorRGBA;
 import lombok.*;
 
 @NoArgsConstructor
@@ -16,5 +17,7 @@ public class SimpleTargetArrowSettings {
     private float arcHeight = 0.25f;
     @Builder.Default
     private String texturePath = "images/target_arrow.png";
+    @Builder.Default
+    private ColorRGBA color = ColorRGBA.Red;
 
 }

@@ -8,4 +8,7 @@ import com.destrostudios.cardgui.BoardObject;
  */
 public class TargetArrow extends BoardObject<TargetArrowModel> {
 
+    public TargetArrow() {
+        super(new TargetArrowModel());
+    }
 }

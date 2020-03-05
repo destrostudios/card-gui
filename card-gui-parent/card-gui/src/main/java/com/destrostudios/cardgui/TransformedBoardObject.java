@@ -5,6 +5,9 @@ import com.destrostudios.cardgui.transformations.handlers.RotationTransformation
 
 public abstract class TransformedBoardObject<ModelType extends BoardObjectModel> extends BoardObject<ModelType> {
 
+    protected TransformedBoardObject(ModelType model) {
+        super(model);
+    }
     private PositionTransformationHandler positionTransformationHandler = new PositionTransformationHandler();
     private RotationTransformationHandler rotationTransformationHandler = new RotationTransformationHandler();
     private boolean isTransformationEnabled = true;

@@ -5,7 +5,8 @@ import com.destrostudios.cardgui.boardobjects.TargetArrow;
 import com.destrostudios.cardgui.events.*;
 import com.destrostudios.cardgui.interactivities.*;
 import com.destrostudios.cardgui.samples.animations.*;
-import com.destrostudios.cardgui.samples.boardobjects.targetarrow.SimpleTargetArrowVisualizer;
+import com.destrostudios.cardgui.samples.boardobjects.connectionmarker.*;
+import com.destrostudios.cardgui.samples.boardobjects.targetarrow.*;
 import com.destrostudios.cardgui.samples.visualisation.*;
 import com.destrostudios.cardgui.TargetSnapMode;
 import com.destrostudios.cardgui.test.game.*;
@@ -137,7 +138,13 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                 return paintableImage;
             }
         });
-        board.register(TargetArrow.class, new SimpleTargetArrowVisualizer());
+        board.register(TargetArrow.class, new SimpleTargetArrowVisualizer(new SimpleTargetArrowSettings()));
+        board.register(ConnectionMarker.class, new ConnectionMarkerVisualizer(
+                SimpleTargetArrowSettings.builder()
+                        .resolution(20)
+                        .width(0.25f)
+                        .build()
+        ));
 
         int playersCount = game.getPlayers().length;
         playerZones = new PlayerZones[playersCount];
@@ -165,7 +172,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
             updateZone(player.getDeck(), playerZones[i].getDeckZone(), new Vector3f(0, 1, 0), new ClickInteractivity() {
 
                 @Override
-                public void trigger(BoardObject boardObject, BoardObject target) {
+                public void trigger(BoardObject source, BoardObject target) {
                     game.getCurrentPlayer().draw();
                     updateBoard();
                 }
@@ -173,8 +180,8 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
             updateZone(player.getHand(), playerZones[i].getHandZone(), new Vector3f(1, 0, 0), new DragToPlayInteractivity() {
 
                 @Override
-                public void trigger(BoardObject boardObject, BoardObject target) {
-                    MyCard myCard = gameCards.get(boardObject);
+                public void trigger(BoardObject source, BoardObject target) {
+                    MyCard myCard = gameCards.get(source);
                     for (MyPlayer player : game.getPlayers()) {
                         if (player.getHand().contains(myCard)) {
                             player.getHand().removeCard(myCard);
@@ -199,13 +206,20 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                 }
 
                 @Override
-                public void trigger(BoardObject boardObject, BoardObject target) {
-                    MyCard myCard = gameCards.get(boardObject);
-                    Card targetCard = (Card) target;
-                    MyCard targetMyCard = gameCards.get(targetCard);
-                    myCard.setDamaged(true);
-                    targetMyCard.setDamaged(true);
-                    updateBoard();
+                public void trigger(BoardObject source, BoardObject target) {
+                    MyCard myCard = gameCards.get(source);
+                    if (myCard.isDamaged()) {
+                        ConnectionMarker connectionMarker = new ConnectionMarker();
+                        connectionMarker.getModel().setSourceBoardObject((TransformedBoardObject) source);
+                        connectionMarker.getModel().setTargetBoardObject((TransformedBoardObject) target);
+                        board.register(connectionMarker);
+                    } else {
+                        Card targetCard = (Card) target;
+                        MyCard targetMyCard = gameCards.get(targetCard);
+                        myCard.setDamaged(true);
+                        targetMyCard.setDamaged(true);
+                        updateBoard();
+                    }
                 }
             });
         }

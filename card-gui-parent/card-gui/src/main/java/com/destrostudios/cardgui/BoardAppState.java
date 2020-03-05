@@ -45,7 +45,6 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         rayCasting = new RayCasting(application);
         draggedNodeTilter = new DraggedNodeTilter(settings);
         aimTargetArrow = new TargetArrow();
-        aimTargetArrow.setModel(new TargetArrowModel());
         initializeInputs();
     }
 

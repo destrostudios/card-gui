@@ -18,5 +18,10 @@
             <groupId>com.destrostudios.cardgui</groupId>
             <artifactId>card-gui</artifactId>
         </dependency>
+        <!--Lombok-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
     </dependencies>
 </project>

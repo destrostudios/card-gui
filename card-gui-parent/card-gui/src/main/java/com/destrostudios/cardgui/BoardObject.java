@@ -6,17 +6,16 @@ package com.destrostudios.cardgui;
  */
 public class BoardObject<ModelType extends BoardObjectModel> implements GameLoopListener {
 
+    protected BoardObject(ModelType model) {
+        this.model = model;
+    }
     private int id = -1;
     private ModelType model;
-    private Interactivity<ModelType> interactivity;
+    private Interactivity interactivity;
 
     @Override
     public void update(float lastTimePerFrame) {
 
-    }
-
-    protected void setModel(ModelType model) {
-        this.model = model;
     }
 
     public ModelType getModel() {
@@ -43,11 +42,11 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
         setInteractivity(null);
     }
 
-    public void setInteractivity(Interactivity<ModelType> interactivity) {
+    public void setInteractivity(Interactivity interactivity) {
         this.interactivity = interactivity;
     }
 
-    public Interactivity<ModelType> getInteractivity() {
+    public Interactivity getInteractivity() {
         return interactivity;
     }
 

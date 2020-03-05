@@ -23,7 +23,7 @@ public class ResetFixedTransformAnimation extends Animation {
     @Override
     public void update(float lastTimePerFrame) {
         super.update(lastTimePerFrame);
-        allTargetTransformationsReached = transformedBoardObjects.stream().allMatch(transformedBoardObject -> transformedBoardObject.hasReachedTargetTransform());
+        allTargetTransformationsReached = transformedBoardObjects.stream().allMatch(TransformedBoardObject::hasReachedTargetTransform);
     }
 
     @Override

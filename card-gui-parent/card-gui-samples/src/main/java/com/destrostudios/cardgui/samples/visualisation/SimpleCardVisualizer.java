@@ -23,12 +23,12 @@ public abstract class SimpleCardVisualizer<CardModelType extends BoardObjectMode
         Geometry geometry = new Geometry();
         Box box = new Box(0.4f, 0.01f, 0.6f);
         box.setBuffer(VertexBuffer.Type.TexCoord, 2, new float[]{
-                1, 0, 0, 0, 0, 1, 1, 1, // top
-                0, 0, 0, 1, 1, 1, 1, 0, // right
-                0, 1, 1, 1, 1, 0, 0, 0, // bottom
-                1, 1, 1, 0, 0, 0, 0, 1, // left
-                0, 0, 0, 1, 1, 1, 1, 0, // front
-                0, 0, 0, 1, 1, 1, 1, 0  // back
+            1, 0, 0, 0, 0, 1, 1, 1, // top
+            0, 0, 0, 1, 1, 1, 1, 0, // right
+            0, 1, 1, 1, 1, 0, 0, 0, // bottom
+            1, 1, 1, 0, 0, 0, 0, 1, // left
+            0, 0, 0, 1, 1, 1, 1, 0, // front
+            0, 0, 0, 1, 1, 1, 1, 0  // back
         });
         geometry.setMesh(box);
         Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");

@@ -12,6 +12,7 @@ import java.util.LinkedList;
 public abstract class CardZone extends TransformedBoardObject {
 
     public CardZone(Vector3f position, Quaternion rotation) {
+        super(null);
         position().setTransformation(new ConstantButTargetedTransformation<>(position));
         rotation().setTransformation(new ConstantButTargetedTransformation<>(rotation));
     }

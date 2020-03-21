@@ -95,9 +95,19 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         board.update(lastTimePerFrame);
         for (BoardObject boardObject : board.getBoardObjects()) {
             Node node = getOrCreateNode(boardObject);
-            if (boardObject.needsVisualisationUpdate()) {
-                board.getVisualizer(boardObject).updateVisualisation(node, boardObject, application.getAssetManager());
-                boardObject.onVisualisationUpdate();
+            BoardObjectModel model = boardObject.getModel();
+            BoardObjectVisualizer oldVisualizer = boardObject.getCurrentVisualizer();
+            BoardObjectVisualizer newVisualizer = board.getVisualizer(boardObject);
+            if (model.wasChanged() || (newVisualizer != oldVisualizer)) {
+                if (newVisualizer != oldVisualizer) {
+                    if (oldVisualizer != null) {
+                        newVisualizer.removeVisualisation(node);
+                    }
+                    newVisualizer.createVisualisation(node, application.getAssetManager());
+                }
+                newVisualizer.updateVisualisation(node, boardObject, application.getAssetManager());
+                model.onUpdate();
+                boardObject.setCurrentVisualizer(newVisualizer);
             }
             if (boardObject instanceof TransformedBoardObject) {
                 TransformedBoardObject transformedBoardObject = (TransformedBoardObject) boardObject;
@@ -126,8 +136,6 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         if (node == null) {
             node = new Node();
             node.setUserData("boardObjectId", boardObject.getId());
-            board.getVisualizer(boardObject).createVisualisation(node, application.getAssetManager());
-            board.getVisualizer(boardObject).updateVisualisation(node, boardObject, application.getAssetManager());
             rootNode.attachChild(node);
             boardObjectNodes.put(boardObject, node);
         }

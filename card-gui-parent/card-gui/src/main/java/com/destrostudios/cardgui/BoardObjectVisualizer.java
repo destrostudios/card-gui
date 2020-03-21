@@ -12,4 +12,6 @@ public interface BoardObjectVisualizer<BoardObjectType extends BoardObject> {
     void createVisualisation(Node node, AssetManager assetManager);
 
     void updateVisualisation(Node node, BoardObjectType boardObject, AssetManager assetManager);
+
+    void removeVisualisation(Node node);
 }

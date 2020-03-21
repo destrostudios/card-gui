@@ -30,4 +30,9 @@ public abstract class SimpleAttachmentVisualizer<BoardObjectType extends BoardOb
     }
 
     protected abstract void updateAttachment(SpatialType spatial, BoardObjectType boardObject, AssetManager assetManager);
+
+    @Override
+    public void removeVisualisation(Node node) {
+        node.detachChildNamed(NAME_SPATIAL);
+    }
 }

@@ -3,6 +3,7 @@ package com.destrostudios.cardgui;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.function.Predicate;
 
 /**
  *
@@ -13,7 +14,7 @@ public class Board implements GameLoopListener {
     private int nextId;
     private HashMap<Integer, BoardObject> boardObjects = new HashMap<>();
     private LinkedList<BoardObject> lastFrameRemovedBoardObjects = new LinkedList<>();
-    private HashMap<Class<? extends BoardObject>, BoardObjectVisualizer> boardObjectVisualizers = new HashMap<>();
+    private HashMap<Predicate<BoardObject>, BoardObjectVisualizer> boardObjectVisualizers = new HashMap<>();
     private AnimationQueue animationQueue = new AnimationQueue();
 
     public void addZone(CardZone zone) {
@@ -32,11 +33,26 @@ public class Board implements GameLoopListener {
     public void unregister(BoardObject boardObject) {
         boardObjects.remove(boardObject.getId());
         boardObject.setId(-1);
+        boardObject.setCurrentVisualizer(null);
         lastFrameRemovedBoardObjects.add(boardObject);
     }
 
-    public <T extends BoardObject> void register(Class<T> boardObjectClass, BoardObjectVisualizer<? extends T> boardObjectVisualizer) {
-        boardObjectVisualizers.put(boardObjectClass, boardObjectVisualizer);
+    public <T extends BoardObject> void registerVisualizer_ZonePosition(Predicate<ZonePosition> cardZonePredicate, BoardObjectVisualizer boardObjectVisualizer) {
+        registerVisualizer(boardObject -> {
+            if (boardObject instanceof Card) {
+                Card card = (Card) boardObject;
+                return cardZonePredicate.test(card.getZonePosition());
+            }
+            return false;
+        }, boardObjectVisualizer);
+    }
+
+    public <T extends BoardObject> void registerVisualizer_Class(Class<T> boardObjectClass, BoardObjectVisualizer boardObjectVisualizer) {
+        registerVisualizer(boardObject -> boardObjectClass.isAssignableFrom(boardObject.getClass()), boardObjectVisualizer);
+    }
+
+    public <T extends BoardObject> void registerVisualizer(Predicate<BoardObject> boardObjectPredicate, BoardObjectVisualizer boardObjectVisualizer) {
+        boardObjectVisualizers.put(boardObjectPredicate, boardObjectVisualizer);
     }
 
     public Collection<BoardObject> getBoardObjects() {
@@ -80,7 +96,7 @@ public class Board implements GameLoopListener {
 
     public <T extends BoardObject> BoardObjectVisualizer<T> getVisualizer(T boardObject) {
         return boardObjectVisualizers.entrySet().stream()
-                .filter(entry -> entry.getKey().isAssignableFrom(boardObject.getClass()))
+                .filter(entry -> entry.getKey().test(boardObject))
                 .findAny()
                 .map(entry -> (BoardObjectVisualizer<T>) entry.getValue())
                 .orElse(null);

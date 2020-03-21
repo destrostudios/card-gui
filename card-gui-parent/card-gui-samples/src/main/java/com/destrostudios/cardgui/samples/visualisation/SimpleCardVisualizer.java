@@ -18,10 +18,17 @@ import com.jme3.material.RenderState;
  */
 public abstract class SimpleCardVisualizer<CardModelType extends BoardObjectModel> extends SimpleAttachmentVisualizer<Card<CardModelType>, Geometry> {
 
+    public SimpleCardVisualizer(float width, float height) {
+        this.width = width;
+        this.height = height;
+    }
+    private float width;
+    private float height;
+
     @Override
     protected Geometry createAttachment(AssetManager assetManager) {
         Geometry geometry = new Geometry();
-        Box box = new Box(0.4f, 0.01f, 0.6f);
+        Box box = new Box(width, 0.01f, height);
         box.setBuffer(VertexBuffer.Type.TexCoord, 2, new float[]{
             1, 0, 0, 0, 0, 1, 1, 1, // top
             0, 0, 0, 1, 1, 1, 1, 0, // right

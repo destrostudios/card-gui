@@ -11,6 +11,7 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
     }
     private int id = -1;
     private ModelType model;
+    private BoardObjectVisualizer currentVisualizer;
     private Interactivity interactivity;
 
     @Override
@@ -22,20 +23,20 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
         return model;
     }
 
-    public void onVisualisationUpdate() {
-        model.onUpdate();
-    }
-
-    public boolean needsVisualisationUpdate() {
-        return (model != null) && model.wasChanged();
-    }
-
     public void setId(int id) {
         this.id = id;
     }
     
     public int getId() {
         return id;
+    }
+
+    public void setCurrentVisualizer(BoardObjectVisualizer currentVisualizer) {
+        this.currentVisualizer = currentVisualizer;
+    }
+
+    public BoardObjectVisualizer getCurrentVisualizer() {
+        return currentVisualizer;
     }
 
     public void clearInteractivity() {

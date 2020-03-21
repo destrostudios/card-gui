@@ -102,7 +102,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
 
     private void initBoardGui() {
         board = new Board();
-        board.register(CardZone.class, new DebugZoneVisualizer() {
+        board.registerVisualizer_Class(CardZone.class, new DebugZoneVisualizer() {
 
             @Override
             protected Vector2f getSize(CardZone zone) {
@@ -118,16 +118,20 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                 return super.getSize(zone);
             }
         });
-        board.register(Card.class, new SimpleCardVisualizer<MyCardModel>() {
+        board.registerVisualizer_ZonePosition(zonePosition -> {
+            for (PlayerZones playerZone : playerZones) {
+                if (zonePosition.getZone() == playerZone.getBoardZone()) {
+                    return true;
+                }
+            }
+            return false;
+        }, new SimpleCardVisualizer<MyCardModel>(0.4f, 0.4f) {
 
             @Override
             public PaintableImage paintCard(MyCardModel cardModel) {
-                PaintableImage paintableImage = new PaintableImage(300, 400);
-                paintableImage.setBackground_Alpha(0);
+                PaintableImage paintableImage = new PaintableImage(200, 200);
                 BufferedImage imageCard = FileAssets.getImage("images/cards/" + cardModel.getName() + ".png");
-                BufferedImage imageBackground = FileAssets.getImage("images/templates/mana_" + cardModel.getColor().ordinal() + ".png");
-                paintableImage.paintImage(new PaintableImage(imageCard), 74, 43, 155, 155);
-                paintableImage.paintImage(new PaintableImage(imageBackground), 0, 0, 300, 400);
+                paintableImage.paintImage(new PaintableImage(imageCard), 0, 0, paintableImage.getWidth(), paintableImage.getHeight());
                 if (cardModel.isDamaged()) {
                     for (int x=0;x<paintableImage.getWidth();x++) {
                         for (int y=0;y<paintableImage.getHeight();y++) {
@@ -138,8 +142,21 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                 return paintableImage;
             }
         });
-        board.register(TargetArrow.class, new SimpleTargetArrowVisualizer(new SimpleTargetArrowSettings()));
-        board.register(ConnectionMarker.class, new ConnectionMarkerVisualizer(
+        board.registerVisualizer_Class(Card.class, new SimpleCardVisualizer<MyCardModel>(0.4f, 0.6f) {
+
+            @Override
+            public PaintableImage paintCard(MyCardModel cardModel) {
+                PaintableImage paintableImage = new PaintableImage(300, 400);
+                paintableImage.setBackground_Alpha(0);
+                BufferedImage imageCard = FileAssets.getImage("images/cards/" + cardModel.getName() + ".png");
+                BufferedImage imageBackground = FileAssets.getImage("images/templates/mana_" + cardModel.getColor().ordinal() + ".png");
+                paintableImage.paintImage(new PaintableImage(imageCard), 74, 43, 155, 155);
+                paintableImage.paintImage(new PaintableImage(imageBackground), 0, 0, 300, 400);
+                return paintableImage;
+            }
+        });
+        board.registerVisualizer_Class(TargetArrow.class, new SimpleTargetArrowVisualizer(new SimpleTargetArrowSettings()));
+        board.registerVisualizer_Class(ConnectionMarker.class, new ConnectionMarkerVisualizer(
                 SimpleTargetArrowSettings.builder()
                         .resolution(20)
                         .width(0.25f)

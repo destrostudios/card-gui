@@ -8,25 +8,12 @@ public class StagedAnimation extends Animation {
     private int currentStageIndex;
 
     @Override
-    public void start() {
-        super.start();
-        startNextStage();
-    }
-
-    @Override
     public void update(float lastTimePerFrame) {
         super.update(lastTimePerFrame);
         Animation currentStage = stages[currentStageIndex];
         currentStage.update(lastTimePerFrame);
         if (currentStage.isFinished()) {
             currentStageIndex++;
-            startNextStage();
-        }
-    }
-
-    private void startNextStage() {
-        if (currentStageIndex < stages.length) {
-            stages[currentStageIndex].start();
         }
     }
 

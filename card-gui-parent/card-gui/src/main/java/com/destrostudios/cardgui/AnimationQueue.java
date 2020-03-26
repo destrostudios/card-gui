@@ -6,53 +6,48 @@ public class AnimationQueue implements GameLoopListener {
 
     private LinkedList<Animation> animationsQueue = new LinkedList<>();
     private LinkedList<Animation> playingAnimations = new LinkedList<>();
-    private LinkedList<Animation> finishedAnimations = new LinkedList<>();
+    private LinkedList<Animation> animationsToUpdate = new LinkedList<>();
     private Animation blockingAnimation;
 
     public void addAnimation(Animation animation) {
         animationsQueue.add(animation);
-        checkState();
+        startNextAnimationIfPossible();
     }
 
     @Override
     public void update(float lastTimePerFrame) {
-        updatePlayingAnimations(lastTimePerFrame);
-        checkState();
-    }
-
-    private void updatePlayingAnimations(float lastTimePerFrame) {
-        finishedAnimations.clear();
-        for (Animation playingAnimation : playingAnimations) {
-            playingAnimation.update(lastTimePerFrame);
-            if (playingAnimation.isFinished()) {
-                finishedAnimations.add(playingAnimation);
-                if (playingAnimation == blockingAnimation) {
-                    blockingAnimation = null;
-                }
+        animationsToUpdate.clear();
+        animationsToUpdate.addAll(playingAnimations);
+        while (animationsToUpdate.size() > 0) {
+            Animation animation = animationsToUpdate.pop();
+            boolean isFinished = updateAnimation(animation, lastTimePerFrame);
+            if (isFinished) {
+                playingAnimations.remove(animation);
+                startNextAnimationIfPossible();
             }
         }
-        playingAnimations.removeAll(finishedAnimations);
     }
 
-    private void checkState() {
-        checkBlockingAnimation();
-        while ((blockingAnimation == null) && (animationsQueue.size() > 0)) {
-            startNextAnimation();
+    private boolean updateAnimation(Animation animation, float lastTimePerFrame) {
+        animation.update(lastTimePerFrame);
+        if (animation.isFinished()) {
+            if (animation == blockingAnimation) {
+                blockingAnimation = null;
+            }
+            return true;
         }
+        return false;
     }
 
-    private void checkBlockingAnimation() {
-        if ((blockingAnimation != null) && (!blockingAnimation.isBlocking())) {
-            blockingAnimation = null;
-        }
-    }
-
-    private void startNextAnimation() {
-        Animation animation = animationsQueue.removeFirst();
-        playingAnimations.add(animation);
-        animation.start();
-        if (animation.isBlocking()) {
-            blockingAnimation = animation;
+    private void startNextAnimationIfPossible() {
+        if (animationsQueue.size() > 0) {
+            if (playingAnimations.isEmpty() || (blockingAnimation == null)) {
+                Animation nextAnimation = animationsQueue.removeFirst();
+                playingAnimations.add(nextAnimation);
+                if (nextAnimation.isBlocking()) {
+                    blockingAnimation = nextAnimation;
+                }
+            }
         }
     }
 

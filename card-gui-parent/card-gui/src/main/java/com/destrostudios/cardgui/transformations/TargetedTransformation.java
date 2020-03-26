@@ -16,6 +16,10 @@ public abstract class TargetedTransformation<ValueType> extends DynamicTransform
         setValue(this.targetValue, targetValue);
     }
 
+    public ValueType getTargetValue() {
+        return targetValue;
+    }
+
     public boolean hasReachedTarget() {
         return currentValue.equals(targetValue);
     }

@@ -2,16 +2,21 @@ package com.destrostudios.cardgui;
 
 public class Animation implements GameLoopListener {
 
+    private boolean isStarted;
+
+    public void update(float lastTimePerFrame) {
+        if (!isStarted) {
+            start();
+            isStarted = true;
+        }
+    }
+
     public void start() {
 
     }
 
     public boolean isBlocking() {
-        return !isFinished();
-    }
-
-    public void update(float lastTimePerFrame) {
-
+        return true;
     }
 
     public boolean isFinished() {

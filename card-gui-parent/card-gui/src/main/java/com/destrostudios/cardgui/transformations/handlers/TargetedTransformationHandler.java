@@ -18,6 +18,12 @@ public abstract class TargetedTransformationHandler<ValueType> extends StatePres
         }
     }
 
+    public ValueType getDefaultTargetValue() {
+        TargetedTransformation<ValueType> defaultTransformation = getDefaultTransformation();
+        defaultTransformation.update(0);
+        return defaultTransformation.getTargetValue();
+    }
+
     public void finish() {
         finishNextFrame = true;
     }

@@ -24,8 +24,7 @@ public abstract class TransformationHandler<ValueType, TransformationType extend
     @Override
     public void update(float lastTimePerFrame) {
         if (transformation == null) {
-            setTransformation(defaultTransformationProvider.get());
-            isFixed = false;
+            reset();
         }
         updateTransformation(lastTimePerFrame);
         setValue(currentValue, transformation.getCurrentValue());
@@ -42,7 +41,12 @@ public abstract class TransformationHandler<ValueType, TransformationType extend
     }
 
     public void reset() {
-        setTransformation(null);
+        setTransformation(getDefaultTransformation());
+        isFixed = false;
+    }
+
+    public TransformationType getDefaultTransformation() {
+        return defaultTransformationProvider.get();
     }
 
     public void setTransformation(TransformationType transformation) {

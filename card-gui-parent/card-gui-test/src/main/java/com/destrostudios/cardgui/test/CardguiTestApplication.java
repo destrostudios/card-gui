@@ -252,12 +252,19 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
             cardModel.setColor(myCard.getColor());
             cardModel.setName(myCard.getName());
             cardModel.setDamaged(myCard.isDamaged());
+            if ((card.getZonePosition().getZone() != null) && (cardZone != card.getZonePosition().getZone())) {
+                if (cardModel.getColor() == MyCard.Color.NEUTRAL) {
+                    board.playAnimation(new ShootInEntryAnimation(card, 0.75f, this));
+                } else if (cardModel.getColor() == MyCard.Color.RED) {
+                    board.playAnimation(new SlamEntryAnimation(card, 0.75f));
+                }
+            }
             board.triggerEvent(new MoveCardEvent(card, cardZone, interval.mult(index)));
             card.setInteractivity(interactivity);
             index++;
         }
     }
-    
+
     private Card<MyCardModel> getOrCreateCard(MyCard myCard) {
         Card<MyCardModel> card = visualCards.get(myCard);
         if (card == null) {

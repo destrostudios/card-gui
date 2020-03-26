@@ -24,6 +24,7 @@ public abstract class FixedTransformAnimation<PositionTransformationType extends
 
     @Override
     public void start() {
+        super.start();
         PositionTransformationType positionTransformation = createPositionTransform();
         RotationTransformationType rotationTransformation = createRotationTransform();
         int index = 0;

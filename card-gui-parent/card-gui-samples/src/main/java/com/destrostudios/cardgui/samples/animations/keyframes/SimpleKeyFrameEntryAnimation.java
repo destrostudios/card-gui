@@ -18,12 +18,12 @@ public abstract class SimpleKeyFrameEntryAnimation extends KeyFrameEntryAnimatio
     private float finalTransformationDuration;
 
     @Override
-    public TargetedTransformation<Vector3f> createFinalPositionTransformation(Vector3f defaultTargetPosition) {
+    protected TargetedTransformation<Vector3f> createFinalPositionTransformation(Vector3f defaultTargetPosition) {
         return new SimpleTargetPositionTransformation3f(defaultTargetPosition, new TimeBasedPositionTransformationSpeed3f(finalTransformationDuration));
     }
 
     @Override
-    public TargetedTransformation<Quaternion> createFinalRotationTransformation(Quaternion defaultTargetRotation) {
+    protected TargetedTransformation<Quaternion> createFinalRotationTransformation(Quaternion defaultTargetRotation) {
         return new SimpleTargetRotationTransformation(defaultTargetRotation, new TimeBasedRotationTransformationSpeed(finalTransformationDuration));
     }
 }

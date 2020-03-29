@@ -259,6 +259,8 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                     board.playAnimation(new SlamEntryAnimation(card));
                 } else if (cardModel.getColor() == MyCard.Color.BLUE) {
                     board.playAnimation(new WhirlpoolEntryAnimation(card, 5, FastMath.TWO_PI, 0.75f));
+                } else if (cardModel.getColor() == MyCard.Color.GREEN) {
+                    board.playAnimation(new FlipEntryAnimation(card, 2, 1, 0.75f));
                 }
             }
             board.triggerEvent(new MoveCardEvent(card, cardZone, interval.mult(index)));

@@ -13,13 +13,13 @@ public class WhirlpoolEntryAnimation extends AlreadyEndingKeyFrameEntryAnimation
 
     public WhirlpoolEntryAnimation(TransformedBoardObject transformedBoardObject, float height, float rotation, float duration) {
         super(transformedBoardObject);
-        this.duration = duration;
         this.height = height;
         this.rotation = rotation;
+        this.duration = duration;
     }
-    private float duration;
     private float height;
     private float rotation;
+    private float duration;
 
     @Override
     protected TransformationKeyFrame[] getKeyFrames() {

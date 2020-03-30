@@ -60,11 +60,6 @@ public class SnowAnimation extends Animation {
     }
 
     @Override
-    public boolean isBlocking() {
-        return false;
-    }
-
-    @Override
     public boolean isFinished() {
         return false;
     }

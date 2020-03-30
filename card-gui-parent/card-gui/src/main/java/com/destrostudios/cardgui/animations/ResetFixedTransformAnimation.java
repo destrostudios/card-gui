@@ -16,7 +16,6 @@ public class ResetFixedTransformAnimation extends Animation {
         this.transformedBoardObjects = transformedBoardObjects;
     }
     private Collection<? extends TransformedBoardObject> transformedBoardObjects;
-    private boolean allTargetTransformationsReached;
 
     @Override
     public void start() {
@@ -27,13 +26,7 @@ public class ResetFixedTransformAnimation extends Animation {
     }
 
     @Override
-    public void update(float lastTimePerFrame) {
-        super.update(lastTimePerFrame);
-        allTargetTransformationsReached = transformedBoardObjects.stream().allMatch(TransformedBoardObject::hasReachedTargetTransform);
-    }
-
-    @Override
     public boolean isFinished() {
-        return allTargetTransformationsReached;
+        return transformedBoardObjects.stream().allMatch(TransformedBoardObject::hasReachedTargetTransform);
     }
 }

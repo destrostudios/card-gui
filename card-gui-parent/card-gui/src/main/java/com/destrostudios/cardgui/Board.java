@@ -15,7 +15,7 @@ public class Board implements GameLoopListener {
     private HashMap<Integer, BoardObject> boardObjects = new HashMap<>();
     private LinkedList<BoardObject> lastFrameRemovedBoardObjects = new LinkedList<>();
     private HashMap<Predicate<BoardObject>, BoardObjectVisualizer> boardObjectVisualizers = new HashMap<>();
-    private AnimationQueue animationQueue = new AnimationQueue();
+    private AnimationPlayer animationPlayer = new AnimationPlayer();
 
     public void addZone(CardZone zone) {
         zone.setBoard(this);
@@ -72,7 +72,11 @@ public class Board implements GameLoopListener {
     }
 
     public void playAnimation(Animation animation) {
-        animationQueue.addAnimation(animation);
+        animationPlayer.play(animation);
+    }
+
+    public boolean isAnimationPlaying() {
+        return animationPlayer.isPlaying();
     }
 
     @Override
@@ -81,7 +85,7 @@ public class Board implements GameLoopListener {
         for (BoardObject boardObject : boardObjects.values()) {
             boardObject.update(lastTimePerFrame);
         }
-        animationQueue.update(lastTimePerFrame);
+        animationPlayer.update(lastTimePerFrame);
     }
 
     public void finishAllTransformations() {
@@ -100,9 +104,5 @@ public class Board implements GameLoopListener {
                 .findAny()
                 .map(entry -> (BoardObjectVisualizer<T>) entry.getValue())
                 .orElse(null);
-    }
-
-    public boolean isAnimationQueueBlocking() {
-        return animationQueue.isBlocking();
     }
 }

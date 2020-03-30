@@ -15,10 +15,6 @@ public class Animation implements GameLoopListener {
 
     }
 
-    public boolean isBlocking() {
-        return true;
-    }
-
     public boolean isFinished() {
         return true;
     }

@@ -22,6 +22,7 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.math.*;
 import com.jme3.system.AppSettings;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -50,6 +51,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
     @Override
     public void simpleInitApp() {
         assetManager.registerLocator(FileAssets.ROOT, FileLocator.class);
+        viewPort.setBackgroundColor(ColorRGBA.White);
 
         initCamera();
         initLight();
@@ -65,7 +67,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
     public void simpleUpdate(float lastTimePerFrame) {
         // Nothing needs to be done here
     }
-    
+
     private void initCamera() {
         flyCam.setMoveSpeed(100);
         flyCam.setEnabled(false);
@@ -125,11 +127,21 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                 }
             }
             return false;
-        }, new SimpleCardVisualizer<MyCardModel>(0.4f, 0.4f) {
+        }, new ModelledCardVisualizer<MyCardModel>("models/card/card_rect.j3o", "images/cardbacks/magic.png", ColorRGBA.Black) {
 
             @Override
-            public PaintableImage paintCard(MyCardModel cardModel) {
-                PaintableImage paintableImage = new PaintableImage(200, 200);
+            public PaintableImage paintCard_Background(MyCardModel cardModel) {
+                PaintableImage paintableImage = new PaintableImage(400, 560);
+                paintableImage.setBackground(Color.BLACK);
+                BufferedImage imageBackground = FileAssets.getImage("images/templates/template_rect_" + cardModel.getColor().ordinal() + ".png");
+                paintableImage.paintImage(new PaintableImage(imageBackground), 0, 0, paintableImage.getWidth(), paintableImage.getHeight());
+                return paintableImage;
+            }
+
+            @Override
+            public PaintableImage paintCard_Image(MyCardModel cardModel) {
+                PaintableImage paintableImage = new PaintableImage(329, 488);
+                paintableImage.setBackground(Color.BLACK);
                 BufferedImage imageCard = FileAssets.getImage("images/cards/" + cardModel.getName() + ".png");
                 paintableImage.paintImage(new PaintableImage(imageCard), 0, 0, paintableImage.getWidth(), paintableImage.getHeight());
                 if (cardModel.isDamaged()) {
@@ -142,16 +154,23 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                 return paintableImage;
             }
         });
-        board.registerVisualizer_Class(Card.class, new SimpleCardVisualizer<MyCardModel>(0.4f, 0.6f) {
+        board.registerVisualizer_Class(Card.class, new ModelledCardVisualizer<MyCardModel>("models/card/card_full.j3o", "images/cardbacks/magic.png", ColorRGBA.Black) {
 
             @Override
-            public PaintableImage paintCard(MyCardModel cardModel) {
-                PaintableImage paintableImage = new PaintableImage(300, 400);
-                paintableImage.setBackground_Alpha(0);
+            public PaintableImage paintCard_Background(MyCardModel cardModel) {
+                PaintableImage paintableImage = new PaintableImage(400, 560);
+                paintableImage.setBackground(Color.BLACK);
+                BufferedImage imageBackground = FileAssets.getImage("images/templates/template_full_" + cardModel.getColor().ordinal() + ".png");
+                paintableImage.paintImage(new PaintableImage(imageBackground), 0, 0, paintableImage.getWidth(), paintableImage.getHeight());
+                return paintableImage;
+            }
+
+            @Override
+            public PaintableImage paintCard_Image(MyCardModel cardModel) {
+                PaintableImage paintableImage = new PaintableImage(329, 242);
+                paintableImage.setBackground(Color.BLACK);
                 BufferedImage imageCard = FileAssets.getImage("images/cards/" + cardModel.getName() + ".png");
-                BufferedImage imageBackground = FileAssets.getImage("images/templates/mana_" + cardModel.getColor().ordinal() + ".png");
-                paintableImage.paintImage(new PaintableImage(imageCard), 74, 43, 155, 155);
-                paintableImage.paintImage(new PaintableImage(imageBackground), 0, 0, 300, 400);
+                paintableImage.paintImage(new PaintableImage(imageCard), 0, 0, paintableImage.getWidth(), paintableImage.getHeight());
                 return paintableImage;
             }
         });

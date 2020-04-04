@@ -1,8 +1,6 @@
 package com.destrostudios.cardgui;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -14,7 +12,7 @@ public class Board implements GameLoopListener {
     private int nextId;
     private HashMap<Integer, BoardObject> boardObjects = new HashMap<>();
     private LinkedList<BoardObject> lastFrameRemovedBoardObjects = new LinkedList<>();
-    private HashMap<Predicate<BoardObject>, BoardObjectVisualizer> boardObjectVisualizers = new HashMap<>();
+    private LinkedHashMap<Predicate<BoardObject>, BoardObjectVisualizer> boardObjectVisualizers = new LinkedHashMap<>();
     private AnimationPlayer animationPlayer = new AnimationPlayer();
 
     public void addZone(CardZone zone) {

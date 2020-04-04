@@ -1,4 +1,4 @@
-package com.destrostudios.cardgui.samples.visualisation;
+package com.destrostudios.cardgui.samples.visualization;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
@@ -8,6 +8,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.*;
+import com.jme3.texture.Texture2D;
 import com.jme3.util.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -15,12 +16,10 @@ import java.nio.FloatBuffer;
 public class ModelledCard {
 
     public ModelledCard(AssetManager assetManager, String modelPath, String backTexturePath, ColorRGBA sideColor) {
-        Spatial model = assetManager.loadModel(modelPath);
-        model.rotate(new Quaternion().fromAngleAxis(-1 * FastMath.HALF_PI, Vector3f.UNIT_X));
-        model.scale(0.2f);
-        model.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-        node = new Node();
-        node.attachChild(model);
+        node = (Node) assetManager.loadModel(modelPath);
+        node.rotate(new Quaternion().fromAngleAxis(-1 * FastMath.HALF_PI, Vector3f.UNIT_X));
+        node.scale(0.2f);
+        node.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
 
         Geometry back = (Geometry) node.getChild("back");
         createTextureCoordinates_Background(back, true);
@@ -87,6 +86,26 @@ public class ModelledCard {
         material.setBoolean("UseMaterialColors", true);
         material.setColor("Diffuse", color);
         return material;
+    }
+
+    public void setFront(PaintableImage paintableImage) {
+        setTexture("front", paintableImage);
+    }
+
+    public void setImage(PaintableImage paintableImage) {
+        setTexture("image", paintableImage);
+    }
+
+    private void setTexture(String geometryName, PaintableImage paintableImage) {
+        Geometry geometry = (Geometry) node.getChild(geometryName);
+        geometry.getMaterial().setTexture("DiffuseMap", flipAndCreateTexture(paintableImage));
+    }
+
+    private Texture2D flipAndCreateTexture(PaintableImage paintableImage) {
+        paintableImage.flipY();
+        Texture2D texture = new Texture2D();
+        texture.setImage(paintableImage.getImage());
+        return texture;
     }
 
     public Node getNode() {

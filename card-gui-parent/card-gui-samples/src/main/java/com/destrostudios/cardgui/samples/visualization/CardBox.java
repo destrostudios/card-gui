@@ -1,4 +1,4 @@
-package com.destrostudios.cardgui.samples.visualisation;
+package com.destrostudios.cardgui.samples.visualization;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;

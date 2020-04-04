@@ -101,11 +101,11 @@ public class BoardAppState extends BaseAppState implements ActionListener {
             if (model.wasChanged() || (newVisualizer != oldVisualizer)) {
                 if (newVisualizer != oldVisualizer) {
                     if (oldVisualizer != null) {
-                        newVisualizer.removeVisualisation(node);
+                        oldVisualizer.removeVisualization(node);
                     }
-                    newVisualizer.createVisualisation(node, application.getAssetManager());
+                    newVisualizer.createVisualization(node, application.getAssetManager());
                 }
-                newVisualizer.updateVisualisation(node, boardObject, application.getAssetManager());
+                newVisualizer.updateVisualization(node, boardObject, application.getAssetManager());
                 model.onUpdate();
                 boardObject.setCurrentVisualizer(newVisualizer);
             }

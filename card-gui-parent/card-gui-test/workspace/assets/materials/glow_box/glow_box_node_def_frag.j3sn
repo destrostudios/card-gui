@@ -1,0 +1,18 @@
+ShaderNodeDefinitions{
+      ShaderNodeDefinition GlowBoxFrag{
+            Type : Fragment
+            Shader GLSL100 : materials/glow_box/glow_box_shader.frag
+            Documentation {
+
+            } 
+            Input {
+                vec2 texCoord
+                sampler2D glowMap
+                vec4 color
+                float alpha
+            }
+            Output {
+                vec4 outColor
+            }
+      }
+}

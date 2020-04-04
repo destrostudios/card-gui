@@ -1,4 +1,4 @@
-package com.destrostudios.cardgui.samples.visualisation;
+package com.destrostudios.cardgui.samples.visualization;
 
 import com.destrostudios.cardgui.BoardObjectModel;
 import com.destrostudios.cardgui.Card;
@@ -26,7 +26,7 @@ public abstract class SimpleCardVisualizer<CardModelType extends BoardObjectMode
     private float height;
 
     @Override
-    protected Geometry createAttachment(AssetManager assetManager) {
+    protected Geometry createVisualizationObject(AssetManager assetManager) {
         Geometry geometry = new Geometry();
         Box box = new Box(width, 0.01f, height);
         box.setBuffer(VertexBuffer.Type.TexCoord, 2, new float[]{
@@ -51,7 +51,7 @@ public abstract class SimpleCardVisualizer<CardModelType extends BoardObjectMode
     }
 
     @Override
-    public void updateAttachment(Geometry geometry, Card<CardModelType> card, AssetManager assetManager) {
+    public void updateVisualizationObject(Geometry geometry, Card<CardModelType> card, AssetManager assetManager) {
         PaintableImage paintableImage = paintCard(card.getModel());
         Texture2D texture = new Texture2D();
         texture.setImage(paintableImage.getImage());

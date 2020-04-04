@@ -1,4 +1,4 @@
-package com.destrostudios.cardgui.samples.visualisation;
+package com.destrostudios.cardgui.samples.visualization;
 
 import com.jme3.texture.Image;
 import com.jme3.texture.Image.Format;

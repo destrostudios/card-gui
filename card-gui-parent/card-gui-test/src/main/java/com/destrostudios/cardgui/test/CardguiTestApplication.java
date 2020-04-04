@@ -7,7 +7,7 @@ import com.destrostudios.cardgui.interactivities.*;
 import com.destrostudios.cardgui.samples.animations.*;
 import com.destrostudios.cardgui.samples.boardobjects.connectionmarker.*;
 import com.destrostudios.cardgui.samples.boardobjects.targetarrow.*;
-import com.destrostudios.cardgui.samples.visualisation.*;
+import com.destrostudios.cardgui.samples.visualization.*;
 import com.destrostudios.cardgui.TargetSnapMode;
 import com.destrostudios.cardgui.test.game.*;
 import com.destrostudios.cardgui.zones.*;
@@ -22,8 +22,6 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.math.*;
 import com.jme3.system.AppSettings;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -32,7 +30,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
 
     public static void main(String[] args) {
         FileAssets.readRootFile();
-        
+
         CardguiTestApplication app = new CardguiTestApplication();
         app.setShowSettings(false);
         AppSettings settings = new AppSettings(true);
@@ -81,7 +79,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
         DirectionalLight directionalLight = new DirectionalLight(lightDirection, ColorRGBA.White.mult(1.1f));
         rootNode.addLight(directionalLight);
     }
-    
+
     private void initListeners() {
         inputManager.addMapping("space", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("1", new KeyTrigger(KeyInput.KEY_1));
@@ -89,7 +87,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
         inputManager.addMapping("3", new KeyTrigger(KeyInput.KEY_3));
         inputManager.addListener(this, "space", "1", "2", "3");
     }
-    
+
     private void initGame() {
         MyPlayer[] players = new MyPlayer[]{new MyPlayer(), new MyPlayer()};
         for (MyPlayer player : players) {
@@ -127,53 +125,8 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                 }
             }
             return false;
-        }, new ModelledCardVisualizer<MyCardModel>("models/card/card_rect.j3o", "images/cardbacks/magic.png", ColorRGBA.Black) {
-
-            @Override
-            public PaintableImage paintCard_Background(MyCardModel cardModel) {
-                PaintableImage paintableImage = new PaintableImage(400, 560);
-                paintableImage.setBackground(Color.BLACK);
-                BufferedImage imageBackground = FileAssets.getImage("images/templates/template_rect_" + cardModel.getColor().ordinal() + ".png");
-                paintableImage.paintImage(new PaintableImage(imageBackground), 0, 0, paintableImage.getWidth(), paintableImage.getHeight());
-                return paintableImage;
-            }
-
-            @Override
-            public PaintableImage paintCard_Image(MyCardModel cardModel) {
-                PaintableImage paintableImage = new PaintableImage(329, 488);
-                paintableImage.setBackground(Color.BLACK);
-                BufferedImage imageCard = FileAssets.getImage("images/cards/" + cardModel.getName() + ".png");
-                paintableImage.paintImage(new PaintableImage(imageCard), 0, 0, paintableImage.getWidth(), paintableImage.getHeight());
-                if (cardModel.isDamaged()) {
-                    for (int x=0;x<paintableImage.getWidth();x++) {
-                        for (int y=0;y<paintableImage.getHeight();y++) {
-                            paintableImage.setPixel_Red(x, y, 255);
-                        }
-                    }
-                }
-                return paintableImage;
-            }
-        });
-        board.registerVisualizer_Class(Card.class, new ModelledCardVisualizer<MyCardModel>("models/card/card_full.j3o", "images/cardbacks/magic.png", ColorRGBA.Black) {
-
-            @Override
-            public PaintableImage paintCard_Background(MyCardModel cardModel) {
-                PaintableImage paintableImage = new PaintableImage(400, 560);
-                paintableImage.setBackground(Color.BLACK);
-                BufferedImage imageBackground = FileAssets.getImage("images/templates/template_full_" + cardModel.getColor().ordinal() + ".png");
-                paintableImage.paintImage(new PaintableImage(imageBackground), 0, 0, paintableImage.getWidth(), paintableImage.getHeight());
-                return paintableImage;
-            }
-
-            @Override
-            public PaintableImage paintCard_Image(MyCardModel cardModel) {
-                PaintableImage paintableImage = new PaintableImage(329, 242);
-                paintableImage.setBackground(Color.BLACK);
-                BufferedImage imageCard = FileAssets.getImage("images/cards/" + cardModel.getName() + ".png");
-                paintableImage.paintImage(new PaintableImage(imageCard), 0, 0, paintableImage.getWidth(), paintableImage.getHeight());
-                return paintableImage;
-            }
-        });
+        }, new MyCardVisualizer(true));
+        board.registerVisualizer_Class(Card.class, new MyCardVisualizer(false));
         board.registerVisualizer_Class(TargetArrow.class, new SimpleTargetArrowVisualizer(new SimpleTargetArrowSettings()));
         board.registerVisualizer_Class(ConnectionMarker.class, new ConnectionMarkerVisualizer(
                 SimpleTargetArrowSettings.builder()

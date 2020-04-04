@@ -1,0 +1,20 @@
+ShaderNodeDefinitions{
+      ShaderNodeDefinition GlowBoxVert{
+            Type : Vertex
+            Shader GLSL100 : materials/glow_box/glow_box_shader.vert
+            Documentation {
+
+            } 
+            Input {
+                mat4 worldViewProjectionMatrix
+                vec3 vertPosition
+
+                vec2 texCoord
+            }
+            Output {
+                vec4 projPosition
+
+                vec2 texCoord
+            }
+      }
+}

@@ -1,0 +1,40 @@
+MaterialDef GlowBox {
+    MaterialParameters {
+        Texture2D GlowMap
+        Color Color
+        Float Alpha : 1.0
+    }
+    Technique {
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+        VertexShaderNodes {
+            ShaderNode GlowBoxVert {
+                Definition : GlowBoxVert : materials/glow_box/glow_box_node_def_vert.j3sn
+                InputMappings {
+                    worldViewProjectionMatrix = WorldParam.WorldViewProjectionMatrix
+                    vertPosition = Global.position.xyz
+
+                    texCoord = Attr.inTexCoord.xy
+                }
+                OutputMappings {
+                    Global.position = projPosition
+                }
+            }
+        }
+        FragmentShaderNodes {
+            ShaderNode GlowBoxFrag {
+                Definition : GlowBoxFrag : materials/glow_box/glow_box_node_def_frag.j3sn
+                InputMappings {
+                    texCoord = GlowBoxVert.texCoord
+                    glowMap = MatParam.GlowMap
+                    color = MatParam.Color
+                    alpha = MatParam.Alpha
+                }
+                OutputMappings {
+                    Global.color = outColor
+                }
+            }
+        }
+    }
+}

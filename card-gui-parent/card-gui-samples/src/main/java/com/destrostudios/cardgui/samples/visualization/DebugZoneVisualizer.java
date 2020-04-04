@@ -1,4 +1,4 @@
-package com.destrostudios.cardgui.samples.visualisation;
+package com.destrostudios.cardgui.samples.visualization;
 
 import com.destrostudios.cardgui.CardZone;
 import com.jme3.asset.AssetManager;
@@ -15,7 +15,7 @@ import com.jme3.scene.shape.Box;
 public class DebugZoneVisualizer extends SimpleAttachmentVisualizer<CardZone, Geometry> {
 
     @Override
-    protected Geometry createAttachment(AssetManager assetManager) {
+    protected Geometry createVisualizationObject(AssetManager assetManager) {
         Geometry geometry = new Geometry();
         Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.getAdditionalRenderState().setWireframe(true);
@@ -25,7 +25,7 @@ public class DebugZoneVisualizer extends SimpleAttachmentVisualizer<CardZone, Ge
     }
 
     @Override
-    protected void updateAttachment(Geometry geometry, CardZone zone, AssetManager assetManager) {
+    protected void updateVisualizationObject(Geometry geometry, CardZone zone, AssetManager assetManager) {
         Vector2f size = getSize(zone);
         Box box = new Box((size.getX() / 2), 0.1f, (size.getY() / 2));
         geometry.setMesh(box);

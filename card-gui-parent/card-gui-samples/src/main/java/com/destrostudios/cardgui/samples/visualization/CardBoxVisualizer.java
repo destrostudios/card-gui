@@ -1,4 +1,4 @@
-package com.destrostudios.cardgui.samples.visualisation;
+package com.destrostudios.cardgui.samples.visualization;
 
 import com.destrostudios.cardgui.BoardObjectModel;
 import com.destrostudios.cardgui.Card;
@@ -14,13 +14,13 @@ import com.jme3.texture.Texture2D;
 public abstract class CardBoxVisualizer<CardModelType extends BoardObjectModel> extends SimpleAttachmentVisualizer<Card<CardModelType>, Node> {
 
     @Override
-    protected Node createAttachment(AssetManager assetManager) {
+    protected Node createVisualizationObject(AssetManager assetManager) {
         CardBox cardBox = new CardBox(assetManager, "images/cardbacks/magic.png", "images/card_side.png");
         return cardBox.getNode();
     }
 
     @Override
-    protected void updateAttachment(Node node, Card<CardModelType> card, AssetManager assetManager) {
+    protected void updateVisualizationObject(Node node, Card<CardModelType> card, AssetManager assetManager) {
         Geometry faceFront = (Geometry) node.getChild(CardBox.NAME_GEOMETRY_FRONT);
         PaintableImage paintableImage = paintCard(card.getModel());
         Texture2D texture = new Texture2D();

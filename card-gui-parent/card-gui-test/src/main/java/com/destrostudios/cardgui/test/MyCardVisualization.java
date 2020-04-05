@@ -17,7 +17,7 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
     public MyCardVisualization(AssetManager assetManager, boolean minified) {
         this.minified = minified;
         node = new Node();
-        modelledCard = new ModelledCard(assetManager, "models/card/card_" + (minified ? "rect" : "full") + ".j3o", "images/cardbacks/magic.png", ColorRGBA.Black);
+        modelledCard = new ModelledCard(assetManager, "models/card/card.j3o", "images/cardbacks/magic.png", ColorRGBA.Black);
         node.attachChild(modelledCard.getNode());
         glowBox = new GlowBox(assetManager, 1.05f, 1.43f);
     }
@@ -31,22 +31,20 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
         paintableImage.setBackground(Color.BLACK);
         BufferedImage imageBackground = FileAssets.getImage("images/templates/template_" + (minified ? "rect" : "full") + "_" + cardModel.getColor().ordinal() + ".png");
         paintableImage.paintImage(new PaintableImage(imageBackground), 0, 0, paintableImage.getWidth(), paintableImage.getHeight());
-        modelledCard.setFront(paintableImage);
-    }
-
-    public void updateCardImage(MyCardModel cardModel) {
-        PaintableImage paintableImage = new PaintableImage(329, 242);
-        paintableImage.setBackground(Color.BLACK);
-        BufferedImage imageCard = FileAssets.getImage("images/cards/" + cardModel.getName() + ".png");
-        paintableImage.paintImage(new PaintableImage(imageCard), 0, 0, paintableImage.getWidth(), paintableImage.getHeight());
+        String imagePath = "images/cards/" + cardModel.getName() + ".png";
+        int imageX = 36;
+        int imageY = (minified ? 36 : 68);
+        int imageWidth = 328;
+        int imageHeight = (minified ? 488 : 242);
+        paintableImage.paintImage(FileAssets.getImage(imagePath, imageWidth, imageHeight), imageX, imageY);
         if (cardModel.isDamaged()) {
-            for (int x=0;x<paintableImage.getWidth();x++) {
-                for (int y=0;y<paintableImage.getHeight();y++) {
-                    paintableImage.setPixel_Red(x, y, 255);
+            for (int x = 0; x < imageWidth; x++) {
+                for (int y = 0; y < imageHeight; y++) {
+                    paintableImage.setPixel_Red(imageX + x, imageY + y, 255);
                 }
             }
         }
-        modelledCard.setImage(paintableImage);
+        modelledCard.setFront(paintableImage);
     }
 
     public void addGlow(ColorRGBA colorRGBA) {

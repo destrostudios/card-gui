@@ -22,23 +22,19 @@ public class ModelledCard {
         node.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
 
         Geometry back = (Geometry) node.getChild("back");
-        createTextureCoordinates_Background(back, true);
+        createTextureCoordinates(back, true);
         back.setMaterial(createMaterial_Texture(assetManager, backTexturePath));
 
         Geometry front = (Geometry) node.getChild("front");
-        createTextureCoordinates_Background(front, false);
+        createTextureCoordinates(front, false);
         front.setMaterial(createMaterial_Texture(assetManager, null));
 
         Geometry side = (Geometry) node.getChild("side");
         side.setMaterial(createMaterial_Color(assetManager, sideColor));
-
-        Geometry image = (Geometry) node.getChild("image");
-        createTextureCoordinates_Image(image);
-        image.setMaterial(createMaterial_Texture(assetManager, null));
     }
     private Node node;
 
-    private void createTextureCoordinates_Background(Geometry geometry, boolean invertX) {
+    private void createTextureCoordinates(Geometry geometry, boolean invertX) {
         Mesh mesh = geometry.getMesh();
         float[] texCoords = new float[mesh.getVertexCount() * 2];
         FloatBuffer positions = mesh.getFloatBuffer(VertexBuffer.Type.Position);
@@ -55,17 +51,6 @@ public class ModelledCard {
             texCoords[i * 2] = texCoord_X;
             texCoords[(i * 2) + 1] = texCoord_Y;
         }
-        mesh.setBuffer(VertexBuffer.Type.TexCoord, 2, BufferUtils.createFloatBuffer(texCoords));
-    }
-
-    private void createTextureCoordinates_Image(Geometry geometry) {
-        Mesh mesh = geometry.getMesh();
-        float[] texCoords = new float[] {
-                1, 1, // right top
-                0, 1, // left top
-                0, 0, // left bottom
-                1, 0, // right bottom
-        };
         mesh.setBuffer(VertexBuffer.Type.TexCoord, 2, BufferUtils.createFloatBuffer(texCoords));
     }
 
@@ -89,15 +74,7 @@ public class ModelledCard {
     }
 
     public void setFront(PaintableImage paintableImage) {
-        setTexture("front", paintableImage);
-    }
-
-    public void setImage(PaintableImage paintableImage) {
-        setTexture("image", paintableImage);
-    }
-
-    private void setTexture(String geometryName, PaintableImage paintableImage) {
-        Geometry geometry = (Geometry) node.getChild(geometryName);
+        Geometry geometry = (Geometry) node.getChild("front");
         geometry.getMaterial().setTexture("DiffuseMap", flipAndCreateTexture(paintableImage));
     }
 

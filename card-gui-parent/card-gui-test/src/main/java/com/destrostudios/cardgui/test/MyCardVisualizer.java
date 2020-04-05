@@ -22,7 +22,7 @@ public class MyCardVisualizer extends CustomAttachmentVisualizer<Card<MyCardMode
     protected void updateVisualizationObject(MyCardVisualization visualization, Card<MyCardModel> card, AssetManager assetManager) {
         visualization.updateCardFront(card.getModel());
         if (card.getModel().isDamaged()) {
-            visualization.addGlow(ColorRGBA.randomColor());
+            visualization.setGlow(ColorRGBA.randomColor());
         } else {
             visualization.removeGlow();
         }

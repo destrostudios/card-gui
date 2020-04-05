@@ -20,7 +20,7 @@ public class GlowBox {
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         geometry.setMaterial(material);
         geometry.setQueueBucket(RenderQueue.Bucket.Translucent);
-        geometry.setLocalTranslation((width / -2), 0, (height / 2));
+        geometry.setLocalTranslation((width / -2), (height / -2), 0);
         geometry.rotate(new Quaternion().fromAngleAxis(-1 * FastMath.HALF_PI, Vector3f.UNIT_X));
         geometry.addControl(new PulsatingMaterialParamControl("Alpha", 0.4f, 1, 2.5f));
     }

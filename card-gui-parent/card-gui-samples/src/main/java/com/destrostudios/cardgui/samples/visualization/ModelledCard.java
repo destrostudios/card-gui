@@ -22,11 +22,11 @@ public class ModelledCard {
         node.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
 
         Geometry back = (Geometry) node.getChild("back");
-        createTextureCoordinates(back, false);
+        createTextureCoordinates(back, true);
         back.setMaterial(createMaterial_Texture(assetManager, backTexturePath));
 
         Geometry front = (Geometry) node.getChild("front");
-        createTextureCoordinates(front, true);
+        createTextureCoordinates(front, false);
         front.setMaterial(createMaterial_Texture(assetManager, null));
 
         Geometry side = (Geometry) node.getChild("side");
@@ -34,7 +34,7 @@ public class ModelledCard {
     }
     private Node node;
 
-    private void createTextureCoordinates(Geometry geometry, boolean invert) {
+    private void createTextureCoordinates(Geometry geometry, boolean invertX) {
         Mesh mesh = geometry.getMesh();
         float[] texCoords = new float[mesh.getVertexCount() * 2];
         FloatBuffer positions = mesh.getFloatBuffer(VertexBuffer.Type.Position);
@@ -45,9 +45,8 @@ public class ModelledCard {
             float z = positions.get();
             float texCoord_X = (((x / 2) + 1) / 2);
             float texCoord_Y = (((y / 2.8f) + 1) / 2);
-            if (invert) {
+            if (invertX) {
                 texCoord_X = (1 - texCoord_X);
-                texCoord_Y = (1 - texCoord_Y);
             }
             texCoords[i * 2] = texCoord_X;
             texCoords[(i * 2) + 1] = texCoord_Y;
@@ -80,6 +79,7 @@ public class ModelledCard {
     }
 
     private Texture2D flipAndCreateTexture(PaintableImage paintableImage) {
+        paintableImage.flipY();
         Texture2D texture = new Texture2D();
         texture.setImage(paintableImage.getImage());
         return texture;

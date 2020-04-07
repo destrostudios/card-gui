@@ -8,7 +8,6 @@ ShaderNodeDefinitions{
             Input {
                 mat4 worldViewProjectionMatrix
                 vec3 vertPosition
-
                 vec2 texCoord
             }
             Output {

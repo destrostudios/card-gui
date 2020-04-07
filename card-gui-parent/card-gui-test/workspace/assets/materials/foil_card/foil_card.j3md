@@ -1,0 +1,29 @@
+MaterialDef FoilCard {
+    MaterialParameters {
+        Texture2D DiffuseMap
+        Texture2D FoilMap
+        Float Distortion : 0.0025
+        Color FoilColor : 1 1 1 1
+        Float FoilColorSpeed : 0.6
+        Float FoilColorTint : 0.5
+        Float FoilColorIntensity : 0.2
+        Float ShineInterval : 8
+        Float ShineSize : -0.02
+        Float ShineSmoothing : 0.4
+        Float ShineIntensity : 0.2
+        Float Time
+    }
+    Technique {
+        WorldParameters {
+            WorldMatrix
+            WorldViewProjectionMatrix
+        }
+        Defines {
+            FOILMAP : FoilMap
+            FOILCOLOR : FoilColor
+            SHINEINTERVAL : ShineInterval
+        }
+        VertexShader GLSL100 GLSL150 : materials/foil_card/foil_card.vert
+        FragmentShader GLSL100 GLSL150 : materials/foil_card/foil_card.frag
+    }
+}

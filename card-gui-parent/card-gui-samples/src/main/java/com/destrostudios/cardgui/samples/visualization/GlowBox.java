@@ -1,5 +1,6 @@
 package com.destrostudios.cardgui.samples.visualization;
 
+import com.destrostudios.cardgui.samples.visualization.materials.PulsatingMaterialParamControl;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;

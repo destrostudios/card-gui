@@ -1,9 +1,9 @@
-package com.destrostudios.cardgui.samples.visualization;
+package com.destrostudios.cardgui.samples.visualization.cards;
 
+import com.destrostudios.cardgui.samples.visualization.materials.MaterialFactory;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
@@ -12,7 +12,7 @@ import com.jme3.scene.shape.Quad;
 
 public class CardBox {
 
-    // TODO: Have these as setting/constants somewhere
+    // TODO: Have these as setting somewhere
     private final float cardWidth = 0.8f;
     private final float cardHeight = 1.2f;
     private final float cardDepth = 0.02f;
@@ -58,11 +58,7 @@ public class CardBox {
     private Geometry createAndAttachFace(String name, float width, float height, String texturePath) {
         Quad quad = new Quad(width, height);
         Geometry geometry = new Geometry(name, quad);
-        Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        material.setBoolean("UseMaterialColors", true);
-        material.setColor("Ambient", ColorRGBA.White);
-        material.setColor("Diffuse", new ColorRGBA(0.75f, 0.75f, 0.75f, 1));
-        material.setColor("Specular", ColorRGBA.Black);
+        Material material = MaterialFactory.textureLighting(assetManager);
         material.setTexture("DiffuseMap", assetManager.loadTexture(texturePath));
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         geometry.setMaterial(material);

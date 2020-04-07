@@ -10,6 +10,11 @@ import java.nio.ByteBuffer;
  
 public class PaintableImage {
 
+    public PaintableImage(PaintableImage paintableImage) {
+        setSize(paintableImage.width, paintableImage.height);
+        setData(paintableImage.data);
+    }
+
     public PaintableImage(BufferedImage image) {
         this(image, false);
     }
@@ -37,7 +42,13 @@ public class PaintableImage {
         ByteBuffer buffer = BufferUtils.createByteBuffer(data);
         image = new Image(Format.RGBA8, width, height, buffer, null, ColorSpace.Linear);
     }
-    
+
+    private void setData(byte[] data) {
+        for (int i=0;i<this.data.length;i++) {
+            this.data[i] = data[i];
+        }
+    }
+
     public Image getImage() {
         ByteBuffer buffer = BufferUtils.createByteBuffer(data);
         image.setData(buffer);
@@ -85,7 +96,7 @@ public class PaintableImage {
             }
         }
     }
-    
+
     public void paintImage(PaintableImage image, int x, int y, int width, int height) {
         float scaleX = (((float) image.getWidth()) / width);
         float scaleY = (((float) image.getHeight()) / height);
@@ -107,7 +118,18 @@ public class PaintableImage {
             }
         }
     }
-    
+
+    public void removeByAlphaMask(PaintableImage image) {
+        for (int i = 0; i < data.length; i += 4) {
+            if (image.data[i + 3] != 0) {
+                data[i] = 0;
+                data[i + 1] = 0;
+                data[i + 2] = 0;
+                data[i + 3] = 0;
+            }
+        }
+    }
+
     public void flipY() {
         byte[] tmpData = new byte[4];
         int x = 0;
@@ -196,11 +218,5 @@ public class PaintableImage {
 
     public byte[] getData() {
         return data;
-    }
-
-    public void setData(byte[] data) {
-        for (int i=0;i<this.data.length;i++) {
-            this.data[i] = data[i];
-        }
     }
 }

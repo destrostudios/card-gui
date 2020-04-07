@@ -1,4 +1,4 @@
-package com.destrostudios.cardgui.samples.visualization;
+package com.destrostudios.cardgui.samples.visualization.materials;
 
 import com.jme3.material.Material;
 import com.jme3.math.FastMath;

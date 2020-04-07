@@ -1,10 +1,12 @@
-package com.destrostudios.cardgui.samples.visualization;
+package com.destrostudios.cardgui.samples.visualization.cards;
 
 import com.destrostudios.cardgui.BoardObjectModel;
 import com.destrostudios.cardgui.Card;
+import com.destrostudios.cardgui.samples.visualization.PaintableImage;
+import com.destrostudios.cardgui.samples.visualization.SimpleAttachmentVisualizer;
+import com.destrostudios.cardgui.samples.visualization.materials.MaterialFactory;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.VertexBuffer;
@@ -38,11 +40,7 @@ public abstract class SimpleCardVisualizer<CardModelType extends BoardObjectMode
             0, 0, 0, 1, 1, 1, 1, 0  // back
         });
         geometry.setMesh(box);
-        Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        material.setBoolean("UseMaterialColors", true);
-        material.setColor("Ambient", ColorRGBA.White);
-        material.setColor("Diffuse", new ColorRGBA(0.75f, 0.75f, 0.75f, 1));
-        material.setColor("Specular", ColorRGBA.Black);
+        Material material = MaterialFactory.textureLighting(assetManager);
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         geometry.setMaterial(material);
         geometry.setQueueBucket(RenderQueue.Bucket.Transparent);

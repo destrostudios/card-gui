@@ -22,11 +22,11 @@ public class FoilModelledCard extends SimpleModelledCard {
         return new Material(assetManager, "materials/foil_card/foil_card.j3md");
     }
 
-    public void setFront(PaintableImage imageBack, PaintableImage imageArtwork, PaintableImage imageFront) {
+    public void setFront(PaintableImage imageBack, PaintableImage imageFoil, PaintableImage imageFront) {
         PaintableImage diffuseMap = new PaintableImage(imageBack);
-        diffuseMap.paintImage(imageArtwork, 0, 0, diffuseMap.getWidth(), diffuseMap.getHeight());
+        diffuseMap.paintImage(imageFoil, 0, 0, diffuseMap.getWidth(), diffuseMap.getHeight());
         diffuseMap.paintImage(imageFront, 0, 0, diffuseMap.getWidth(), diffuseMap.getHeight());
-        PaintableImage foilMap = new PaintableImage(imageArtwork);
+        PaintableImage foilMap = new PaintableImage(imageFoil);
         foilMap.removeByAlphaMask(imageFront);
         setFront(flipAndCreateTexture(diffuseMap), flipAndCreateTexture(foilMap));
     }

@@ -35,9 +35,9 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
         BufferedImage imageBackground = FileAssets.getImage("images/templates/template_" + (minified ? "rect" : "full") + "_" + cardModel.getColor().ordinal() + ".png");
         imageBack.paintImage(new PaintableImage(imageBackground), 0, 0, imageBack.getWidth(), imageBack.getHeight());
 
-        // Artwork
-        PaintableImage imageArtwork = new PaintableImage(textureWidth, textureHeight);
-        imageArtwork.setBackground_Alpha(0);
+        // Foil
+        PaintableImage imageFoil = new PaintableImage(textureWidth, textureHeight);
+        imageFoil.setBackground_Alpha(0);
         String imagePath = "images/cards/" + cardModel.getName() + ".png";
         int imageX = 36;
         int imageY = (minified ? 36 : 68);
@@ -45,14 +45,14 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
         int imageHeight = (minified ? 488 : 242);
         for (int x = 0; x < imageWidth; x++) {
             for (int y = 0; y < imageHeight; y++) {
-                imageArtwork.setPixel(imageX + x, imageY + y, 255, 255, 255, 255);
+                imageFoil.setPixel(imageX + x, imageY + y, 255, 255, 255, 255);
             }
         }
-        imageArtwork.paintImage(FileAssets.getImage(imagePath, imageWidth, imageHeight), imageX, imageY);
+        imageFoil.paintImage(FileAssets.getImage(imagePath, imageWidth, imageHeight), imageX, imageY);
         if (cardModel.isDamaged()) {
             for (int x = 0; x < imageWidth; x++) {
                 for (int y = 0; y < imageHeight; y++) {
-                    imageArtwork.setPixel_Red(imageX + x, imageY + y, 255);
+                    imageFoil.setPixel_Red(imageX + x, imageY + y, 255);
                 }
             }
         }
@@ -61,7 +61,7 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
         PaintableImage imageFront = new PaintableImage(textureWidth, textureHeight);
         imageFront.setBackground_Alpha(0);
 
-        foilModelledCard.setFront(imageBack, imageArtwork, imageFront);
+        foilModelledCard.setFront(imageBack, imageFoil, imageFront);
     }
 
     public void setGlow(ColorRGBA colorRGBA) {

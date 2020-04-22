@@ -22,10 +22,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.system.AppSettings;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DeckBuilderTestApplication extends SimpleApplication implements ActionListener {
 
@@ -41,6 +38,8 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
         app.setSettings(settings);
         app.start();
     }
+
+    private List<MyCardModel> allCardModels;
 
     @Override
     public void simpleInitApp() {
@@ -70,12 +69,14 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
 
     private void initListeners() {
         inputManager.addMapping("space", new KeyTrigger(KeyInput.KEY_SPACE));
-        inputManager.addMapping("return", new KeyTrigger(KeyInput.KEY_RETURN));
-        inputManager.addListener(this, "space", "return");
+        inputManager.addMapping("1", new KeyTrigger(KeyInput.KEY_1));
+        inputManager.addMapping("2", new KeyTrigger(KeyInput.KEY_2));
+        inputManager.addMapping("3", new KeyTrigger(KeyInput.KEY_3));
+        inputManager.addListener(this, "space", "1", "2", "3");
     }
 
     private void initDeckBuilder() {
-        List<MyCardModel> allCardModels = new LinkedList<>();
+        allCardModels = new LinkedList<>();
         for (int i = 0; i < 112; i++) {
             MyCardModel cardModel = new MyCardModel();
             cardModel.setColor(MyCard.Color.values()[(int) (Math.random() * MyCard.Color.values().length)]);
@@ -125,18 +126,28 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
 
     @Override
     public void onAction(String name, boolean isPressed, float lastTimePerFrame) {
+        DeckBuilderAppState<MyCardModel> deckBuilderAppState = stateManager.getState(DeckBuilderAppState.class);
         if ("space".equals(name) && isPressed) {
             inputManager.setCursorVisible(flyCam.isEnabled());
             flyCam.setEnabled(!flyCam.isEnabled());
-        } else if ("return".equals(name) && isPressed) {
-            Map<MyCardModel, Integer> deck = stateManager.getState(DeckBuilderAppState.class).getDeck();
+        } else if ("1".equals(name) && isPressed) {
             System.out.println("---Deck---");
-            for (Map.Entry<MyCardModel, Integer> entry : deck.entrySet()) {
+            for (Map.Entry<MyCardModel, Integer> entry : deckBuilderAppState.getDeck().entrySet()) {
                 MyCardModel myCardModel = entry.getKey();
                 int amount = entry.getValue();
                 System.out.println(amount + "x " + myCardModel.getColor().name() + " " + myCardModel.getName());
             }
             System.out.println("----------");
+        } else if ("2".equals(name) && isPressed) {
+            deckBuilderAppState.clearDeck();
+        } else if ("3".equals(name) && isPressed) {
+            Map<MyCardModel, Integer> deck = new HashMap<>();
+            for (int i = 0; i < 30; i++) {
+                MyCardModel cardModel = allCardModels.get((int) (Math.random() * 10));
+                Integer currentAmount = deck.computeIfAbsent(cardModel, cm -> 0);
+                deck.put(cardModel, currentAmount + 1);
+            }
+            deckBuilderAppState.setDeck(deck);
         }
     }
 }

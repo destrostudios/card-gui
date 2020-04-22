@@ -28,7 +28,8 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         @Override
         public void trigger(BoardObject source, BoardObject target) {
             Card<CardModelType> card = (Card<CardModelType>) source;
-            changeDeck(card.getModel(), true);
+            changeDeckCardAmount(card.getModel(), 1);
+            updateDeckZone();
         }
     };
     private ClickInteractivity clickToRemoveInteractivity = new ClickInteractivity() {
@@ -36,7 +37,8 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         @Override
         public void trigger(BoardObject source, BoardObject target) {
             Card<DeckBuilderDeckCardModel<CardModelType>> card = (Card<DeckBuilderDeckCardModel<CardModelType>>) source;
-            changeDeck(card.getModel().getCardModel(), false);
+            changeDeckCardAmount(card.getModel().getCardModel(), -1);
+            updateDeckZone();
         }
     };
 
@@ -74,7 +76,23 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         }
     }
 
-    private void changeDeck(CardModelType cardModel, boolean addOrRemove) {
+    public void setDeck(Map<CardModelType, Integer> deck) {
+        clearDeck();
+        for (Map.Entry<CardModelType, Integer> entry : deck.entrySet()) {
+            changeDeckCardAmount(entry.getKey(), entry.getValue());
+        }
+        updateDeckZone();
+    }
+
+    public void clearDeck() {
+        for (Card<DeckBuilderDeckCardModel<CardModelType>> deckCard : deckCards.values()) {
+            board.unregister(deckCard);
+        }
+        deckCards.clear();
+        updateDeckZone();
+    }
+
+    private void changeDeckCardAmount(CardModelType cardModel, int amountChange) {
         Card<DeckBuilderDeckCardModel<CardModelType>> deckCard = deckCards.computeIfAbsent(cardModel, cm -> {
             DeckBuilderDeckCardModel<CardModelType> deckCardModel = new DeckBuilderDeckCardModel<>();
             deckCardModel.setCardModel(cardModel);
@@ -88,16 +106,11 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
             return newDeckCard;
         });
         DeckBuilderDeckCardModel<CardModelType> deckCardModel = deckCard.getModel();
-        if (addOrRemove) {
-            deckCardModel.setAmount(deckCardModel.getAmount() + 1);
-        } else {
-            deckCardModel.setAmount(deckCardModel.getAmount() - 1);
-            if (deckCardModel.getAmount() <= 0) {
-                deckCards.remove(cardModel);
-            }
+        deckCardModel.setAmount(deckCardModel.getAmount() + amountChange);
+        if (deckCardModel.getAmount() <= 0) {
+            deckCards.remove(cardModel);
             board.unregister(deckCard);
         }
-        updateDeckZone();
     }
 
     private void updateDeckZone() {

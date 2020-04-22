@@ -26,6 +26,11 @@ public abstract class TransformedBoardObject<ModelType extends BoardObjectModel>
         rotationTransformationHandler.reset();
     }
 
+    public void finishTransformations() {
+        positionTransformationHandler.finish();
+        rotationTransformationHandler.finish();
+    }
+
     public boolean hasReachedTargetTransform() {
         return (positionTransformationHandler.hasReachedTarget() && positionTransformationHandler.hasReachedTarget());
     }

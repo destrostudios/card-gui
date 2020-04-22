@@ -7,39 +7,18 @@ import com.destrostudios.cardgui.samples.visualization.SimpleAttachmentVisualize
 import com.destrostudios.cardgui.samples.visualization.materials.MaterialFactory;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.VertexBuffer;
-import com.jme3.scene.shape.Box;
+import com.jme3.scene.Mesh;
 import com.jme3.texture.Texture2D;
-import com.jme3.material.RenderState;
 
-/**
- *
- * @author Carl
- */
 public abstract class SimpleCardVisualizer<CardModelType extends BoardObjectModel> extends SimpleAttachmentVisualizer<Card<CardModelType>, Geometry> {
-
-    public SimpleCardVisualizer(float width, float height) {
-        this.width = width;
-        this.height = height;
-    }
-    private float width;
-    private float height;
 
     @Override
     protected Geometry createVisualizationObject(AssetManager assetManager) {
         Geometry geometry = new Geometry();
-        Box box = new Box(width, 0.01f, height);
-        box.setBuffer(VertexBuffer.Type.TexCoord, 2, new float[]{
-            1, 0, 0, 0, 0, 1, 1, 1, // top
-            0, 0, 0, 1, 1, 1, 1, 0, // right
-            0, 1, 1, 1, 1, 0, 0, 0, // bottom
-            1, 1, 1, 0, 0, 0, 0, 1, // left
-            0, 0, 0, 1, 1, 1, 1, 0, // front
-            0, 0, 0, 1, 1, 1, 1, 0  // back
-        });
-        geometry.setMesh(box);
+        geometry.setMesh(createMesh());
         Material material = MaterialFactory.textureLighting(assetManager);
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         geometry.setMaterial(material);
@@ -47,6 +26,8 @@ public abstract class SimpleCardVisualizer<CardModelType extends BoardObjectMode
         geometry.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         return geometry;
     }
+
+    protected abstract Mesh createMesh();
 
     @Override
     public void updateVisualizationObject(Geometry geometry, Card<CardModelType> card, AssetManager assetManager) {
@@ -56,5 +37,5 @@ public abstract class SimpleCardVisualizer<CardModelType extends BoardObjectMode
         geometry.getMaterial().setTexture("DiffuseMap", texture);
     }
 
-    public abstract PaintableImage paintCard(CardModelType cardModel);
+    protected abstract PaintableImage paintCard(CardModelType cardModel);
 }

@@ -61,11 +61,6 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
         updateBoard();
     }
 
-    @Override
-    public void simpleUpdate(float lastTimePerFrame) {
-        // Nothing needs to be done here
-    }
-
     private void initCamera() {
         flyCam.setMoveSpeed(100);
         flyCam.setEnabled(false);
@@ -74,9 +69,9 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
     }
 
     private void initLight() {
-        rootNode.addLight(new AmbientLight(ColorRGBA.White.mult(0.4f)));
+        rootNode.addLight(new AmbientLight(ColorRGBA.White.mult(1)));
         Vector3f lightDirection = new Vector3f(1, -5, -1).normalizeLocal();
-        DirectionalLight directionalLight = new DirectionalLight(lightDirection, ColorRGBA.White.mult(1.1f));
+        DirectionalLight directionalLight = new DirectionalLight(lightDirection, ColorRGBA.White.mult(0.5f));
         rootNode.addLight(directionalLight);
     }
 

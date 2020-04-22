@@ -19,7 +19,6 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
         node.attachChild(foilModelledCard.getNode());
         glowBox = new GlowBox(assetManager, 1.05f, 1.43f);
     }
-
     private boolean minified;
     private Node node;
     private FoilModelledCard foilModelledCard;

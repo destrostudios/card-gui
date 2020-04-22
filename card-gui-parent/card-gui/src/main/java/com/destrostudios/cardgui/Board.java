@@ -49,6 +49,10 @@ public class Board implements GameLoopListener {
         registerVisualizer(boardObject -> boardObjectClass.isAssignableFrom(boardObject.getClass()), boardObjectVisualizer);
     }
 
+    public <T extends BoardObject> void registerVisualizer(BoardObject boardObject, BoardObjectVisualizer boardObjectVisualizer) {
+        registerVisualizer(currentBoardObject -> currentBoardObject == boardObject, boardObjectVisualizer);
+    }
+
     public <T extends BoardObject> void registerVisualizer(Predicate<BoardObject> boardObjectPredicate, BoardObjectVisualizer boardObjectVisualizer) {
         boardObjectVisualizers.put(boardObjectPredicate, boardObjectVisualizer);
     }
@@ -90,8 +94,7 @@ public class Board implements GameLoopListener {
         for (BoardObject boardObject : boardObjects.values()) {
             if (boardObject instanceof TransformedBoardObject) {
                 TransformedBoardObject transformedBoardObject = (TransformedBoardObject) boardObject;
-                transformedBoardObject.position().finish();
-                transformedBoardObject.rotation().finish();
+                transformedBoardObject.finishTransformations();
             }
         }
     }

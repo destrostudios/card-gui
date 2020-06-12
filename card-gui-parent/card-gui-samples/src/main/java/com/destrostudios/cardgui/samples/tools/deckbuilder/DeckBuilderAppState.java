@@ -18,6 +18,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
     public DeckBuilderAppState(Node rootNode, DeckBuilderSettings<CardModelType> settings) {
         this.rootNode = rootNode;
         this.settings = settings;
+        initBoard();
     }
     private Node rootNode;
     private DeckBuilderSettings<CardModelType> settings;
@@ -43,12 +44,6 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         }
     };
 
-    @Override
-    protected void initialize(Application app) {
-        initBoard();
-        initCollectionZone();
-    }
-
     private void initBoard() {
         board = new Board();
         board.addZone(settings.getCollectionZone());
@@ -58,10 +53,10 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         board.registerVisualizer_ZonePosition(zonePosition -> zonePosition.getZone() == settings.getCollectionZone(), settings.getCollectionCardVisualizer());
         board.registerVisualizer_ZonePosition(zonePosition -> zonePosition.getZone() == settings.getDeckZone(), settings.getDeckCardVisualizer());
         boardAppState = new BoardAppState(board, rootNode, settings.getBoardSettings());
-        getApplication().getStateManager().attach(boardAppState);
+        initCollectionZoneCards();
     }
 
-    private void initCollectionZone() {
+    private void initCollectionZoneCards() {
         float offsetX = ((settings.getCollectionCardsPerRow() - 1) / -2f);
         float offsetY = ((settings.getCollectionRowsPerPage() - 1) / -2f);
         int index = 0;
@@ -135,6 +130,11 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
                 DeckBuilderDeckCardModel::getCardModel,
                 DeckBuilderDeckCardModel::getAmount
             ));
+    }
+
+    @Override
+    protected void initialize(Application app) {
+        getStateManager().attach(boardAppState);
     }
 
     @Override

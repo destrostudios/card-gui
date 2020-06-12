@@ -144,8 +144,11 @@ public class BoardAppState extends BaseAppState implements ActionListener {
 
     private void removeNode(BoardObject boardObject) {
         Node node = boardObjectNodes.get(boardObject);
-        rootNode.detachChild(node);
-        boardObjectNodes.remove(boardObject);
+        // The node can be null if the board object was registered and instantly unregistered before the node was ever created
+        if (node != null) {
+            rootNode.detachChild(node);
+            boardObjectNodes.remove(boardObject);
+        }
     }
 
     @Override

@@ -225,12 +225,15 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         return null;
     }
 
-    // TODO: Other appstate interface methods
-
     @Override
     protected void cleanup(Application app) {
-        
+        application.getInputManager().removeListener(this);
+        for (Node boardObjectNode : boardObjectNodes.values()) {
+            rootNode.detachChild(boardObjectNode);
+        }
     }
+
+    // TODO: Maybe one day
 
     @Override
     protected void onEnable() {

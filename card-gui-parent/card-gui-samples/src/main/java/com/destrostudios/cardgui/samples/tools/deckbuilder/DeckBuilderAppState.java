@@ -22,6 +22,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
     private Node rootNode;
     private DeckBuilderSettings<CardModelType> settings;
     private Board board;
+    private BoardAppState boardAppState;
     private HashMap<CardModelType, Card<DeckBuilderDeckCardModel<CardModelType>>> deckCards = new HashMap<>();
     private ClickInteractivity clickToAddInteractivity = new ClickInteractivity() {
 
@@ -56,7 +57,8 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         board.registerVisualizer(settings.getDeckZone(), settings.getDeckZoneVisualizer());
         board.registerVisualizer_ZonePosition(zonePosition -> zonePosition.getZone() == settings.getCollectionZone(), settings.getCollectionCardVisualizer());
         board.registerVisualizer_ZonePosition(zonePosition -> zonePosition.getZone() == settings.getDeckZone(), settings.getDeckCardVisualizer());
-        getApplication().getStateManager().attach(new BoardAppState(board, rootNode, settings.getBoardSettings()));
+        boardAppState = new BoardAppState(board, rootNode, settings.getBoardSettings());
+        getApplication().getStateManager().attach(boardAppState);
     }
 
     private void initCollectionZone() {
@@ -135,12 +137,12 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
             ));
     }
 
-    // TODO: Other appstate interface methods
-
     @Override
     protected void cleanup(Application app) {
-
+        getStateManager().detach(boardAppState);
     }
+
+    // TODO: Maybe one day
 
     @Override
     protected void onEnable() {

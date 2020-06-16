@@ -1,5 +1,6 @@
 package com.destrostudios.cardgui;
 
+import com.destrostudios.cardgui.annotations.*;
 import com.destrostudios.cardgui.boardobjects.*;
 import com.destrostudios.cardgui.interactivities.*;
 import com.destrostudios.cardgui.transformations.*;
@@ -18,7 +19,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.util.TempVars;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -186,8 +190,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
                         TransformedBoardObject transformedBoardObject = (TransformedBoardObject) draggedBoardObject;
                         transformedBoardObject.setTransformationEnabled(true);
                     }
-                    draggedNode = null;
-                    draggedBoardObject = null;
+                    clearDraggedBoardObject();
                 }
             }
         }
@@ -200,6 +203,13 @@ public class BoardAppState extends BaseAppState implements ActionListener {
             transformedBoardObject.setTransformationEnabled(false);
         }
         draggedNode = boardObjectNodes.get(draggedBoardObject);
+        updateAnnotatedModelProperties_IsBoardObjectDragged();
+    }
+
+    private void clearDraggedBoardObject() {
+        draggedBoardObject = null;
+        draggedNode = null;
+        updateAnnotatedModelProperties_IsBoardObjectDragged();
     }
 
     private void updateHoveredBoardObject(Vector3f cursorPositionWorld, float lastTimePerFrame) {
@@ -222,18 +232,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
             }
         }
         hoveredBoardObject = newHoveredBoardObject;
-    }
-
-    private void inspect(TransformedBoardObject transformedBoardObject, Vector3f cursorPositionWorld) {
-        Quaternion cameraFacingRotation = getCameraFacingRotation();
-        transformedBoardObject.position().setTransformation(new SimpleTargetPositionTransformation3f(cursorPositionWorld, settings.getInspectionPositionTransformationSpeed().get()));
-        transformedBoardObject.rotation().setTransformation(new SimpleTargetRotationTransformation(cameraFacingRotation, settings.getInspectionRotationTransformationSpeed().get()));
-        inspectedBoardObject = transformedBoardObject;
-    }
-
-    private void uninspect() {
-        inspectedBoardObject.resetTransformations();
-        inspectedBoardObject = null;
+        updateAnnotatedModelProperties_IsBoardObjectHovered();
     }
 
     private boolean shouldInspectHoveredBoardObject() {
@@ -247,6 +246,56 @@ public class BoardAppState extends BaseAppState implements ActionListener {
             }
         }
         return false;
+    }
+
+    private void inspect(TransformedBoardObject transformedBoardObject, Vector3f cursorPositionWorld) {
+        Quaternion cameraFacingRotation = getCameraFacingRotation();
+        transformedBoardObject.position().setTransformation(new SimpleTargetPositionTransformation3f(cursorPositionWorld, settings.getInspectionPositionTransformationSpeed().get()));
+        transformedBoardObject.rotation().setTransformation(new SimpleTargetRotationTransformation(cameraFacingRotation, settings.getInspectionRotationTransformationSpeed().get()));
+        inspectedBoardObject = transformedBoardObject;
+        updateAnnotatedModelProperties_IsBoardObjectInspected();
+    }
+
+    private void uninspect() {
+        inspectedBoardObject.resetTransformations();
+        inspectedBoardObject = null;
+        updateAnnotatedModelProperties_IsBoardObjectInspected();
+    }
+
+    private void updateAnnotatedModelProperties_IsBoardObjectHovered() {
+        setAnnotatedModelProperties(IsBoardObjectHovered.class, boardObject -> boardObject == hoveredBoardObject);
+    }
+
+    private void updateAnnotatedModelProperties_IsBoardObjectInspected() {
+        setAnnotatedModelProperties(IsBoardObjectInspected.class, boardObject -> boardObject == inspectedBoardObject);
+    }
+
+    private void updateAnnotatedModelProperties_IsBoardObjectDragged() {
+        setAnnotatedModelProperties(IsBoardObjectDragged.class, boardObject -> boardObject == draggedBoardObject);
+    }
+
+    private void setAnnotatedModelProperties(Class<? extends Annotation> annotationClass, Function<BoardObject, Object> newValueFunction) {
+        for (BoardObject boardObject : board.getBoardObjects()) {
+            BoardObjectModel model = boardObject.getModel();
+            for (Field declaredField : model.getClass().getDeclaredFields()) {
+                declaredField.setAccessible(true);
+                if (declaredField.getAnnotation(annotationClass) != null) {
+                    try {
+                        Object oldValue = declaredField.get(model);
+                        Object newValue = newValueFunction.apply(boardObject);
+                        model.updateIfNotEquals(oldValue, newValue, () -> {
+                            try {
+                                declaredField.set(model, newValue);
+                            } catch (IllegalAccessException ex) {
+                                ex.printStackTrace();
+                            }
+                        });
+                    } catch (IllegalAccessException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     private BoardObject getHoveredInteractivityTarget(boolean filterValidTargets) {

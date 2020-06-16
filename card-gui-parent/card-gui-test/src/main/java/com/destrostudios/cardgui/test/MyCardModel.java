@@ -1,6 +1,7 @@
 package com.destrostudios.cardgui.test;
 
 import com.destrostudios.cardgui.BoardObjectModel;
+import com.destrostudios.cardgui.annotations.IsBoardObjectHovered;
 import com.destrostudios.cardgui.test.game.MyCard;
 
 public class MyCardModel extends BoardObjectModel {
@@ -8,6 +9,8 @@ public class MyCardModel extends BoardObjectModel {
     private MyCard.Color color;
     private String name;
     private boolean isDamaged;
+    @IsBoardObjectHovered
+    private boolean isHovered;
 
     public void setColor(MyCard.Color color) {
         updateIfNotEquals(this.color, color, () -> this.color = color);
@@ -31,5 +34,9 @@ public class MyCardModel extends BoardObjectModel {
 
     public boolean isDamaged() {
         return isDamaged;
+    }
+
+    public boolean isHovered() {
+        return isHovered;
     }
 }

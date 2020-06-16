@@ -11,4 +11,9 @@ public class ConnectionMarker extends BoardObject<ConnectionMarkerModel> {
     public ConnectionMarker() {
         super(new ConnectionMarkerModel());
     }
+
+    @Override
+    public boolean needsVisualizationUpdate() {
+        return true;
+    }
 }

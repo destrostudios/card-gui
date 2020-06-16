@@ -120,6 +120,16 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
                 .deckCardOrder(deckCardOrder)
                 .collectionCardsPerRow(16)
                 .collectionRowsPerPage(7)
+                .boardSettings(BoardSettings.builder()
+                        .hoverInspectionDelay(1f)
+                        .isInspectable(transformedBoardObject -> {
+                            if (transformedBoardObject instanceof Card) {
+                                Card card = (Card) transformedBoardObject;
+                                return (card.getZonePosition().getZone() == collectionZone);
+                            }
+                            return false;
+                        })
+                        .build())
                 .build();
         stateManager.attach(new DeckBuilderAppState<>(rootNode, settings));
     }

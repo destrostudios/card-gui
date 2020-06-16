@@ -31,6 +31,15 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
         return id;
     }
 
+    public boolean needsVisualizationUpdate() {
+        return model.wasChanged();
+    }
+
+    public void onVisualizationUpdated(BoardObjectVisualizer boardObjectVisualizer) {
+        setCurrentVisualizer(boardObjectVisualizer);
+        model.onUpdate();
+    }
+
     public void setCurrentVisualizer(BoardObjectVisualizer currentVisualizer) {
         this.currentVisualizer = currentVisualizer;
     }

@@ -1,8 +1,8 @@
 package com.destrostudios.cardgui.samples.animations.keyframes;
 
 import com.destrostudios.cardgui.TransformedBoardObject;
-import com.destrostudios.cardgui.transformations.SimpleTargetPositionTransformation3f;
-import com.destrostudios.cardgui.transformations.SimpleTargetRotationTransformation;
+import com.destrostudios.cardgui.transformations.LinearTargetPositionTransformation3f;
+import com.destrostudios.cardgui.transformations.LinearTargetRotationTransformation;
 import com.destrostudios.cardgui.transformations.TargetedTransformation;
 import com.destrostudios.cardgui.transformations.speeds.TimeBasedPositionTransformationSpeed3f;
 import com.destrostudios.cardgui.transformations.speeds.TimeBasedRotationTransformationSpeed;
@@ -19,11 +19,11 @@ public abstract class SimpleKeyFrameEntryAnimation extends KeyFrameEntryAnimatio
 
     @Override
     protected TargetedTransformation<Vector3f> createFinalPositionTransformation(Vector3f defaultTargetPosition) {
-        return new SimpleTargetPositionTransformation3f(defaultTargetPosition, new TimeBasedPositionTransformationSpeed3f(finalTransformationDuration));
+        return new LinearTargetPositionTransformation3f(defaultTargetPosition, new TimeBasedPositionTransformationSpeed3f(finalTransformationDuration));
     }
 
     @Override
     protected TargetedTransformation<Quaternion> createFinalRotationTransformation(Quaternion defaultTargetRotation) {
-        return new SimpleTargetRotationTransformation(defaultTargetRotation, new TimeBasedRotationTransformationSpeed(finalTransformationDuration));
+        return new LinearTargetRotationTransformation(defaultTargetRotation, new TimeBasedRotationTransformationSpeed(finalTransformationDuration));
     }
 }

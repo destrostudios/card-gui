@@ -2,10 +2,12 @@ package com.destrostudios.cardgui.transformations.handlers;
 
 import com.destrostudios.cardgui.transformations.TargetedTransformation;
 
+import java.util.function.Supplier;
+
 public abstract class TargetedTransformationHandler<ValueType> extends StatePreservingTransformationHandler<ValueType, TargetedTransformation<ValueType>> {
 
-    public TargetedTransformationHandler(ValueType value) {
-        super(value);
+    public TargetedTransformationHandler(ValueType value, Supplier<TargetedTransformation<ValueType>> defaultTransformationProvider) {
+        super(value, defaultTransformationProvider);
     }
     private boolean finishNextFrame;
 

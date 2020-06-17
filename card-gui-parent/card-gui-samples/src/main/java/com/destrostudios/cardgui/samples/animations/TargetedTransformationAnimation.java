@@ -1,4 +1,4 @@
-package com.destrostudios.cardgui.samples.animations.keyframes;
+package com.destrostudios.cardgui.samples.animations;
 
 import com.destrostudios.cardgui.Animation;
 import com.destrostudios.cardgui.TransformedBoardObject;

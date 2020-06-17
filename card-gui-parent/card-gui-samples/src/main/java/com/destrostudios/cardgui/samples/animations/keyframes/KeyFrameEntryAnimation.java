@@ -4,6 +4,7 @@ import com.destrostudios.cardgui.Animation;
 import com.destrostudios.cardgui.TransformedBoardObject;
 import com.destrostudios.cardgui.animations.ResetFixedTransformAnimation;
 import com.destrostudios.cardgui.animations.StagedAnimation;
+import com.destrostudios.cardgui.samples.animations.TargetedTransformationAnimation;
 import com.destrostudios.cardgui.transformations.TargetedTransformation;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;

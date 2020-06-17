@@ -76,7 +76,7 @@ public class SimpleTargetArrowMesh extends Mesh {
 
         float paraboleOffsetX = (resolution / -2f);
         float paraboleOffsetY = arcHeight;
-        float paraboleFactor = ((-4f * arcHeight) / (resolution * resolution));
+        float paraboleFactor = ((-4 * arcHeight) / (resolution * resolution));
 
         float x = 0;
         float lastY = 0;

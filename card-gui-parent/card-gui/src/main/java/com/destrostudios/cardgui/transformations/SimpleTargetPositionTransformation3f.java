@@ -1,22 +1,12 @@
 package com.destrostudios.cardgui.transformations;
 
-import com.destrostudios.cardgui.FloatInterpolate;
 import com.destrostudios.cardgui.JMonkeyUtil;
-import com.destrostudios.cardgui.transformations.speeds.TimeBasedPositionTransformationSpeed3f;
 import com.jme3.math.Vector3f;
 
-public class SimpleTargetPositionTransformation3f extends SimpleTargetedTransformation<Vector3f> {
+public abstract class SimpleTargetPositionTransformation3f extends SimpleTargetedTransformation<Vector3f> {
 
-    public SimpleTargetPositionTransformation3f() {
-        this(new Vector3f());
-    }
-
-    public SimpleTargetPositionTransformation3f(Vector3f targetPosition) {
-        this(targetPosition, new TimeBasedPositionTransformationSpeed3f(1.5f));
-    }
-
-    public SimpleTargetPositionTransformation3f(Vector3f targetPosition, TransformationSpeed<Vector3f> transformationSpeed) {
-        super(new Vector3f(), targetPosition, transformationSpeed);
+    public SimpleTargetPositionTransformation3f(Vector3f value, Vector3f targetValue, TransformationSpeed<Vector3f> transformationSpeed) {
+        super(value, targetValue, transformationSpeed);
     }
 
     @Override
@@ -25,17 +15,7 @@ public class SimpleTargetPositionTransformation3f extends SimpleTargetedTransfor
     }
 
     @Override
-    protected Vector3f getNewValue(Vector3f currentValue, Vector3f targetValue, float speed, float lastTimePerFrame) {
-        return FloatInterpolate.get(currentValue, targetValue, speed, lastTimePerFrame);
-    }
-
-    @Override
     protected boolean isValueEquals(Vector3f value1, Vector3f value2) {
         return value1.distanceSquared(value2) < JMonkeyUtil.FLT_EPSILON_SQUARED;
-    }
-
-    @Override
-    public SimpleTargetPositionTransformation3f clone() {
-        return new SimpleTargetPositionTransformation3f(targetValue.clone(), transformationSpeed.clone());
     }
 }

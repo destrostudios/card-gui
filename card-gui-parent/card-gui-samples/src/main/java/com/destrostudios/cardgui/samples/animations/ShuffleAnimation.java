@@ -21,25 +21,25 @@ public class ShuffleAnimation extends StagedAnimation {
 
     public ShuffleAnimation(Collection<? extends TransformedBoardObject> transformedBoardObjects, Application application) {
         this.stages = new Animation[] {
-            new FixedTransformAnimation<SimpleTargetPositionTransformation3f, SimpleTargetRotationTransformation>(transformedBoardObjects, true) {
+            new FixedTransformAnimation<LinearTargetPositionTransformation3f, LinearTargetRotationTransformation>(transformedBoardObjects, true) {
 
                 @Override
-                protected SimpleTargetPositionTransformation3f createPositionTransform() {
-                    return new SimpleTargetPositionTransformation3f(new Vector3f(), new TimeBasedPositionTransformationSpeed3f(1));
+                protected LinearTargetPositionTransformation3f createPositionTransform() {
+                    return new LinearTargetPositionTransformation3f(new Vector3f(), new TimeBasedPositionTransformationSpeed3f(1));
                 }
 
                 @Override
-                protected void updatePositionTransform(int index, TransformedBoardObject transformedBoardObject, SimpleTargetPositionTransformation3f positionTransformation) {
+                protected void updatePositionTransform(int index, TransformedBoardObject transformedBoardObject, LinearTargetPositionTransformation3f positionTransformation) {
                     positionTransformation.setTargetValue(getTargetPosition(), false);
                 }
 
                 @Override
-                protected SimpleTargetRotationTransformation createRotationTransform() {
-                    return new SimpleTargetRotationTransformation(new Quaternion(), new TimeBasedRotationTransformationSpeed(1));
+                protected LinearTargetRotationTransformation createRotationTransform() {
+                    return new LinearTargetRotationTransformation(new Quaternion(), new TimeBasedRotationTransformationSpeed(1));
                 }
 
                 @Override
-                protected void updateRotationTransform(int index, TransformedBoardObject transformedBoardObject, SimpleTargetRotationTransformation rotationTransformation) {
+                protected void updateRotationTransform(int index, TransformedBoardObject transformedBoardObject, LinearTargetRotationTransformation rotationTransformation) {
                     Quaternion targetRotation = application.getCamera().getRotation().clone();
                     TempVars vars = TempVars.get();
                     targetRotation.multLocal(vars.quat1.fromAngles(-FastMath.HALF_PI, 0, FastMath.PI));
@@ -48,15 +48,15 @@ public class ShuffleAnimation extends StagedAnimation {
                     rotationTransformation.setTargetValue(targetRotation, false);
                 }
             },
-            new FixedTransformAnimation<SimpleTargetPositionTransformation3f, SimpleTargetRotationTransformation>(transformedBoardObjects, true) {
+            new FixedTransformAnimation<LinearTargetPositionTransformation3f, LinearTargetRotationTransformation>(transformedBoardObjects, true) {
 
                 @Override
-                protected SimpleTargetPositionTransformation3f createPositionTransform() {
-                    return new SimpleTargetPositionTransformation3f(new Vector3f(), new TimeBasedPositionTransformationSpeed3f(0.5f));
+                protected LinearTargetPositionTransformation3f createPositionTransform() {
+                    return new LinearTargetPositionTransformation3f(new Vector3f(), new TimeBasedPositionTransformationSpeed3f(0.5f));
                 }
 
                 @Override
-                protected void updatePositionTransform(int index, TransformedBoardObject transformedBoardObject, SimpleTargetPositionTransformation3f positionTransformation) {
+                protected void updatePositionTransform(int index, TransformedBoardObject transformedBoardObject, LinearTargetPositionTransformation3f positionTransformation) {
                     Vector3f targetPosition = getTargetPosition();
                     float maximumX = 0.5f;
                     float cardsPerHalf = (transformedBoardObjects.size() / 2f);
@@ -68,12 +68,12 @@ public class ShuffleAnimation extends StagedAnimation {
                 }
 
                 @Override
-                protected SimpleTargetRotationTransformation createRotationTransform() {
+                protected LinearTargetRotationTransformation createRotationTransform() {
                     return null;
                 }
 
                 @Override
-                protected void updateRotationTransform(int index, TransformedBoardObject transformedBoardObject, SimpleTargetRotationTransformation rotationTransformation) {
+                protected void updateRotationTransform(int index, TransformedBoardObject transformedBoardObject, LinearTargetRotationTransformation rotationTransformation) {
 
                 }
             },

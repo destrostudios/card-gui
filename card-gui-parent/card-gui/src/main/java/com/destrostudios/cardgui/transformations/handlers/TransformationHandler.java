@@ -12,8 +12,9 @@ import java.util.function.Supplier;
 
 public abstract class TransformationHandler<ValueType, TransformationType extends Transformation<ValueType>> implements ValueSetter<ValueType>, ValueCompositor<ValueType>, GameLoopListener {
 
-    public TransformationHandler(ValueType value) {
+    public TransformationHandler(ValueType value, Supplier<TransformationType> defaultTransformationProvider) {
         this.currentValue = value;
+        this.defaultTransformationProvider = defaultTransformationProvider;
     }
     private ValueType currentValue;
     protected TransformationType transformation;

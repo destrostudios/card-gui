@@ -1,8 +1,8 @@
 package com.destrostudios.cardgui.samples.animations.keyframes;
 
 import com.destrostudios.cardgui.transformations.ConstantButTargetedTransformation;
-import com.destrostudios.cardgui.transformations.SimpleTargetPositionTransformation3f;
-import com.destrostudios.cardgui.transformations.SimpleTargetRotationTransformation;
+import com.destrostudios.cardgui.transformations.LinearTargetPositionTransformation3f;
+import com.destrostudios.cardgui.transformations.LinearTargetRotationTransformation;
 import com.destrostudios.cardgui.transformations.speeds.TimeBasedPositionTransformationSpeed3f;
 import com.destrostudios.cardgui.transformations.speeds.TimeBasedRotationTransformationSpeed;
 import com.jme3.math.Quaternion;
@@ -17,8 +17,8 @@ public class TransformationKeyFrameFactory {
     }
 
     public static TransformationKeyFrame createSimpleKeyFrame(Vector3f position, Quaternion rotation, float duration) {
-        SimpleTargetPositionTransformation3f positionTransformation = new SimpleTargetPositionTransformation3f(position, new TimeBasedPositionTransformationSpeed3f(duration));
-        SimpleTargetRotationTransformation rotationTransformation = new SimpleTargetRotationTransformation(rotation, new TimeBasedRotationTransformationSpeed(duration));
+        LinearTargetPositionTransformation3f positionTransformation = new LinearTargetPositionTransformation3f(position, new TimeBasedPositionTransformationSpeed3f(duration));
+        LinearTargetRotationTransformation rotationTransformation = new LinearTargetRotationTransformation(rotation, new TimeBasedRotationTransformationSpeed(duration));
         return new TransformationKeyFrame(positionTransformation, rotationTransformation);
     }
 }

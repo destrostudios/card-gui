@@ -10,6 +10,7 @@ import com.destrostudios.cardgui.samples.boardobjects.targetarrow.*;
 import com.destrostudios.cardgui.samples.visualization.*;
 import com.destrostudios.cardgui.TargetSnapMode;
 import com.destrostudios.cardgui.test.game.*;
+import com.destrostudios.cardgui.transformations.*;
 import com.destrostudios.cardgui.zones.*;
 import com.destrostudios.cardgui.test.files.FileAssets;
 import com.jme3.app.SimpleApplication;
@@ -25,6 +26,8 @@ import com.jme3.system.AppSettings;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CardguiTestApplication extends SimpleApplication implements ActionListener {
 
@@ -45,6 +48,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
     private PlayerZones[] playerZones;
     private HashMap<MyCard, Card<MyCardModel>> visualCards = new HashMap<>();
     private HashMap<Card<MyCardModel>, MyCard> gameCards = new HashMap<>();
+    private LinkedList<TransformedBoardObject> removeAfterReachingTargetObjects = new LinkedList<>();
 
     @Override
     public void simpleInitApp() {
@@ -129,6 +133,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                         .width(0.25f)
                         .build()
         ));
+        board.registerVisualizer_Class(MyColoredSphere.class, new MyColoredSphereVisualizer());
 
         int playersCount = game.getPlayers().length;
         playerZones = new PlayerZones[playersCount];
@@ -204,6 +209,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                         MyCard targetMyCard = gameCards.get(targetCard);
                         myCard.setDamaged(true);
                         targetMyCard.setDamaged(true);
+                        shootSphere((TransformedBoardObject) source, (TransformedBoardObject) target);
                         updateBoard();
                     }
                 }
@@ -246,6 +252,31 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
             gameCards.put(card, myCard);
         }
         return card;
+    }
+
+    private void shootSphere(TransformedBoardObject source, TransformedBoardObject target) {
+        MyColoredSphere sphere = new MyColoredSphere();
+        sphere.getModel().setColorRGBA(ColorRGBA.randomColor());
+        sphere.position().setTransformation(new ConstantButTargetedTransformation<>(source.position().getCurrentValue()));
+        board.register(sphere);
+        board.playAnimation(new TargetedArcAnimation(sphere, target, 5, 0.75f));
+        removeAfterReachingTargetObjects.add(sphere);
+    }
+
+    @Override
+    public void simpleUpdate(float tpf) {
+        super.simpleUpdate(tpf);
+        checkObjectsToBeRemoved();
+    }
+
+    private void checkObjectsToBeRemoved() {
+        List<TransformedBoardObject> objectsToRemove = removeAfterReachingTargetObjects.stream()
+                .filter(TransformedBoardObject::hasReachedTargetTransform)
+                .collect(Collectors.toList());
+        for (TransformedBoardObject transformedBoardObject : objectsToRemove) {
+            board.unregister(transformedBoardObject);
+        }
+        removeAfterReachingTargetObjects.removeAll(objectsToRemove);
     }
 
     @Override

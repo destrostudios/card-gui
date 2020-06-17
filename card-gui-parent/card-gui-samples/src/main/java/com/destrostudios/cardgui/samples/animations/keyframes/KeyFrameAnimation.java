@@ -3,6 +3,7 @@ package com.destrostudios.cardgui.samples.animations.keyframes;
 import com.destrostudios.cardgui.Animation;
 import com.destrostudios.cardgui.TransformedBoardObject;
 import com.destrostudios.cardgui.animations.StagedAnimation;
+import com.destrostudios.cardgui.samples.animations.TargetedTransformationAnimation;
 
 public class KeyFrameAnimation extends StagedAnimation {
 

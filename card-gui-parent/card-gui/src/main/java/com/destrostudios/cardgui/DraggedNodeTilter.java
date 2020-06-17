@@ -1,6 +1,6 @@
 package com.destrostudios.cardgui;
 
-import com.destrostudios.cardgui.transformations.SimpleTargetPositionTransformation2f;
+import com.destrostudios.cardgui.transformations.LinearTargetPositionTransformation2f;
 import com.destrostudios.cardgui.transformations.SimpleTargetedTransformation;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -10,7 +10,7 @@ public class DraggedNodeTilter {
 
     public DraggedNodeTilter(BoardSettings settings) {
         this.settings = settings;
-        cursorVelocityTransformation = new SimpleTargetPositionTransformation2f(new Vector2f(), settings.getDragTiltCursorVelocityTransformationSpeed());
+        cursorVelocityTransformation = new LinearTargetPositionTransformation2f(new Vector2f(), settings.getDragTiltCursorVelocityTransformationSpeed());
     }
     private BoardSettings settings;
     private float timeSinceLastUpdate;

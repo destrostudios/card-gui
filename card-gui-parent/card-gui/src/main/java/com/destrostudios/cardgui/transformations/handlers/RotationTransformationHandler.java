@@ -1,5 +1,6 @@
 package com.destrostudios.cardgui.transformations.handlers;
 
+import com.destrostudios.cardgui.transformations.ConstantButTargetedTransformation;
 import com.destrostudios.cardgui.transformations.StatefulTransformation;
 import com.destrostudios.cardgui.transformations.relative.ConditionalRelativeRotationTransformation;
 import com.jme3.math.Quaternion;
@@ -9,7 +10,7 @@ import java.util.function.BooleanSupplier;
 public class RotationTransformationHandler extends TargetedTransformationHandler<Quaternion> {
 
     public RotationTransformationHandler() {
-        super(new Quaternion());
+        super(new Quaternion(), () -> new ConstantButTargetedTransformation<>(new Quaternion()));
     }
 
     public void addRelativeTransformation(StatefulTransformation<Quaternion> transformation, BooleanSupplier condition) {

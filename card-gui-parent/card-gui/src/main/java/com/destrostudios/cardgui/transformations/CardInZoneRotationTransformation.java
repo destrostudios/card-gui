@@ -3,7 +3,7 @@ package com.destrostudios.cardgui.transformations;
 import com.destrostudios.cardgui.ZonePosition;
 import com.jme3.math.Quaternion;
 
-public class CardInZoneRotationTransformation extends SimpleTargetRotationTransformation {
+public class CardInZoneRotationTransformation extends LinearTargetRotationTransformation {
 
     public CardInZoneRotationTransformation(ZonePosition zonePosition) {
         super(new Quaternion());

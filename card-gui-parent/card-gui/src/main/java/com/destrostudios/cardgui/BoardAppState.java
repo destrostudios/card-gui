@@ -250,8 +250,8 @@ public class BoardAppState extends BaseAppState implements ActionListener {
 
     private void inspect(TransformedBoardObject transformedBoardObject, Vector3f cursorPositionWorld) {
         Quaternion cameraFacingRotation = getCameraFacingRotation();
-        transformedBoardObject.position().setTransformation(new SimpleTargetPositionTransformation3f(cursorPositionWorld, settings.getInspectionPositionTransformationSpeed().get()));
-        transformedBoardObject.rotation().setTransformation(new SimpleTargetRotationTransformation(cameraFacingRotation, settings.getInspectionRotationTransformationSpeed().get()));
+        transformedBoardObject.position().setTransformation(new LinearTargetPositionTransformation3f(cursorPositionWorld, settings.getInspectionPositionTransformationSpeed().get()));
+        transformedBoardObject.rotation().setTransformation(new LinearTargetRotationTransformation(cameraFacingRotation, settings.getInspectionRotationTransformationSpeed().get()));
         inspectedBoardObject = transformedBoardObject;
         updateAnnotatedModelProperties_IsBoardObjectInspected();
     }

@@ -21,8 +21,8 @@ public class MyCardVisualizer extends CustomAttachmentVisualizer<Card<MyCardMode
     @Override
     protected void updateVisualizationObject(MyCardVisualization visualization, Card<MyCardModel> card, AssetManager assetManager) {
         visualization.updateCardFront(card.getModel());
-        if (card.getModel().isHovered()) {
-            visualization.setGlow(ColorRGBA.White);
+        if (card.getModel().isInspected()) {
+            visualization.setGlow(ColorRGBA.Blue);
         } else if (card.getModel().isDamaged()) {
             visualization.setGlow(ColorRGBA.randomColor());
         } else {

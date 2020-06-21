@@ -14,7 +14,11 @@ public class CenteredIntervalZone extends BoundedZone {
     }
 
     public CenteredIntervalZone(Vector3f position, Quaternion rotation, Vector3f interval) {
-        super(position, rotation);
+        this(position, rotation, new Vector3f(1, 1, 1), interval);
+    }
+
+    public CenteredIntervalZone(Vector3f position, Quaternion rotation, Vector3f scale, Vector3f interval) {
+        super(position, rotation, scale);
         this.interval = interval;
     }
     private Vector3f interval;
@@ -27,7 +31,7 @@ public class CenteredIntervalZone extends BoundedZone {
     }
 
     @Override
-    public Vector3f getLocalPosition(Vector3f zonePosition) {
-        return (zonePosition.subtract(halfBounds)).mult(interval);
+    protected Vector3f getLocalCardPosition(Vector3f zonePosition) {
+        return zonePosition.subtract(halfBounds).multLocal(interval);
     }
 }

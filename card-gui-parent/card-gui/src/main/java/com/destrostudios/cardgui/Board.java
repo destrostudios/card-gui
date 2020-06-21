@@ -2,6 +2,7 @@ package com.destrostudios.cardgui;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -105,5 +106,18 @@ public class Board implements GameLoopListener {
                 .findAny()
                 .map(entry -> (BoardObjectVisualizer<T>) entry.getValue())
                 .orElse(null);
+    }
+
+    public List<Card> getCardsInZone(CardZone cardZone) {
+        return boardObjects.values().stream()
+                .filter(boardObject -> {
+                    if (boardObject instanceof Card) {
+                        Card card = (Card) boardObject;
+                        return (card.getZonePosition().getZone() == cardZone);
+                    }
+                    return false;
+                })
+                .map(boardObject -> (Card) boardObject)
+                .collect(Collectors.toList());
     }
 }

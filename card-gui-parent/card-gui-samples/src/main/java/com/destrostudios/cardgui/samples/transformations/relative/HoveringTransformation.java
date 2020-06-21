@@ -1,9 +1,9 @@
 package com.destrostudios.cardgui.samples.transformations.relative;
 
-import com.destrostudios.cardgui.transformations.ConstantPositionTransformation;
+import com.destrostudios.cardgui.transformations.ConstantVectorTransformation3f;
 import com.jme3.math.FastMath;
 
-public class HoveringTransformation extends ConstantPositionTransformation {
+public class HoveringTransformation extends ConstantVectorTransformation3f {
 
     public HoveringTransformation(float height, float timePerCycle) {
         this.height = height;

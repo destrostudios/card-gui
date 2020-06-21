@@ -40,7 +40,7 @@ public class FlipEntryAnimation extends AlreadyEndingKeyFrameEntryAnimation {
             if (i == 0) {
                 keyFrames[i] = TransformationKeyFrameFactory.createConstantKeyFrame(position.clone(), targetRotation.clone());
             } else {
-                keyFrames[i] = TransformationKeyFrameFactory.createSimpleKeyFrame(position.clone(), targetRotation.clone(), (duration / eighthRotations));
+                keyFrames[i] = TransformationKeyFrameFactory.createLinearKeyFrame(position.clone(), targetRotation.clone(), (duration / eighthRotations));
             }
         }
 

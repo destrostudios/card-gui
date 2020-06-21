@@ -37,7 +37,7 @@ public class WhirlpoolEntryAnimation extends AlreadyEndingKeyFrameEntryAnimation
             if (i == 0) {
                 keyFrames[i] = TransformationKeyFrameFactory.createConstantKeyFrame(targetPosition.clone(), targetRotation.clone());
             } else {
-                keyFrames[i] = TransformationKeyFrameFactory.createSimpleKeyFrame(targetPosition.clone(), targetRotation.clone(), (duration / rotationParts));
+                keyFrames[i] = TransformationKeyFrameFactory.createLinearKeyFrame(targetPosition.clone(), targetRotation.clone(), (duration / rotationParts));
             }
         }
         vars.release();

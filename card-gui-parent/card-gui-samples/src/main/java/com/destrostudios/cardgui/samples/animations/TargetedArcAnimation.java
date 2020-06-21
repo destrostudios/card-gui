@@ -2,7 +2,7 @@ package com.destrostudios.cardgui.samples.animations;
 
 import com.destrostudios.cardgui.Animation;
 import com.destrostudios.cardgui.TransformedBoardObject;
-import com.destrostudios.cardgui.samples.transformations.ArcTargetPositionTransformation3f;
+import com.destrostudios.cardgui.samples.transformations.ArcTargetVectorTransformation;
 import com.jme3.math.Vector3f;
 
 public class TargetedArcAnimation extends Animation {
@@ -34,7 +34,7 @@ public class TargetedArcAnimation extends Animation {
             setArcTransformation = true;
         }
         if (setArcTransformation) {
-            transformedBoardObject.position().setTransformation(new ArcTargetPositionTransformation3f(newTargetValue.clone(), arcHeight, duration));
+            transformedBoardObject.position().setTransformation(new ArcTargetVectorTransformation(newTargetValue.clone(), arcHeight, duration));
             setArcTransformation = false;
         }
     }

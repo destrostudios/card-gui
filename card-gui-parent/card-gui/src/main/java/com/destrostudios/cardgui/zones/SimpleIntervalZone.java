@@ -15,13 +15,17 @@ public class SimpleIntervalZone extends CardZone {
     }
 
     public SimpleIntervalZone(Vector3f position, Quaternion rotation, Vector3f interval) {
-        super(position, rotation);
+        this(position, rotation, new Vector3f(1, 1, 1), interval);
+    }
+
+    public SimpleIntervalZone(Vector3f position, Quaternion rotation, Vector3f scale, Vector3f interval) {
+        super(position, rotation, scale);
         this.interval = interval;
     }
-    private Vector3f interval;
+    protected Vector3f interval;
 
     @Override
-    public Vector3f getLocalPosition(Vector3f zonePosition) {
+    protected Vector3f getLocalCardPosition(Vector3f zonePosition) {
         return zonePosition.mult(interval);
     }
 }

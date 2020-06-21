@@ -2,9 +2,9 @@ package com.destrostudios.cardgui.transformations.speeds;
 
 import com.jme3.math.Vector2f;
 
-public class TimeBasedPositionTransformationSpeed2f extends TimeBasedTransformationSpeed<Vector2f> {
+public class TimeBasedVectorTransformationSpeed2f extends TimeBasedTransformationSpeed<Vector2f> {
 
-    public TimeBasedPositionTransformationSpeed2f(float duration) {
+    public TimeBasedVectorTransformationSpeed2f(float duration) {
         super(duration);
     }
 
@@ -15,7 +15,7 @@ public class TimeBasedPositionTransformationSpeed2f extends TimeBasedTransformat
     }
 
     @Override
-    public TimeBasedPositionTransformationSpeed2f clone() {
-        return new TimeBasedPositionTransformationSpeed2f(duration);
+    public TimeBasedVectorTransformationSpeed2f clone() {
+        return new TimeBasedVectorTransformationSpeed2f(duration);
     }
 }

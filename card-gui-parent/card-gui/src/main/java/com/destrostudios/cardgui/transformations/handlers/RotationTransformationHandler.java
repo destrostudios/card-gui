@@ -6,11 +6,12 @@ import com.destrostudios.cardgui.transformations.relative.ConditionalRelativeRot
 import com.jme3.math.Quaternion;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 public class RotationTransformationHandler extends TargetedTransformationHandler<Quaternion> {
 
-    public RotationTransformationHandler() {
-        super(new Quaternion(), () -> new ConstantButTargetedTransformation<>(new Quaternion()));
+    public RotationTransformationHandler(Supplier<Quaternion> initialValueSupplier) {
+        super(initialValueSupplier.get(), () -> new ConstantButTargetedTransformation<>(initialValueSupplier.get()));
     }
 
     public void addRelativeTransformation(StatefulTransformation<Quaternion> transformation, BooleanSupplier condition) {

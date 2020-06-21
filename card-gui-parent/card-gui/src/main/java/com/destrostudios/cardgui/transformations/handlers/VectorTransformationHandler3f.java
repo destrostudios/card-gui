@@ -2,19 +2,20 @@ package com.destrostudios.cardgui.transformations.handlers;
 
 import com.destrostudios.cardgui.transformations.ConstantButTargetedTransformation;
 import com.destrostudios.cardgui.transformations.StatefulTransformation;
-import com.destrostudios.cardgui.transformations.relative.ConditionalRelativePositionTransformation;
+import com.destrostudios.cardgui.transformations.relative.ConditionalRelativeVectorTransformation3f;
 import com.jme3.math.Vector3f;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
-public class PositionTransformationHandler extends TargetedTransformationHandler<Vector3f> {
+public class VectorTransformationHandler3f extends TargetedTransformationHandler<Vector3f> {
 
-    public PositionTransformationHandler() {
-        super(new Vector3f(), () -> new ConstantButTargetedTransformation<>(new Vector3f()));
+    public VectorTransformationHandler3f(Supplier<Vector3f> initialValueSupplier) {
+        super(initialValueSupplier.get(), () -> new ConstantButTargetedTransformation<>(initialValueSupplier.get()));
     }
 
     public void addRelativeTransformation(StatefulTransformation<Vector3f> transformation, BooleanSupplier condition) {
-        addRelativeTransformation(new ConditionalRelativePositionTransformation(transformation, condition));
+        addRelativeTransformation(new ConditionalRelativeVectorTransformation3f(transformation, condition));
     }
 
     @Override

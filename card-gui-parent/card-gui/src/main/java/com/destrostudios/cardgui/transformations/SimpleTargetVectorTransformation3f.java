@@ -3,9 +3,9 @@ package com.destrostudios.cardgui.transformations;
 import com.destrostudios.cardgui.JMonkeyUtil;
 import com.jme3.math.Vector3f;
 
-public abstract class SimpleTargetPositionTransformation3f extends SimpleTargetedTransformation<Vector3f> {
+public abstract class SimpleTargetVectorTransformation3f extends SimpleTargetedTransformation<Vector3f> {
 
-    public SimpleTargetPositionTransformation3f(Vector3f value, Vector3f targetValue, TransformationSpeed<Vector3f> transformationSpeed) {
+    public SimpleTargetVectorTransformation3f(Vector3f value, Vector3f targetValue, TransformationSpeed<Vector3f> transformationSpeed) {
         super(value, targetValue, transformationSpeed);
     }
 

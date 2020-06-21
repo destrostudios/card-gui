@@ -33,11 +33,11 @@ public class SlamEntryAnimation extends SimpleKeyFrameEntryAnimation {
         TempVars vars = TempVars.get();
         Quaternion rotation = defaultTargetRotation.mult(vars.quat1.fromAngles(0, 0, (FastMath.QUARTER_PI / 2)));
         vars.release();
-        keyFrames[1] = TransformationKeyFrameFactory.createSimpleKeyFrame(position, rotation, (duration / 3));
+        keyFrames[1] = TransformationKeyFrameFactory.createLinearKeyFrame(position, rotation, (duration / 3));
 
         position = defaultTargetPosition.add(0, 1, 0);
         rotation = defaultTargetRotation;
-        keyFrames[2] = TransformationKeyFrameFactory.createSimpleKeyFrame(position, rotation, (duration / 3));
+        keyFrames[2] = TransformationKeyFrameFactory.createLinearKeyFrame(position, rotation, (duration / 3));
 
         return keyFrames;
     }

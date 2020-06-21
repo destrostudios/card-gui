@@ -21,15 +21,15 @@ public class ShuffleAnimation extends StagedAnimation {
 
     public ShuffleAnimation(Collection<? extends TransformedBoardObject> transformedBoardObjects, Application application) {
         this.stages = new Animation[] {
-            new FixedTransformAnimation<LinearTargetPositionTransformation3f, LinearTargetRotationTransformation>(transformedBoardObjects, true) {
+            new FixedTransformAnimation<LinearTargetVectorTransformation3F, LinearTargetRotationTransformation>(transformedBoardObjects, true) {
 
                 @Override
-                protected LinearTargetPositionTransformation3f createPositionTransform() {
-                    return new LinearTargetPositionTransformation3f(new Vector3f(), new TimeBasedPositionTransformationSpeed3f(1));
+                protected LinearTargetVectorTransformation3F createPositionTransform() {
+                    return new LinearTargetVectorTransformation3F(new Vector3f(), new TimeBasedVectorTransformationSpeed3f(1));
                 }
 
                 @Override
-                protected void updatePositionTransform(int index, TransformedBoardObject transformedBoardObject, LinearTargetPositionTransformation3f positionTransformation) {
+                protected void updatePositionTransform(int index, TransformedBoardObject transformedBoardObject, LinearTargetVectorTransformation3F positionTransformation) {
                     positionTransformation.setTargetValue(getTargetPosition(), false);
                 }
 
@@ -48,15 +48,15 @@ public class ShuffleAnimation extends StagedAnimation {
                     rotationTransformation.setTargetValue(targetRotation, false);
                 }
             },
-            new FixedTransformAnimation<LinearTargetPositionTransformation3f, LinearTargetRotationTransformation>(transformedBoardObjects, true) {
+            new FixedTransformAnimation<LinearTargetVectorTransformation3F, LinearTargetRotationTransformation>(transformedBoardObjects, true) {
 
                 @Override
-                protected LinearTargetPositionTransformation3f createPositionTransform() {
-                    return new LinearTargetPositionTransformation3f(new Vector3f(), new TimeBasedPositionTransformationSpeed3f(0.5f));
+                protected LinearTargetVectorTransformation3F createPositionTransform() {
+                    return new LinearTargetVectorTransformation3F(new Vector3f(), new TimeBasedVectorTransformationSpeed3f(0.5f));
                 }
 
                 @Override
-                protected void updatePositionTransform(int index, TransformedBoardObject transformedBoardObject, LinearTargetPositionTransformation3f positionTransformation) {
+                protected void updatePositionTransform(int index, TransformedBoardObject transformedBoardObject, LinearTargetVectorTransformation3F positionTransformation) {
                     Vector3f targetPosition = getTargetPosition();
                     float maximumX = 0.5f;
                     float cardsPerHalf = (transformedBoardObjects.size() / 2f);

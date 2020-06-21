@@ -3,9 +3,9 @@ package com.destrostudios.cardgui.transformations;
 import com.destrostudios.cardgui.ZonePosition;
 import com.jme3.math.Vector3f;
 
-public class CardInZonePositionTransformation extends LinearTargetVectorTransformation3F {
+public class CardInZoneScaleTransformation extends LinearTargetVectorTransformation3F {
 
-    public CardInZonePositionTransformation(ZonePosition zonePosition) {
+    public CardInZoneScaleTransformation(ZonePosition zonePosition) {
         super(new Vector3f());
         this.zonePosition = zonePosition;
     }
@@ -13,7 +13,7 @@ public class CardInZonePositionTransformation extends LinearTargetVectorTransfor
 
     @Override
     public void update(float lastTimePerFrame) {
-        setTargetValue(zonePosition.getDefaultTargetPosition(), true);
+        setTargetValue(zonePosition.getDefaultTargetScale(), true);
         super.update(lastTimePerFrame);
     }
 }

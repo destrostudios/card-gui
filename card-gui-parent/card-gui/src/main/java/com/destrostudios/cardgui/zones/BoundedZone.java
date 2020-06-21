@@ -14,7 +14,11 @@ import java.util.Iterator;
 public abstract class BoundedZone extends CardZone {
 
     public BoundedZone(Vector3f position, Quaternion rotation) {
-        super(position, rotation);
+        this(position, rotation, new Vector3f(1, 1, 1));
+    }
+
+    public BoundedZone(Vector3f position, Quaternion rotation, Vector3f scale) {
+        super(position, rotation, scale);
     }
     protected Vector3f minimumPosition;
     protected Vector3f maximumPosition;

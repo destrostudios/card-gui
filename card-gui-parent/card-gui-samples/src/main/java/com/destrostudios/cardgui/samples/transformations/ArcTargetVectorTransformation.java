@@ -1,14 +1,14 @@
 package com.destrostudios.cardgui.samples.transformations;
 
 import com.destrostudios.cardgui.FloatInterpolate;
-import com.destrostudios.cardgui.transformations.SimpleTargetPositionTransformation3f;
-import com.destrostudios.cardgui.transformations.speeds.TimeBasedPositionTransformationSpeed3f;
+import com.destrostudios.cardgui.transformations.SimpleTargetVectorTransformation3f;
+import com.destrostudios.cardgui.transformations.speeds.TimeBasedVectorTransformationSpeed3f;
 import com.jme3.math.Vector3f;
 
-public class ArcTargetPositionTransformation3f extends SimpleTargetPositionTransformation3f {
+public class ArcTargetVectorTransformation extends SimpleTargetVectorTransformation3f {
 
-    public ArcTargetPositionTransformation3f(Vector3f targetPosition, float arcHeight, float duration) {
-        super(new Vector3f(), targetPosition, new TimeBasedPositionTransformationSpeed3f(duration));
+    public ArcTargetVectorTransformation(Vector3f targetPosition, float arcHeight, float duration) {
+        super(new Vector3f(), targetPosition, new TimeBasedVectorTransformationSpeed3f(duration));
         this.arcHeight = arcHeight;
         this.duration = duration;
         this.resetArc = true;
@@ -43,7 +43,7 @@ public class ArcTargetPositionTransformation3f extends SimpleTargetPositionTrans
     }
 
     @Override
-    public ArcTargetPositionTransformation3f clone() {
-        return new ArcTargetPositionTransformation3f(targetValue.clone(), arcHeight, duration);
+    public ArcTargetVectorTransformation clone() {
+        return new ArcTargetVectorTransformation(targetValue.clone(), arcHeight, duration);
     }
 }

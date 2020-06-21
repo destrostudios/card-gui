@@ -2,13 +2,13 @@ package com.destrostudios.cardgui.transformations;
 
 import com.jme3.math.Vector3f;
 
-public class ConstantPositionTransformation extends ConstantTransformation<Vector3f> {
+public class ConstantVectorTransformation3f extends ConstantTransformation<Vector3f> {
 
-    public ConstantPositionTransformation() {
+    public ConstantVectorTransformation3f() {
         this(new Vector3f());
     }
 
-    public ConstantPositionTransformation(Vector3f value) {
+    public ConstantVectorTransformation3f(Vector3f value) {
         super(value);
     }
 

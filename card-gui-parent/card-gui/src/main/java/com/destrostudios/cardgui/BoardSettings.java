@@ -1,8 +1,8 @@
 package com.destrostudios.cardgui;
 
 import com.destrostudios.cardgui.transformations.TransformationSpeed;
-import com.destrostudios.cardgui.transformations.speeds.TimeBasedPositionTransformationSpeed2f;
-import com.destrostudios.cardgui.transformations.speeds.TimeBasedPositionTransformationSpeed3f;
+import com.destrostudios.cardgui.transformations.speeds.TimeBasedVectorTransformationSpeed2f;
+import com.destrostudios.cardgui.transformations.speeds.TimeBasedVectorTransformationSpeed3f;
 import com.destrostudios.cardgui.transformations.speeds.TimeBasedRotationTransformationSpeed;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -28,7 +28,7 @@ public class BoardSettings {
     @Builder.Default
     private float dragTiltUpdateInterval = (1f / 60);
     @Builder.Default
-    private TransformationSpeed<Vector2f> dragTiltCursorVelocityTransformationSpeed = new TimeBasedPositionTransformationSpeed2f(0.3f);
+    private TransformationSpeed<Vector2f> dragTiltCursorVelocityTransformationSpeed = new TimeBasedVectorTransformationSpeed2f(0.3f);
     @Builder.Default
     private float dragTiltMaximumCursorSpeed = 600;
     @Builder.Default
@@ -38,8 +38,12 @@ public class BoardSettings {
     @Builder.Default
     private Predicate<TransformedBoardObject> isInspectable = transformedBoardObject -> transformedBoardObject instanceof Card;
     @Builder.Default
-    private Supplier<TransformationSpeed<Vector3f>> inspectionPositionTransformationSpeed = () -> new TimeBasedPositionTransformationSpeed3f(0.3f);
+    private Supplier<TransformationSpeed<Vector3f>> inspectionPositionTransformationSpeed = () -> new TimeBasedVectorTransformationSpeed3f(0.3f);
     @Builder.Default
     private Supplier<TransformationSpeed<Quaternion>> inspectionRotationTransformationSpeed = () -> new TimeBasedRotationTransformationSpeed(0.3f);
+    @Builder.Default
+    private Supplier<TransformationSpeed<Vector3f>> inspectionScaleTransformationSpeed = () -> new TimeBasedVectorTransformationSpeed3f(0.3f);
+    @Builder.Default
+    private Vector3f inspectionScale = new Vector3f(1, 1, 1);
 
 }

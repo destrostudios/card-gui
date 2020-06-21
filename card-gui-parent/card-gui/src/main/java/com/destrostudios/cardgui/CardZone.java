@@ -12,11 +12,16 @@ import java.util.LinkedList;
 public abstract class CardZone extends TransformedBoardObject {
 
     public CardZone(Vector3f position, Quaternion rotation) {
+        this(position, rotation, new Vector3f(1, 1, 1));
+    }
+
+    public CardZone(Vector3f position, Quaternion rotation, Vector3f scale) {
         super(new BoardObjectModel());
         position().setTransformation(new ConstantButTargetedTransformation<>(position));
         rotation().setTransformation(new ConstantButTargetedTransformation<>(rotation));
+        scale().setTransformation(new ConstantButTargetedTransformation<>(scale));
     }
-    private Board board;
+    protected Board board;
     protected LinkedList<Card> cards = new LinkedList<>();
     
     public void addCard(Card card, Vector3f position) {
@@ -35,8 +40,30 @@ public abstract class CardZone extends TransformedBoardObject {
         card.getZonePosition().setPosition(null);
         cards.remove(card);
     }
-    
-    public abstract Vector3f getLocalPosition(Vector3f zonePosition);
+
+    public Vector3f getCardPosition(Vector3f zonePosition) {
+        return position().getCurrentValue().add(getLocalCardPosition(zonePosition));
+    }
+
+    protected Vector3f getLocalCardPosition(Vector3f zonePosition) {
+        return Vector3f.ZERO;
+    }
+
+    public Quaternion getCardRotation(Vector3f zonePosition) {
+        return rotation().getCurrentValue().mult(getLocalCardRotation(zonePosition));
+    }
+
+    protected Quaternion getLocalCardRotation(Vector3f zonePosition) {
+        return Quaternion.IDENTITY;
+    }
+
+    public Vector3f getCardScale(Vector3f zonePosition) {
+        return scale().getCurrentValue().mult(getLocalCardScale(zonePosition));
+    }
+
+    protected Vector3f getLocalCardScale(Vector3f zonePosition) {
+        return Vector3f.UNIT_XYZ;
+    }
 
     public void setBoard(Board board) {
         this.board = board;

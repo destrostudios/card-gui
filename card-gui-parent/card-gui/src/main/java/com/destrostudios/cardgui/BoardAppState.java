@@ -123,6 +123,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
                 TransformedBoardObject transformedBoardObject = (TransformedBoardObject) boardObject;
                 node.setLocalTranslation(transformedBoardObject.position().getCurrentValue());
                 node.setLocalRotation(transformedBoardObject.rotation().getCurrentValue());
+                node.setLocalScale(transformedBoardObject.scale().getCurrentValue());
             }
         }
     }
@@ -250,8 +251,9 @@ public class BoardAppState extends BaseAppState implements ActionListener {
 
     private void inspect(TransformedBoardObject transformedBoardObject, Vector3f cursorPositionWorld) {
         Quaternion cameraFacingRotation = getCameraFacingRotation();
-        transformedBoardObject.position().setTransformation(new LinearTargetPositionTransformation3f(cursorPositionWorld, settings.getInspectionPositionTransformationSpeed().get()));
+        transformedBoardObject.position().setTransformation(new LinearTargetVectorTransformation3F(cursorPositionWorld, settings.getInspectionPositionTransformationSpeed().get()));
         transformedBoardObject.rotation().setTransformation(new LinearTargetRotationTransformation(cameraFacingRotation, settings.getInspectionRotationTransformationSpeed().get()));
+        transformedBoardObject.scale().setTransformation(new LinearTargetVectorTransformation3F(settings.getInspectionScale(), settings.getInspectionScaleTransformationSpeed().get()));
         inspectedBoardObject = transformedBoardObject;
         updateAnnotatedModelProperties_IsBoardObjectInspected();
     }
@@ -312,7 +314,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
 
     private BoardObject getHoveredBoardObject(Predicate<BoardObject> filter) {
         CollisionResults collisionResults = rayCasting.getResults_Cursor(rootNode);
-        for (int i=0;i<collisionResults.size();i++) {
+        for (int i = 0; i < collisionResults.size(); i++) {
             CollisionResult collisionResult = collisionResults.getCollision(i);
             Spatial spatial = collisionResult.getGeometry();
             while (spatial.getParent() != null) {

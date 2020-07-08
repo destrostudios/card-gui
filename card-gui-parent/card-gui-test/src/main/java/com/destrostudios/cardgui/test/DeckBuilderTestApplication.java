@@ -72,12 +72,14 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
         inputManager.addMapping("1", new KeyTrigger(KeyInput.KEY_1));
         inputManager.addMapping("2", new KeyTrigger(KeyInput.KEY_2));
         inputManager.addMapping("3", new KeyTrigger(KeyInput.KEY_3));
-        inputManager.addListener(this, "space", "1", "2", "3");
+        inputManager.addMapping("left", new KeyTrigger(KeyInput.KEY_LEFT));
+        inputManager.addMapping("right", new KeyTrigger(KeyInput.KEY_RIGHT));
+        inputManager.addListener(this, "space", "1", "2", "3", "left", "right");
     }
 
     private void initDeckBuilder() {
         allCardModels = new LinkedList<>();
-        for (int i = 0; i < 112; i++) {
+        for (int i = 0; i < 300; i++) {
             MyCardModel cardModel = new MyCardModel();
             cardModel.setColor(MyCard.Color.values()[(int) (Math.random() * MyCard.Color.values().length)]);
             cardModel.setName((Math.random() < 0.5) ? "Aether Adept" : "Shyvana");
@@ -158,6 +160,14 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
                 deck.put(cardModel, currentAmount + 1);
             }
             deckBuilderAppState.setDeck(deck);
+        } else if ("left".equals(name) && isPressed) {
+            if (deckBuilderAppState.getCollectionPage() > 0) {
+                deckBuilderAppState.goToPreviousCollectionPage();
+            }
+        } else if ("right".equals(name) && isPressed) {
+            if (deckBuilderAppState.getCollectionPage() < (deckBuilderAppState.getCollectionPagesCount() - 1)) {
+                deckBuilderAppState.goToNextColletionPage();
+            }
         }
     }
 }

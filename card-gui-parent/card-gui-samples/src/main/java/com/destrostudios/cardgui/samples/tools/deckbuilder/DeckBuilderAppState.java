@@ -24,6 +24,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
     private DeckBuilderSettings<CardModelType> settings;
     private Board board;
     private BoardAppState boardAppState;
+    private int collectionPage;
     private HashMap<CardModelType, Card<DeckBuilderDeckCardModel<CardModelType>>> deckCards = new HashMap<>();
     private ClickInteractivity clickToAddInteractivity = new ClickInteractivity() {
 
@@ -53,16 +54,38 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         board.registerVisualizer_ZonePosition(zonePosition -> zonePosition.getZone() == settings.getCollectionZone(), settings.getCollectionCardVisualizer());
         board.registerVisualizer_ZonePosition(zonePosition -> zonePosition.getZone() == settings.getDeckZone(), settings.getDeckCardVisualizer());
         boardAppState = new BoardAppState(board, rootNode, settings.getBoardSettings());
-        initCollectionZoneCards();
+        updateCollectionZoneCards();
     }
 
-    private void initCollectionZoneCards() {
+    public int getCollectionPagesCount() {
+        return (int) Math.ceil(((float) settings.getAllCardModels().size()) / getCollectionCardsPerPage());
+    }
+
+    public void goToPreviousCollectionPage() {
+        collectionPage--;
+        updateCollectionZoneCards();
+    }
+
+    public void goToNextColletionPage() {
+        collectionPage++;
+        updateCollectionZoneCards();
+    }
+
+    public void goToCollectionPage(int page) {
+        collectionPage = page;
+        updateCollectionZoneCards();
+    }
+
+    private void updateCollectionZoneCards() {
+        for (Card card : settings.getCollectionZone().getCards()) {
+            board.unregister(card);
+        }
         float offsetX = ((settings.getCollectionCardsPerRow() - 1) / -2f);
         float offsetY = ((settings.getCollectionRowsPerPage() - 1) / -2f);
         int index = 0;
         int x;
         int y;
-        for (CardModelType cardModel : settings.getAllCardModels()) {
+        for (CardModelType cardModel : getCollectionCardModels()) {
             x = (index % settings.getCollectionCardsPerRow());
             y = (index / settings.getCollectionCardsPerRow());
             Card card = new Card<>(cardModel);
@@ -71,6 +94,22 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
             board.triggerEvent(new MoveCardEvent(card, settings.getCollectionZone(), position));
             index++;
         }
+        board.finishAllTransformations();
+    }
+
+    private List<CardModelType> getCollectionCardModels() {
+        int cardsPerPage = getCollectionCardsPerPage();
+        int start = (collectionPage * cardsPerPage);
+        int end = ((collectionPage + 1) * cardsPerPage);
+        List<CardModelType> allCardModels = settings.getAllCardModels();
+        if (end > allCardModels.size()) {
+            end = allCardModels.size();
+        }
+        return allCardModels.subList(start, end);
+    }
+
+    public int getCollectionCardsPerPage() {
+        return settings.getCollectionCardsPerRow() * settings.getCollectionRowsPerPage();
     }
 
     public void setDeck(Map<CardModelType, Integer> deck) {
@@ -130,6 +169,10 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
                 DeckBuilderDeckCardModel::getCardModel,
                 DeckBuilderDeckCardModel::getAmount
             ));
+    }
+
+    public int getCollectionPage() {
+        return collectionPage;
     }
 
     @Override

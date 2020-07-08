@@ -1,13 +1,12 @@
 package com.destrostudios.cardgui.samples.visualization;
 
-import com.jme3.texture.Image;
-import com.jme3.texture.Image.Format;
-import com.jme3.texture.image.ColorSpace;
-import com.jme3.util.BufferUtils;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
- 
+import com.jme3.texture.Image;
+import com.jme3.texture.Image.Format;
+import com.jme3.util.BufferUtils;
+
 public class PaintableImage {
 
     public PaintableImage(PaintableImage paintableImage) {
@@ -23,7 +22,7 @@ public class PaintableImage {
         setSize(image.getWidth(), image.getHeight());
         loadImage(image, flipY);
     }
-    
+
     public PaintableImage(int width, int height) {
         setSize(width, height);
     }
@@ -31,22 +30,16 @@ public class PaintableImage {
     private int height;
     private byte[] data;
     private Image image;
-    
+
     private void setSize(int width, int height) {
         this.width = width;
         this.height = height;
-        //Create black image
-        data = new byte[width * height * 4];       
+        // Create black image
+        data = new byte[width * height * 4];
         setBackground(new Color(0, 0, 0, 255));
-        //Set data to texture
+        // Set data to texture
         ByteBuffer buffer = BufferUtils.createByteBuffer(data);
-        image = new Image(Format.RGBA8, width, height, buffer, null, ColorSpace.Linear);
-    }
-
-    private void setData(byte[] data) {
-        for (int i=0;i<this.data.length;i++) {
-            this.data[i] = data[i];
-        }
+        image = new Image(Format.RGBA8, width, height, buffer);
     }
 
     public Image getImage() {
@@ -54,9 +47,9 @@ public class PaintableImage {
         image.setData(buffer);
         return image;
     }
- 
+
     public void setBackground(Color color) {
-        for (int i=0;i<(width * height * 4);i+=4) {
+        for (int i = 0; i < (width * height * 4); i+=4) {
             data[i] = (byte) color.getRed();
             data[i + 1] = (byte) color.getGreen();
             data[i + 2] = (byte) color.getBlue();
@@ -65,15 +58,15 @@ public class PaintableImage {
     }
  
     public void setBackground_Alpha(int colorValue) {
-        for (int i=3;i<(width * height * 4);i += 4) {
+        for (int i = 3; i < (width * height * 4); i += 4) {
             data[i] = (byte) colorValue;
         }
     }
-    
+
     public void loadImage(BufferedImage image) {
         loadImage(image, false);
     }
-    
+
     public void loadImage(BufferedImage image, boolean flipY) {
         int rgb;
         for (int x=0;x<width;x++) {
@@ -83,11 +76,11 @@ public class PaintableImage {
             }
         }
     }
-    
+
     public void paintImage(BufferedImage image, int x, int y) {
         int rgb;
-        for (int imageX=0;imageX<image.getWidth();imageX++) {
-            for (int imageY=0;imageY<image.getHeight();imageY++) {
+        for (int imageX = 0; imageX < image.getWidth(); imageX++) {
+            for (int imageY = 0; imageY < image.getHeight(); imageY++) {
                 rgb = image.getRGB(imageX, imageY);
                 int alpha = ((rgb >> 24) & 0xFF);
                 if (alpha != 0) {
@@ -100,8 +93,8 @@ public class PaintableImage {
     public void paintImage(PaintableImage image, int x, int y, int width, int height) {
         float scaleX = (((float) image.getWidth()) / width);
         float scaleY = (((float) image.getHeight()) / height);
-        for (int localX=0;localX<width;localX++) {
-            for (int localY=0;localY<height;localY++) {
+        for (int localX = 0; localX < width; localX++) {
+            for (int localY = 0; localY < height; localY++) {
                 int sourceX = (int) (localX * scaleX);
                 int sourceY = (int) (localY * scaleY);
                 int alpha = image.getPixel_Alpha(sourceX, sourceY);
@@ -134,9 +127,9 @@ public class PaintableImage {
         byte[] tmpData = new byte[4];
         int x = 0;
         int y = 0;
-        for (int index1=0;index1<(width * height * 2);index1+=4) {
+        for (int index1 = 0; index1 < (width * height * 2); index1 += 4) {
             int index2 = ((x + (((height - 1) - y) * width)) * 4);
-            for (int r=0;r<4;r++) {
+            for (int r = 0; r < 4; r++) {
                 tmpData[r] = data[index1 + r];
                 data[index1 + r] = data[index2 + r];
                 data[index2 + r] = tmpData[r];
@@ -148,64 +141,60 @@ public class PaintableImage {
             }
         }
     }
- 
+
     public void setPixel(int x, int y, Color color) {
         setPixel(x, y, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
- 
+
     public void setPixel(int x, int y, int red, int green, int blue, int alpha) {
         setPixel_Red(x, y, red);
         setPixel_Green(x, y, green);
         setPixel_Blue(x, y, blue);
         setPixel_Alpha(x, y, alpha);
     }
- 
+
     public void setPixel_Red(int x, int y, int colorValue) {
-        setPixel_Value(x, y, 0, colorValue);
+        setPixel(getIndex(x, y, 0), colorValue);
     }
- 
+
     public void setPixel_Green(int x, int y, int colorValue) {
-        setPixel_Value(x, y, 1, colorValue);
+        setPixel(getIndex(x, y, 1), colorValue);
     }
- 
+
     public void setPixel_Blue(int x, int y, int colorValue) {
-        setPixel_Value(x, y, 2, colorValue);
+        setPixel(getIndex(x, y, 2), colorValue);
     }
- 
+
     public void setPixel_Alpha(int x, int y, int colorValue) {
-        setPixel_Value(x, y, 3, colorValue);
+        setPixel(getIndex(x, y, 3), colorValue);
     }
- 
-    public void setPixel_Value(int x, int y, int channelIndex, int colorValue) {
-        int index = (((x + (y * width)) * 4) + channelIndex);
-        if ((index >= 0) && (index < data.length)) {
-            data[index] = (byte) colorValue;
-        }
+
+    public void setPixel(int index, int colorValue) {
+        data[index] = (byte) colorValue;
     }
- 
-    public Color getPixel(int x, int y) {
-        return new Color(getPixel_Red(x, y), getPixel_Green(x, y), getPixel_Blue(x, y), getPixel_Alpha(x, y));
-    }
- 
+
     public int getPixel_Red(int x, int y) {
-        return getPixel_Value(x, y, 0);
+        return getPixel(getIndex(x, y, 0));
     }
- 
+
     public int getPixel_Green(int x, int y) {
-        return getPixel_Value(x, y, 1);
+        return getPixel(getIndex(x, y, 1));
     }
- 
+
     public int getPixel_Blue(int x, int y) {
-        return getPixel_Value(x, y, 2);
+        return getPixel(getIndex(x, y, 2));
     }
- 
+
     public int getPixel_Alpha(int x, int y) {
-        return getPixel_Value(x, y, 3);
+        return getPixel(getIndex(x, y, 3));
     }
- 
-    public int getPixel_Value(int x, int y, int channelIndex) {
-        int index = (((x + (y * width)) * 4) + channelIndex);
+
+    public int getPixel(int index) {
         return (data[index] & 0xFF);
+    }
+
+    public int getIndex(int x, int y, int channelIndex) {
+        return (((x + (y * width)) * 4) + channelIndex);
     }
 
     public int getWidth() {
@@ -218,5 +207,9 @@ public class PaintableImage {
 
     public byte[] getData() {
         return data;
+    }
+
+    public void setData(byte[] data) {
+        System.arraycopy(data, 0, this.data, 0, this.data.length);
     }
 }

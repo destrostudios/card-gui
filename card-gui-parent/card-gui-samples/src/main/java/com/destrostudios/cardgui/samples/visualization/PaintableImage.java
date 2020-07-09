@@ -18,12 +18,8 @@ public class PaintableImage {
     }
 
     public PaintableImage(BufferedImage image) {
-        this(image, false);
-    }
-
-    public PaintableImage(BufferedImage image, boolean flipY) {
         setSize(image.getWidth(), image.getHeight());
-        loadImage(image, flipY);
+        loadImage(image);
     }
 
     public PaintableImage(int width, int height) {
@@ -65,10 +61,6 @@ public class PaintableImage {
     }
 
     public void loadImage(BufferedImage image) {
-        loadImage(image, false);
-    }
-
-    public void loadImage(BufferedImage image, boolean flipY) {
         switch (image.getType()) {
             case BufferedImage.TYPE_4BYTE_ABGR:
                 byte[] imageBuffer = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
@@ -84,7 +76,7 @@ public class PaintableImage {
                 for (int x = 0; x < width; x++) {
                     for (int y = 0; y < height; y++) {
                         rgb = image.getRGB(x, y);
-                        setPixel(x, (flipY ? (height - 1 - y) : y), ((rgb >> 16) & 0xFF), ((rgb >> 8) & 0xFF), (rgb & 0xFF), ((rgb >> 24) & 0xFF));
+                        setPixel(x, y, ((rgb >> 16) & 0xFF), ((rgb >> 8) & 0xFF), (rgb & 0xFF), ((rgb >> 24) & 0xFF));
                     }
                 }
         }

@@ -108,7 +108,8 @@ public class PaintableImage {
                 int red = (((getPixel_Red(destinationX, destinationY) * (255 - alpha)) + (image.getPixel_Red(sourceX, sourceY) * alpha)) / 255);
                 int green = (((getPixel_Green(destinationX, destinationY) * (255 - alpha)) + (image.getPixel_Green(sourceX, sourceY) * alpha)) / 255);
                 int blue = (((getPixel_Blue(destinationX, destinationY) * (255 - alpha)) + (image.getPixel_Blue(sourceX, sourceY) * alpha)) / 255);
-                int resultAlpha = Math.min(getPixel_Alpha(destinationX, destinationY) + alpha, 255);
+                int destinationAlpha = getPixel_Alpha(destinationX, destinationY);
+                int resultAlpha = alpha + destinationAlpha - alpha * destinationAlpha / 255;
                 setPixel_Red(destinationX, destinationY, red);
                 setPixel_Green(destinationX, destinationY, green);
                 setPixel_Blue(destinationX, destinationY, blue);
@@ -123,7 +124,7 @@ public class PaintableImage {
             int red = (((getPixel(i) * (255 - alpha)) + (image.getPixel(i) * alpha)) / 255);
             int green = (((getPixel(i + 1) * (255 - alpha)) + (image.getPixel(i + 1) * alpha)) / 255);
             int blue = (((getPixel(i + 2) * (255 - alpha)) + (image.getPixel(i + 2) * alpha)) / 255);
-            int resultAlpha = Math.min(getPixel(i + 3) + alpha, 255);
+            int resultAlpha = alpha + getPixel(i + 3) - alpha * getPixel(i + 3) / 255;
             setPixel(i, red);
             setPixel(i + 1, green);
             setPixel(i + 2, blue);

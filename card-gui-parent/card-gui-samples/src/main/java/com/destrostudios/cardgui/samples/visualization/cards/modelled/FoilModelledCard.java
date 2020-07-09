@@ -24,8 +24,8 @@ public class FoilModelledCard extends SimpleModelledCard {
 
     public void setFront(PaintableImage imageBack, PaintableImage imageFoil, PaintableImage imageFront) {
         PaintableImage diffuseMap = new PaintableImage(imageBack);
-        diffuseMap.paintImage(imageFoil, 0, 0, diffuseMap.getWidth(), diffuseMap.getHeight());
-        diffuseMap.paintImage(imageFront, 0, 0, diffuseMap.getWidth(), diffuseMap.getHeight());
+        diffuseMap.paintSameSizeImage(imageFoil);
+        diffuseMap.paintSameSizeImage(imageFront);
         PaintableImage foilMap = new PaintableImage(imageFoil);
         foilMap.removeByAlphaMask(imageFront);
         setFront(flipAndCreateTexture(diffuseMap), flipAndCreateTexture(foilMap));

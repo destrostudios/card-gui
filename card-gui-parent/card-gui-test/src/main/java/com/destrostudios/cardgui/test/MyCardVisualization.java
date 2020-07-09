@@ -31,8 +31,8 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
         // Back
         PaintableImage imageBack = new PaintableImage(textureWidth, textureHeight);
         imageBack.setBackground(Color.BLACK);
-        BufferedImage imageBackground = FileAssets.getImage("images/templates/template_" + (minified ? "rect" : "full") + "_" + cardModel.getColor().ordinal() + ".png");
-        imageBack.paintImage(new PaintableImage(imageBackground), 0, 0, imageBack.getWidth(), imageBack.getHeight());
+        BufferedImage imageBackground = FileAssets.getImage("images/templates/template_" + (minified ? "rect" : "full") + "_" + cardModel.getColor().ordinal() + ".png", imageBack.getWidth(), imageBack.getHeight());
+        imageBack.paintSameSizeImage(new PaintableImage(imageBackground));
 
         // Foil
         PaintableImage imageFoil = new PaintableImage(textureWidth, textureHeight);

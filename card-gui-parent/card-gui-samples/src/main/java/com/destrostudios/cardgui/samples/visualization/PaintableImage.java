@@ -3,6 +3,8 @@ package com.destrostudios.cardgui.samples.visualization;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+
 import com.jme3.texture.Image;
 import com.jme3.texture.Image.Format;
 import com.jme3.util.BufferUtils;
@@ -11,7 +13,7 @@ public class PaintableImage {
 
     public PaintableImage(PaintableImage paintableImage) {
         setSize(paintableImage.width, paintableImage.height);
-        setData(paintableImage.data);
+        data = Arrays.copyOf(paintableImage.data, paintableImage.data.length);
     }
 
     public PaintableImage(BufferedImage image) {
@@ -25,6 +27,7 @@ public class PaintableImage {
 
     public PaintableImage(int width, int height) {
         setSize(width, height);
+        setBackground(Color.BLACK);
     }
     private int width;
     private int height;
@@ -34,10 +37,7 @@ public class PaintableImage {
     private void setSize(int width, int height) {
         this.width = width;
         this.height = height;
-        // Create black image
         data = new byte[width * height * 4];
-        setBackground(new Color(0, 0, 0, 255));
-        // Set data to texture
         ByteBuffer buffer = BufferUtils.createByteBuffer(data);
         image = new Image(Format.RGBA8, width, height, buffer);
     }
@@ -109,6 +109,20 @@ public class PaintableImage {
                 setPixel_Blue(destinationX, destinationY, blue);
                 setPixel_Alpha(destinationX, destinationY, resultAlpha);
             }
+        }
+    }
+
+    public void paintSameSizeImage(PaintableImage image) {
+        for (int i = 0; i < data.length; i += 4) {
+            int alpha = image.getPixel(i + 3);
+            int red = (((getPixel(i) * (255 - alpha)) + (image.getPixel(i) * alpha)) / 255);
+            int green = (((getPixel(i + 1) * (255 - alpha)) + (image.getPixel(i + 1) * alpha)) / 255);
+            int blue = (((getPixel(i + 2) * (255 - alpha)) + (image.getPixel(i + 2) * alpha)) / 255);
+            int resultAlpha = Math.min(getPixel(i + 3) + alpha, 255);
+            setPixel(i, red);
+            setPixel(i + 1, green);
+            setPixel(i + 2, blue);
+            setPixel(i + 3, resultAlpha);
         }
     }
 
@@ -207,9 +221,5 @@ public class PaintableImage {
 
     public byte[] getData() {
         return data;
-    }
-
-    public void setData(byte[] data) {
-        System.arraycopy(data, 0, this.data, 0, this.data.length);
     }
 }

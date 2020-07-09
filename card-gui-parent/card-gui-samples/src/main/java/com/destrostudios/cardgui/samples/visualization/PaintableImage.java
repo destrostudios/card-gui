@@ -2,6 +2,7 @@ package com.destrostudios.cardgui.samples.visualization;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -68,12 +69,24 @@ public class PaintableImage {
     }
 
     public void loadImage(BufferedImage image, boolean flipY) {
-        int rgb;
-        for (int x=0;x<width;x++) {
-            for (int y=0;y<height;y++) {
-                rgb = image.getRGB(x, y);
-                setPixel(x, (flipY?(height - 1 - y):y), ((rgb >> 16) & 0xFF), ((rgb >> 8) & 0xFF), (rgb & 0xFF), ((rgb >> 24) & 0xFF));
-            }
+        switch (image.getType()) {
+            case BufferedImage.TYPE_4BYTE_ABGR:
+                byte[] imageBuffer = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+                for (int i = 0; i < data.length; i += 4) {
+                    data[i] = imageBuffer[i + 3];
+                    data[i + 1] = imageBuffer[i + 2];
+                    data[i + 2] = imageBuffer[i + 1];
+                    data[i + 3] = imageBuffer[i];
+                }
+                return;
+            default:
+                int rgb;
+                for (int x = 0; x < width; x++) {
+                    for (int y = 0; y < height; y++) {
+                        rgb = image.getRGB(x, y);
+                        setPixel(x, (flipY ? (height - 1 - y) : y), ((rgb >> 16) & 0xFF), ((rgb >> 8) & 0xFF), (rgb & 0xFF), ((rgb >> 24) & 0xFF));
+                    }
+                }
         }
     }
 

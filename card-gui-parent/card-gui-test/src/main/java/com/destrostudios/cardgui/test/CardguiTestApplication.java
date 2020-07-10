@@ -1,5 +1,6 @@
 package com.destrostudios.cardgui.test;
 
+import com.destroflyer.jme3.effekseer.model.ParticleEffectSettings;
 import com.destrostudios.cardgui.*;
 import com.destrostudios.cardgui.boardobjects.TargetArrow;
 import com.destrostudios.cardgui.events.*;
@@ -53,7 +54,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
     @Override
     public void simpleInitApp() {
         assetManager.registerLocator(FileAssets.ROOT, FileLocator.class);
-        viewPort.setBackgroundColor(ColorRGBA.White);
+        viewPort.setBackgroundColor(ColorRGBA.Black);
 
         initCamera();
         initLight();
@@ -84,7 +85,8 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
         inputManager.addMapping("1", new KeyTrigger(KeyInput.KEY_1));
         inputManager.addMapping("2", new KeyTrigger(KeyInput.KEY_2));
         inputManager.addMapping("3", new KeyTrigger(KeyInput.KEY_3));
-        inputManager.addListener(this, "space", "1", "2", "3");
+        inputManager.addMapping("4", new KeyTrigger(KeyInput.KEY_4));
+        inputManager.addListener(this, "space", "1", "2", "3", "4");
     }
 
     private void initGame() {
@@ -298,6 +300,16 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
             board.playAnimation(new CameraShakeAnimation(cam,1, 0.01f));
         } else if ("3".equals(name) && isPressed) {
             board.playAnimation(new SnowAnimation(assetManager, cam, rootNode));
+        } else if ("4".equals(name) && isPressed) {
+            board.playAnimation(new EffekseerAnimation(
+                    rootNode,
+                    FileAssets.ROOT,
+                    FileAssets.ROOT + "./effekseer/Pierre02/Benediction.efkproj",
+                    ParticleEffectSettings.builder()
+                            .loop(false)
+                            .build(),
+                    assetManager
+            ));
         }
     }
 }

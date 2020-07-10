@@ -92,7 +92,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         if (dragToTargetInteractivity.getTargetSnapMode() != TargetSnapMode.NEVER) {
             BoardObject hoveredBoardObject = getHoveredInteractivityTarget(dragToTargetInteractivity.getTargetSnapMode() == TargetSnapMode.VALID);
             if (hoveredBoardObject != null) {
-                targetLocation = boardObjectNodes.get(hoveredBoardObject).getLocalTranslation();
+                targetLocation = getNode(hoveredBoardObject).getLocalTranslation();
             }
         }
         TargetArrowModel targetArrowModel = aimTargetArrow.getModel();
@@ -142,7 +142,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     }
 
     private Node getOrCreateNode(BoardObject boardObject) {
-        Node node = boardObjectNodes.get(boardObject);
+        Node node = getNode(boardObject);
         if (node == null) {
             node = new Node();
             node.setUserData("boardObjectId", boardObject.getId());
@@ -153,12 +153,16 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     }
 
     private void removeNode(BoardObject boardObject) {
-        Node node = boardObjectNodes.get(boardObject);
+        Node node = getNode(boardObject);
         // The node can be null if the board object was registered and instantly unregistered before the node was ever created
         if (node != null) {
             rootNode.detachChild(node);
             boardObjectNodes.remove(boardObject);
         }
+    }
+
+    public Node getNode(BoardObject boardObject) {
+        return boardObjectNodes.get(boardObject);
     }
 
     @Override
@@ -203,7 +207,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
             TransformedBoardObject transformedBoardObject = (TransformedBoardObject) draggedBoardObject;
             transformedBoardObject.setTransformationEnabled(false);
         }
-        draggedNode = boardObjectNodes.get(draggedBoardObject);
+        draggedNode = getNode(draggedBoardObject);
         updateAnnotatedModelProperties_IsBoardObjectDragged();
     }
 

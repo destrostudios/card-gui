@@ -304,7 +304,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
             board.playAnimation(new EffekseerAnimation(
                     rootNode,
                     FileAssets.ROOT,
-                    FileAssets.ROOT + "./effekseer/Pierre02/Benediction.efkproj",
+                    FileAssets.ROOT + "effekseer/Pierre02/Benediction.efkproj",
                     ParticleEffectSettings.builder()
                             .loop(false)
                             .build(),

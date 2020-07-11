@@ -38,6 +38,8 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     }
     private Board board;
     private Node rootNode;
+    private Node interactiveNode = new Node();
+    private Node uninteractiveNode = new Node();
     private Application application;
     private RayCasting rayCasting;
     private HashMap<BoardObject, Node> boardObjectNodes = new HashMap<>();
@@ -53,6 +55,8 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     @Override
     protected void initialize(Application app) {
         application = app;
+        rootNode.attachChild(interactiveNode);
+        rootNode.attachChild(uninteractiveNode);
         rayCasting = new RayCasting(application);
         draggedNodeTilter = new DraggedNodeTilter(settings);
         aimTargetArrow = new TargetArrow();
@@ -107,6 +111,8 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         board.update(lastTimePerFrame);
         for (BoardObject boardObject : board.getBoardObjects()) {
             Node node = getOrCreateNode(boardObject);
+            Node parentNode = ((boardObject.getInteractivity() != null) ? interactiveNode : uninteractiveNode);
+            parentNode.attachChild(node);
             BoardObjectVisualizer oldVisualizer = boardObject.getCurrentVisualizer();
             BoardObjectVisualizer newVisualizer = board.getVisualizer(boardObject);
             if (boardObject.needsVisualizationUpdate() || (newVisualizer != oldVisualizer)) {
@@ -146,7 +152,6 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         if (node == null) {
             node = new Node();
             node.setUserData("boardObjectId", boardObject.getId());
-            rootNode.attachChild(node);
             boardObjectNodes.put(boardObject, node);
         }
         return node;
@@ -156,7 +161,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         Node node = getNode(boardObject);
         // The node can be null if the board object was registered and instantly unregistered before the node was ever created
         if (node != null) {
-            rootNode.detachChild(node);
+            node.getParent().detachChild(node);
             boardObjectNodes.remove(boardObject);
         }
     }
@@ -317,7 +322,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     }
 
     private BoardObject getHoveredBoardObject(Predicate<BoardObject> filter) {
-        CollisionResults collisionResults = rayCasting.getResults_Cursor(rootNode);
+        CollisionResults collisionResults = rayCasting.getResults_Cursor(interactiveNode);
         for (int i = 0; i < collisionResults.size(); i++) {
             CollisionResult collisionResult = collisionResults.getCollision(i);
             Spatial spatial = collisionResult.getGeometry();
@@ -364,9 +369,8 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     @Override
     protected void cleanup(Application app) {
         application.getInputManager().removeListener(this);
-        for (Node boardObjectNode : boardObjectNodes.values()) {
-            rootNode.detachChild(boardObjectNode);
-        }
+        rootNode.detachChild(interactiveNode);
+        rootNode.detachChild(uninteractiveNode);
     }
 
     // TODO: Maybe one day

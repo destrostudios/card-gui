@@ -63,4 +63,8 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
     public void triggerInteraction(BoardObject target) {
         interactivity.trigger(this, target);
     }
+
+    public boolean isVisibleToMouse() {
+        return true;
+    }
 }

@@ -38,8 +38,8 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     }
     private Board board;
     private Node rootNode;
-    private Node interactiveNode = new Node();
-    private Node uninteractiveNode = new Node();
+    private Node mouseVisibleNode = new Node();
+    private Node mouseInvisibleNode = new Node();
     private Application application;
     private RayCasting rayCasting;
     private HashMap<BoardObject, Node> boardObjectNodes = new HashMap<>();
@@ -55,8 +55,8 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     @Override
     protected void initialize(Application app) {
         application = app;
-        rootNode.attachChild(interactiveNode);
-        rootNode.attachChild(uninteractiveNode);
+        rootNode.attachChild(mouseVisibleNode);
+        rootNode.attachChild(mouseInvisibleNode);
         rayCasting = new RayCasting(application);
         draggedNodeTilter = new DraggedNodeTilter(settings);
         aimTargetArrow = new TargetArrow();
@@ -111,7 +111,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         board.update(lastTimePerFrame);
         for (BoardObject boardObject : board.getBoardObjects()) {
             Node node = getOrCreateNode(boardObject);
-            Node parentNode = ((boardObject.getInteractivity() != null) ? interactiveNode : uninteractiveNode);
+            Node parentNode = (boardObject.isVisibleToMouse() ? mouseVisibleNode : mouseInvisibleNode);
             parentNode.attachChild(node);
             BoardObjectVisualizer oldVisualizer = boardObject.getCurrentVisualizer();
             BoardObjectVisualizer newVisualizer = board.getVisualizer(boardObject);
@@ -322,7 +322,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     }
 
     private BoardObject getHoveredBoardObject(Predicate<BoardObject> filter) {
-        CollisionResults collisionResults = rayCasting.getResults_Cursor(interactiveNode);
+        CollisionResults collisionResults = rayCasting.getResults_Cursor(mouseVisibleNode);
         for (int i = 0; i < collisionResults.size(); i++) {
             CollisionResult collisionResult = collisionResults.getCollision(i);
             Spatial spatial = collisionResult.getGeometry();
@@ -369,8 +369,8 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     @Override
     protected void cleanup(Application app) {
         application.getInputManager().removeListener(this);
-        rootNode.detachChild(interactiveNode);
-        rootNode.detachChild(uninteractiveNode);
+        rootNode.detachChild(mouseVisibleNode);
+        rootNode.detachChild(mouseInvisibleNode);
     }
 
     // TODO: Maybe one day

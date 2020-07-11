@@ -77,7 +77,7 @@
             <dependency>
                 <groupId>com.github.destroflyer.jme3-effekseer</groupId>
                 <artifactId>jme3-effekseer</artifactId>
-                <version>c49615b7116ccfb739dd1f4b90b185deff55d08f</version>
+                <version>44aff53b24d90d5431b742bc2da16859c80f9b2a</version>
             </dependency>
             <!--Lombok-->
             <dependency>

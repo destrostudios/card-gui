@@ -13,6 +13,7 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
     private ModelType model;
     private BoardObjectVisualizer currentVisualizer;
     private Interactivity interactivity;
+    private boolean visibleToMouse = true;
 
     @Override
     public void update(float lastTimePerFrame) {
@@ -65,6 +66,10 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
     }
 
     public boolean isVisibleToMouse() {
-        return true;
+        return visibleToMouse;
+    }
+
+    public void setVisibleToMouse(boolean visibleToMouse) {
+        this.visibleToMouse = visibleToMouse;
     }
 }

@@ -8,9 +8,12 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends BaseAppState {
@@ -24,6 +27,8 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
     private DeckBuilderSettings<CardModelType> settings;
     private Board board;
     private BoardAppState boardAppState;
+    private Predicate<CardModelType> collectionCardFilter;
+    private Comparator<CardModelType> collectionCardOrder;
     private int collectionPage;
     private HashMap<CardModelType, Card<DeckBuilderDeckCardModel<CardModelType>>> deckCards = new HashMap<>();
     private ClickInteractivity clickToAddInteractivity = new ClickInteractivity() {
@@ -31,8 +36,16 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         @Override
         public void trigger(BoardObject source, BoardObject target) {
             Card<CardModelType> card = (Card<CardModelType>) source;
-            changeDeckCardAmount(card.getModel(), 1);
-            updateDeckZone();
+            CardModelType cardModel = card.getModel();
+            if (isAllowedToAdd(cardModel)) {
+                changeDeckCardAmount(cardModel, 1);
+                updateDeckZone();
+            } else {
+                Consumer<CardModelType> cardNotAddableCallback = settings.getCardNotAddableCallback();
+                if (cardNotAddableCallback != null) {
+                    cardNotAddableCallback.accept(cardModel);
+                }
+            }
         }
     };
     private ClickInteractivity clickToRemoveInteractivity = new ClickInteractivity() {
@@ -41,6 +54,16 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         public void trigger(BoardObject source, BoardObject target) {
             Card<DeckBuilderDeckCardModel<CardModelType>> card = (Card<DeckBuilderDeckCardModel<CardModelType>>) source;
             changeDeckCardAmount(card.getModel().getCardModel(), -1);
+            updateDeckZone();
+        }
+    };
+    private ClickInteractivity clickToClearInteractivity = new ClickInteractivity() {
+
+        @Override
+        public void trigger(BoardObject source, BoardObject target) {
+            Card<DeckBuilderDeckCardModel<CardModelType>> card = (Card<DeckBuilderDeckCardModel<CardModelType>>) source;
+            DeckBuilderDeckCardModel<CardModelType> cardModel = card.getModel();
+            changeDeckCardAmount(cardModel.getCardModel(), -1 * cardModel.getAmount());
             updateDeckZone();
         }
     };
@@ -55,6 +78,16 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         board.registerVisualizer_ZonePosition(zonePosition -> zonePosition.getZone() == settings.getDeckZone(), settings.getDeckCardVisualizer());
         boardAppState = new BoardAppState(board, rootNode, settings.getBoardSettings());
         updateCollectionZoneCards();
+    }
+
+    public void setCollectionCardFilter(Predicate<CardModelType> collectionCardFilter) {
+        this.collectionCardFilter = collectionCardFilter;
+        goToCollectionPage(0);
+    }
+
+    public void setCollectionCardOrder(Comparator<CardModelType> collectionCardOrder) {
+        this.collectionCardOrder = collectionCardOrder;
+        goToCollectionPage(0);
     }
 
     public int getCollectionPagesCount() {
@@ -89,7 +122,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
             x = (index % settings.getCollectionCardsPerRow());
             y = (index / settings.getCollectionCardsPerRow());
             Card card = new Card<>(cardModel);
-            card.setInteractivity(clickToAddInteractivity);
+            card.setInteractivity(InteractivitySource.MOUSE_LEFT, clickToAddInteractivity);
             Vector3f position = Vector3f.UNIT_X.mult(offsetX + x).addLocal(Vector3f.UNIT_Z.mult(offsetY + y));
             board.triggerEvent(new MoveCardEvent(card, settings.getCollectionZone(), position));
             index++;
@@ -98,10 +131,16 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
     }
 
     private List<CardModelType> getCollectionCardModels() {
+        List<CardModelType> allCardModels = settings.getAllCardModels();
+        if (collectionCardFilter != null) {
+            allCardModels = allCardModels.stream().filter(cardModel -> collectionCardFilter.test(cardModel)).collect(Collectors.toList());;
+        }
+        if (collectionCardOrder != null) {
+            allCardModels = allCardModels.stream().sorted(collectionCardOrder).collect(Collectors.toList());;
+        }
         int cardsPerPage = getCollectionCardsPerPage();
         int start = (collectionPage * cardsPerPage);
         int end = ((collectionPage + 1) * cardsPerPage);
-        List<CardModelType> allCardModels = settings.getAllCardModels();
         if (end > allCardModels.size()) {
             end = allCardModels.size();
         }
@@ -128,13 +167,32 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         updateDeckZone();
     }
 
+    private boolean isAllowedToAdd(CardModelType cardModel) {
+        Integer deckCardsMaximumTotal = settings.getDeckCardsMaximumTotal();
+        if ((deckCardsMaximumTotal != null) && (getDeckSize() >= deckCardsMaximumTotal)) {
+            return false;
+        }
+        Map<CardModelType, Integer> deckCardsMaximumUnique = settings.getDeckCardsMaximumUnique();
+        if (deckCardsMaximumUnique != null) {
+            Integer maximum = deckCardsMaximumUnique.get(cardModel);
+            if (maximum != null) {
+                Card<DeckBuilderDeckCardModel<CardModelType>> deckCard = deckCards.get(cardModel);
+                if ((deckCard != null) && (deckCard.getModel().getAmount() >= maximum)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private void changeDeckCardAmount(CardModelType cardModel, int amountChange) {
         Card<DeckBuilderDeckCardModel<CardModelType>> deckCard = deckCards.computeIfAbsent(cardModel, cm -> {
             DeckBuilderDeckCardModel<CardModelType> deckCardModel = new DeckBuilderDeckCardModel<>();
             deckCardModel.setCardModel(cardModel);
             deckCardModel.setAmount(0);
             Card<DeckBuilderDeckCardModel<CardModelType>> newDeckCard = new Card<>(deckCardModel);
-            newDeckCard.setInteractivity(clickToRemoveInteractivity);
+            newDeckCard.setInteractivity(InteractivitySource.MOUSE_LEFT, clickToRemoveInteractivity);
+            newDeckCard.setInteractivity(InteractivitySource.MOUSE_RIGHT, clickToClearInteractivity);
             if (settings.getDeckCardEntryAnimation() != null) {
                 Animation entryAnimation = settings.getDeckCardEntryAnimation().apply(newDeckCard);
                 board.playAnimation(entryAnimation);
@@ -169,6 +227,18 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
                 DeckBuilderDeckCardModel::getCardModel,
                 DeckBuilderDeckCardModel::getAmount
             ));
+    }
+
+    public int getDeckSize() {
+        return deckCards.values().stream().reduce(0, (sum, deckCard) -> sum + deckCard.getModel().getAmount(), Integer::sum);
+    }
+
+    public Predicate<CardModelType> getCollectionCardFilter() {
+        return collectionCardFilter;
+    }
+
+    public Comparator<CardModelType> getCollectionCardOrder() {
+        return collectionCardOrder;
     }
 
     public int getCollectionPage() {

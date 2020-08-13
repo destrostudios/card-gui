@@ -25,10 +25,6 @@ import java.util.HashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-/**
- *
- * @author Carl
- */
 public class BoardAppState extends BaseAppState implements ActionListener {
 
     public BoardAppState(Board board, Node rootNode, BoardSettings settings) {
@@ -46,6 +42,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     private BoardObject hoveredBoardObject;
     private float hoverDuration;
     private BoardObject draggedBoardObject;
+    private InteractivitySource draggedBoardObjectInteractivitySource;
     private TransformedBoardObject inspectedBoardObject;
     private Node draggedNode;
     private DraggedNodeTilter draggedNodeTilter;
@@ -81,17 +78,17 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         Vector2f cursorPositionScreen = application.getInputManager().getCursorPosition();
         Vector3f cursorPositionWorld = getWorldPosition(cursorPositionScreen);
         updateHoveredBoardObject(cursorPositionWorld, lastTimePerFrame);
-        if ((draggedBoardObject != null) && (draggedBoardObject.getInteractivity() instanceof AimToTargetInteractivity)) {
+        if ((draggedBoardObject != null) && (draggedBoardObject.getInteractivity(draggedBoardObjectInteractivitySource) instanceof AimToTargetInteractivity)) {
             updateAimTargetArrow(cursorPositionWorld);
         }
         updateBoardObjects(lastTimePerFrame);
-        if ((draggedBoardObject != null) && (draggedBoardObject.getInteractivity() instanceof DragToPlayInteractivity)) {
+        if ((draggedBoardObject != null) && (draggedBoardObject.getInteractivity(draggedBoardObjectInteractivitySource) instanceof DragToPlayInteractivity)) {
             updateDragTransformation(cursorPositionScreen, cursorPositionWorld, lastTimePerFrame);
         }
     }
 
     private void updateAimTargetArrow(Vector3f cursorPositionWorld) {
-        AimToTargetInteractivity dragToTargetInteractivity = (AimToTargetInteractivity) draggedBoardObject.getInteractivity();
+        AimToTargetInteractivity dragToTargetInteractivity = (AimToTargetInteractivity) draggedBoardObject.getInteractivity(draggedBoardObjectInteractivitySource);
         Vector3f targetLocation = cursorPositionWorld;
         if (dragToTargetInteractivity.getTargetSnapMode() != TargetSnapMode.NEVER) {
             BoardObject hoveredBoardObject = getHoveredInteractivityTarget(dragToTargetInteractivity.getTargetSnapMode() == TargetSnapMode.VALID);
@@ -172,27 +169,29 @@ public class BoardAppState extends BaseAppState implements ActionListener {
 
     @Override
     public void onAction(String name, boolean isPressed, float lastTimePerFrame) {
-        if (name.equals(settings.getInputActionPrefix() + "_mouse_click_left")) {
+        InteractivitySource interactivitySource = getInteractivitySource(name);
+        if (interactivitySource != null) {
             if (isPressed) {
                 if (hoveredBoardObject != null) {
-                    Interactivity interactivity = hoveredBoardObject.getInteractivity();
+                    Interactivity interactivity = hoveredBoardObject.getInteractivity(interactivitySource);
                     if (interactivity instanceof ClickInteractivity) {
-                        hoveredBoardObject.triggerInteraction(null);
+                        interactivity.trigger(hoveredBoardObject, null);
                     } else if (interactivity instanceof DragToPlayInteractivity) {
-                        setDraggedBoardObject(hoveredBoardObject);
+                        setDraggedBoardObject(hoveredBoardObject, interactivitySource);
                     } else if (interactivity instanceof AimToTargetInteractivity) {
-                        setDraggedBoardObject(hoveredBoardObject);
+                        setDraggedBoardObject(hoveredBoardObject, interactivitySource);
                         board.register(aimTargetArrow);
                     }
                 }
             } else {
                 if (draggedBoardObject != null) {
-                    if (draggedBoardObject.getInteractivity() instanceof DragToPlayInteractivity) {
-                        draggedBoardObject.triggerInteraction(null);
-                    } else if (draggedBoardObject.getInteractivity() instanceof AimToTargetInteractivity) {
+                    Interactivity interactivity = draggedBoardObject.getInteractivity(interactivitySource);
+                    if (interactivity instanceof DragToPlayInteractivity) {
+                        interactivity.trigger(draggedBoardObject, null);
+                    } else if (interactivity instanceof AimToTargetInteractivity) {
                         BoardObject hoveredBoardObject = getHoveredInteractivityTarget(true);
                         if (hoveredBoardObject != null) {
-                            draggedBoardObject.triggerInteraction(hoveredBoardObject);
+                            interactivity.trigger(draggedBoardObject, hoveredBoardObject);
                         }
                         board.unregister(aimTargetArrow);
                     }
@@ -206,8 +205,20 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         }
     }
 
-    private void setDraggedBoardObject(BoardObject boardObject) {
+    private InteractivitySource getInteractivitySource(String actionName) {
+        if (actionName.equals(settings.getInputActionPrefix() + "_mouse_click_left")) {
+            return InteractivitySource.MOUSE_LEFT;
+        } else if (actionName.equals(settings.getInputActionPrefix() + "_mouse_click_middle")) {
+            return InteractivitySource.MOUSE_MIDDLE;
+        } else if (actionName.equals(settings.getInputActionPrefix() + "_mouse_click_right")) {
+            return InteractivitySource.MOUSE_RIGHT;
+        }
+        return null;
+    }
+
+    private void setDraggedBoardObject(BoardObject boardObject, InteractivitySource interactivitySource) {
         draggedBoardObject = boardObject;
+        draggedBoardObjectInteractivitySource = interactivitySource;
         if (draggedBoardObject instanceof TransformedBoardObject) {
             TransformedBoardObject transformedBoardObject = (TransformedBoardObject) draggedBoardObject;
             transformedBoardObject.setTransformationEnabled(false);
@@ -218,6 +229,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
 
     private void clearDraggedBoardObject() {
         draggedBoardObject = null;
+        draggedBoardObjectInteractivitySource = null;
         draggedNode = null;
         updateAnnotatedModelProperties_IsBoardObjectDragged();
     }
@@ -311,8 +323,9 @@ public class BoardAppState extends BaseAppState implements ActionListener {
 
     private BoardObject getHoveredInteractivityTarget(boolean filterValidTargets) {
         BoardObjectFilter targetFilter = null;
-        if (filterValidTargets && (draggedBoardObject.getInteractivity() instanceof BoardObjectFilter)) {
-            targetFilter = (BoardObjectFilter) draggedBoardObject.getInteractivity();
+        Interactivity interactivity = draggedBoardObject.getInteractivity(draggedBoardObjectInteractivitySource);
+        if (filterValidTargets && (interactivity instanceof BoardObjectFilter)) {
+            targetFilter = (BoardObjectFilter) interactivity;
         }
         return getHoveredBoardObjectByFilter(targetFilter);
     }

@@ -1,9 +1,7 @@
 package com.destrostudios.cardgui;
 
-/**
- *
- * @author Carl
- */
+import java.util.HashMap;
+
 public class BoardObject<ModelType extends BoardObjectModel> implements GameLoopListener {
 
     protected BoardObject(ModelType model) {
@@ -12,7 +10,7 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
     private int id = -1;
     private ModelType model;
     private BoardObjectVisualizer currentVisualizer;
-    private Interactivity interactivity;
+    private HashMap<InteractivitySource, Interactivity> interactivities = new HashMap<>();
     private boolean visibleToMouse = true;
 
     @Override
@@ -49,20 +47,20 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
         return currentVisualizer;
     }
 
-    public void clearInteractivity() {
-        setInteractivity(null);
+    public void clearInteractivities() {
+        interactivities.clear();
     }
 
-    public void setInteractivity(Interactivity interactivity) {
-        this.interactivity = interactivity;
+    public void clearInteractivity(InteractivitySource source) {
+        interactivities.remove(source);
     }
 
-    public Interactivity getInteractivity() {
-        return interactivity;
+    public void setInteractivity(InteractivitySource source, Interactivity interactivity) {
+        interactivities.put(source, interactivity);
     }
 
-    public void triggerInteraction(BoardObject target) {
-        interactivity.trigger(this, target);
+    public Interactivity getInteractivity(InteractivitySource source) {
+        return interactivities.get(source);
     }
 
     public boolean isVisibleToMouse() {

@@ -23,6 +23,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.system.AppSettings;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class DeckBuilderTestApplication extends SimpleApplication implements ActionListener {
 
@@ -72,9 +73,11 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
         inputManager.addMapping("1", new KeyTrigger(KeyInput.KEY_1));
         inputManager.addMapping("2", new KeyTrigger(KeyInput.KEY_2));
         inputManager.addMapping("3", new KeyTrigger(KeyInput.KEY_3));
+        inputManager.addMapping("4", new KeyTrigger(KeyInput.KEY_4));
+        inputManager.addMapping("5", new KeyTrigger(KeyInput.KEY_5));
         inputManager.addMapping("left", new KeyTrigger(KeyInput.KEY_LEFT));
         inputManager.addMapping("right", new KeyTrigger(KeyInput.KEY_RIGHT));
-        inputManager.addListener(this, "space", "1", "2", "3", "left", "right");
+        inputManager.addListener(this, "space", "1", "2", "3", "4", "5", "left", "right");
     }
 
     private void initDeckBuilder() {
@@ -120,6 +123,7 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
                 .collectionCardVisualizer(collectionCardVisualizer)
                 .deckCardVisualizer(deckCardVisualizer)
                 .deckCardOrder(deckCardOrder)
+                .deckCardsMaximumTotal(30)
                 .collectionCardsPerRow(16)
                 .collectionRowsPerPage(7)
                 .boardSettings(BoardSettings.builder()
@@ -160,6 +164,12 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
                 deck.put(cardModel, currentAmount + 1);
             }
             deckBuilderAppState.setDeck(deck);
+        }  else if ("4".equals(name) && isPressed) {
+            Predicate<MyCardModel> collectionCardFilter = deckBuilderAppState.getCollectionCardFilter();
+            deckBuilderAppState.setCollectionCardFilter((collectionCardFilter == null) ? cardModel -> cardModel.getColor() == MyCard.Color.RED : null);
+        }   else if ("5".equals(name) && isPressed) {
+            Comparator<MyCardModel> collectionCardOrder = deckBuilderAppState.getCollectionCardOrder();
+            deckBuilderAppState.setCollectionCardOrder((collectionCardOrder == null) ? Comparator.comparing(MyCardModel::getName) : null);
         } else if ("left".equals(name) && isPressed) {
             if (deckBuilderAppState.getCollectionPage() > 0) {
                 deckBuilderAppState.goToPreviousCollectionPage();

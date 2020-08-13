@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @NoArgsConstructor
@@ -22,6 +24,9 @@ public class DeckBuilderSettings<CardModelType extends BoardObjectModel> {
     private BoardObjectVisualizer<Card<CardModelType>> collectionCardVisualizer;
     private BoardObjectVisualizer<Card<DeckBuilderDeckCardModel<CardModelType>>> deckCardVisualizer;
     private Comparator<CardModelType> deckCardOrder;
+    private Integer deckCardsMaximumTotal;
+    private Map<CardModelType, Integer> deckCardsMaximumUnique;
+    private Consumer<CardModelType> cardNotAddableCallback;
     private Function<Card<DeckBuilderDeckCardModel<CardModelType>>, Animation> deckCardEntryAnimation;
     @Builder.Default
     private Vector3f collectionPositionInterval = new Vector3f(0, 0, 1);

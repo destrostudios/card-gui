@@ -169,7 +169,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
         for (int i=0;i<game.getPlayers().length;i++) {
             final int opponentPlayerIndex = ((i + 1) % 2);
             MyPlayer player = game.getPlayers()[i];
-            updateZone(player.getDeck(), playerZones[i].getDeckZone(), new Vector3f(0, 1, 0), new ClickInteractivity() {
+            updateZone(player.getDeck(), playerZones[i].getDeckZone(), new Vector3f(0, 1, 0), InteractivitySource.MOUSE_RIGHT, new ClickInteractivity() {
 
                 @Override
                 public void trigger(BoardObject source, BoardObject target) {
@@ -177,7 +177,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                     updateBoard();
                 }
             });
-            updateZone(player.getHand(), playerZones[i].getHandZone(), new Vector3f(1, 0, 0), new DragToPlayInteractivity() {
+            updateZone(player.getHand(), playerZones[i].getHandZone(), new Vector3f(1, 0, 0), InteractivitySource.MOUSE_LEFT, new DragToPlayInteractivity() {
 
                 @Override
                 public void trigger(BoardObject source, BoardObject target) {
@@ -192,7 +192,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                     }
                 }
             });
-            updateZone(player.getBoard(), playerZones[i].getBoardZone(), new Vector3f(1, 0, 0), new AimToTargetInteractivity(TargetSnapMode.VALID) {
+            updateZone(player.getBoard(), playerZones[i].getBoardZone(), new Vector3f(1, 0, 0), InteractivitySource.MOUSE_LEFT, new AimToTargetInteractivity(TargetSnapMode.VALID) {
 
                 @Override
                 public boolean isValid(BoardObject boardObject) {
@@ -226,7 +226,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
         }
     }
 
-    private void updateZone(MyCards myCards, CardZone cardZone, Vector3f interval, Interactivity interactivity) {
+    private void updateZone(MyCards myCards, CardZone cardZone, Vector3f interval, InteractivitySource interactivitySource, Interactivity interactivity) {
         int index = 0;
         Iterator<MyCard> cardIterator = myCards.iterator();
         while (cardIterator.hasNext()) {
@@ -248,7 +248,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                 }
             }
             board.triggerEvent(new MoveCardEvent(card, cardZone, interval.mult(index)));
-            card.setInteractivity(interactivity);
+            card.setInteractivity(interactivitySource, interactivity);
             index++;
         }
     }

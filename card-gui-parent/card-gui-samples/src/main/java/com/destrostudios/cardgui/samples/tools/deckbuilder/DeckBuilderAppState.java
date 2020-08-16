@@ -91,7 +91,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
     }
 
     public int getCollectionPagesCount() {
-        return (int) Math.ceil(((float) settings.getAllCardModels().size()) / getCollectionCardsPerPage());
+        return (int) Math.ceil(((float) getFilteredCardModels().size()) / getCollectionCardsPerPage());
     }
 
     public void goToPreviousCollectionPage() {
@@ -131,20 +131,25 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
     }
 
     private List<CardModelType> getCollectionCardModels() {
-        List<CardModelType> allCardModels = settings.getAllCardModels();
-        if (collectionCardFilter != null) {
-            allCardModels = allCardModels.stream().filter(cardModel -> collectionCardFilter.test(cardModel)).collect(Collectors.toList());;
-        }
+        List<CardModelType> cardModels = getFilteredCardModels();
         if (collectionCardOrder != null) {
-            allCardModels = allCardModels.stream().sorted(collectionCardOrder).collect(Collectors.toList());;
+            cardModels = cardModels.stream().sorted(collectionCardOrder).collect(Collectors.toList());;
         }
         int cardsPerPage = getCollectionCardsPerPage();
         int start = (collectionPage * cardsPerPage);
         int end = ((collectionPage + 1) * cardsPerPage);
-        if (end > allCardModels.size()) {
-            end = allCardModels.size();
+        if (end > cardModels.size()) {
+            end = cardModels.size();
         }
-        return allCardModels.subList(start, end);
+        return cardModels.subList(start, end);
+    }
+
+    private List<CardModelType> getFilteredCardModels() {
+        List<CardModelType> cardModels = settings.getAllCardModels();
+        if (collectionCardFilter != null) {
+            cardModels = cardModels.stream().filter(cardModel -> collectionCardFilter.test(cardModel)).collect(Collectors.toList());;
+        }
+        return cardModels;
     }
 
     public int getCollectionCardsPerPage() {

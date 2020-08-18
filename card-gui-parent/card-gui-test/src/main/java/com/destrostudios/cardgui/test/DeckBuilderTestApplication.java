@@ -85,7 +85,7 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
         for (int i = 0; i < 300; i++) {
             MyCardModel cardModel = new MyCardModel();
             cardModel.setColor(MyCard.Color.values()[(int) (Math.random() * MyCard.Color.values().length)]);
-            cardModel.setName((Math.random() < 0.5) ? "Aether Adept" : "Shyvana");
+            cardModel.setName((Math.random() < 0.33) ? "Shyvana" : ((Math.random() < 0.5) ? "Aether Adept" : "Copy Cat"));
             allCardModels.add(cardModel);
         }
         CardZone collectionZone = new SimpleIntervalZone(new Vector3f(-2, 0, 0), new Vector3f(1, 1, 1.4f));

@@ -96,24 +96,28 @@ public class PaintableImage {
     }
 
     public void paintImage(PaintableImage image, int x, int y, int width, int height) {
-        float scaleX = (((float) image.getWidth()) / width);
-        float scaleY = (((float) image.getHeight()) / height);
-        for (int localX = 0; localX < width; localX++) {
-            for (int localY = 0; localY < height; localY++) {
-                int sourceX = (int) (localX * scaleX);
-                int sourceY = (int) (localY * scaleY);
+        paintImage(image, 0, 0, image.getWidth(), image.getHeight(), x, y, width, height);
+    }
+
+    public void paintImage(PaintableImage image, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight) {
+        float scaleX = (((float) srcWidth) / dstWidth);
+        float scaleY = (((float) srcHeight) / dstHeight);
+        for (int localX = 0; localX < dstWidth; localX++) {
+            for (int localY = 0; localY < dstHeight; localY++) {
+                int sourceX = (int) (srcX + (localX * scaleX));
+                int sourceY = (int) (srcY + (localY * scaleY));
+                int finalX = (dstX + localX);
+                int finalY = (dstY + localY);
                 int alpha = image.getPixel_Alpha(sourceX, sourceY);
-                int destinationX = (x + localX);
-                int destinationY = (y + localY);
-                int red = (((getPixel_Red(destinationX, destinationY) * (255 - alpha)) + (image.getPixel_Red(sourceX, sourceY) * alpha)) / 255);
-                int green = (((getPixel_Green(destinationX, destinationY) * (255 - alpha)) + (image.getPixel_Green(sourceX, sourceY) * alpha)) / 255);
-                int blue = (((getPixel_Blue(destinationX, destinationY) * (255 - alpha)) + (image.getPixel_Blue(sourceX, sourceY) * alpha)) / 255);
-                int destinationAlpha = getPixel_Alpha(destinationX, destinationY);
+                int red = (((getPixel_Red(finalX, finalY) * (255 - alpha)) + (image.getPixel_Red(sourceX, sourceY) * alpha)) / 255);
+                int green = (((getPixel_Green(finalX, finalY) * (255 - alpha)) + (image.getPixel_Green(sourceX, sourceY) * alpha)) / 255);
+                int blue = (((getPixel_Blue(finalX, finalY) * (255 - alpha)) + (image.getPixel_Blue(sourceX, sourceY) * alpha)) / 255);
+                int destinationAlpha = getPixel_Alpha(finalX, finalY);
                 int resultAlpha = alpha + destinationAlpha - alpha * destinationAlpha / 255;
-                setPixel_Red(destinationX, destinationY, red);
-                setPixel_Green(destinationX, destinationY, green);
-                setPixel_Blue(destinationX, destinationY, blue);
-                setPixel_Alpha(destinationX, destinationY, resultAlpha);
+                setPixel_Red(finalX, finalY, red);
+                setPixel_Green(finalX, finalY, green);
+                setPixel_Blue(finalX, finalY, blue);
+                setPixel_Alpha(finalX, finalY, resultAlpha);
             }
         }
     }

@@ -59,6 +59,18 @@ public abstract class ModelledCard {
 
     protected abstract Material createMaterial_Front(AssetManager assetManager);
 
+    public Material getMaterial_Back() {
+        return  getGeometry_Back().getMaterial();
+    }
+
+    public Material getMaterial_Side() {
+        return  getGeometry_Side().getMaterial();
+    }
+
+    public Material getMaterial_Front() {
+        return  getGeometry_Front().getMaterial();
+    }
+
     protected Geometry getGeometry_Back() {
         return getGeometry("back");
     }

@@ -19,7 +19,9 @@ public class MyDeckBuilderDeckCardVisualizer extends SimpleDeckBuilderDeckCardVi
         PaintableImage image = new PaintableImage(400, 57);
         image.setBackground(Color.BLACK);
         String imagePath = "images/cards/" + cardModel.getName() + ".png";
-        image.paintImage(FileAssets.getImage(imagePath, (image.getWidth() - amountPixelWidth), image.getHeight()), amountPixelWidth, 0);
+        int tiles = ("Copy Cat".equals(cardModel.getName()) ? 20 : 1);
+        PaintableImage artwork = new PaintableImage(FileAssets.getImage(imagePath));
+        image.paintImage(artwork, 0, 0, (artwork.getWidth() / tiles), artwork.getHeight(), amountPixelWidth, 0, (image.getWidth() - amountPixelWidth), image.getHeight());
         paintText(image, amountPixelWidth + 20, (image.getHeight() / 2), false, true, cardModel.getName());
         return image;
     }

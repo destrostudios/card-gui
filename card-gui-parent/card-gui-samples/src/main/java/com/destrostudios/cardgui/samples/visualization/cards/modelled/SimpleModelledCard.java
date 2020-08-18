@@ -28,7 +28,7 @@ public abstract class SimpleModelledCard extends ModelledCard {
         return MaterialFactory.colorLighting(assetManager, sideColor);
     }
 
-    protected Texture2D flipAndCreateTexture(PaintableImage paintableImage) {
+    public static Texture2D flipAndCreateTexture(PaintableImage paintableImage) {
         paintableImage.flipY();
         Texture2D texture = new Texture2D();
         texture.setImage(paintableImage.getImage());

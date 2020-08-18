@@ -1,6 +1,29 @@
 MaterialDef FoilCard {
     MaterialParameters {
-        Texture2D DiffuseMap
+        Texture2D DiffuseMap1
+        Texture2D DiffuseMap2
+        Texture2D DiffuseMap3
+        Texture2D DiffuseMap4
+        Texture2D DiffuseMap5
+        Texture2D DiffuseMap6
+        Texture2D DiffuseMap7
+        Texture2D DiffuseMap8
+        Int DiffuseMapTiles1 : 1
+        Int DiffuseMapTiles2 : 1
+        Int DiffuseMapTiles3 : 1
+        Int DiffuseMapTiles4 : 1
+        Int DiffuseMapTiles5 : 1
+        Int DiffuseMapTiles6 : 1
+        Int DiffuseMapTiles7 : 1
+        Int DiffuseMapTiles8 : 1
+        Float DiffuseMapSpeed1 : 1
+        Float DiffuseMapSpeed2 : 1
+        Float DiffuseMapSpeed3 : 1
+        Float DiffuseMapSpeed4 : 1
+        Float DiffuseMapSpeed5 : 1
+        Float DiffuseMapSpeed6 : 1
+        Float DiffuseMapSpeed7 : 1
+        Float DiffuseMapSpeed8 : 1
         Texture2D FoilMap
         Float Distortion : 0.0025
         Color FoilColor : 1 1 1 1
@@ -19,6 +42,14 @@ MaterialDef FoilCard {
             WorldViewProjectionMatrix
         }
         Defines {
+            DIFFUSEMAP1: DiffuseMap1
+            DIFFUSEMAP2: DiffuseMap2
+            DIFFUSEMAP3: DiffuseMap3
+            DIFFUSEMAP4: DiffuseMap4
+            DIFFUSEMAP5: DiffuseMap5
+            DIFFUSEMAP6: DiffuseMap6
+            DIFFUSEMAP7: DiffuseMap7
+            DIFFUSEMAP8: DiffuseMap8
             FOILMAP : FoilMap
             FOILCOLOR : FoilColor
             SHINEINTERVAL : ShineInterval

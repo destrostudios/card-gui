@@ -25,6 +25,16 @@ public abstract class TransformedBoardObject<ModelType extends BoardObjectModel>
         }
     }
 
+    public void setTransformationEnabled(boolean transformationEnabled) {
+        if (transformationEnabled != isTransformationEnabled){
+            isTransformationEnabled = transformationEnabled;
+            // Reset the transformations when enabling, since the transformation itself won'T reset the speed if the target value hasn't changed
+            if (isTransformationEnabled) {
+                resetTransformations();
+            }
+        }
+    }
+
     public void resetTransformations() {
         positionTransformationHandler3f.reset();
         rotationTransformationHandler.reset();
@@ -39,10 +49,6 @@ public abstract class TransformedBoardObject<ModelType extends BoardObjectModel>
 
     public boolean hasReachedTargetTransform() {
         return (positionTransformationHandler3f.hasReachedTarget() && rotationTransformationHandler.hasReachedTarget() && scaleTransformationHandler3f.hasReachedTarget());
-    }
-
-    public void setTransformationEnabled(boolean transformationEnabled) {
-        this.isTransformationEnabled = transformationEnabled;
     }
 
     public VectorTransformationHandler3f position() {

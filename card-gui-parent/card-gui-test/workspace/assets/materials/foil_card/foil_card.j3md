@@ -8,22 +8,30 @@ MaterialDef FoilCard {
         Texture2D DiffuseMap6
         Texture2D DiffuseMap7
         Texture2D DiffuseMap8
-        Int DiffuseMapTiles1 : 1
-        Int DiffuseMapTiles2 : 1
-        Int DiffuseMapTiles3 : 1
-        Int DiffuseMapTiles4 : 1
-        Int DiffuseMapTiles5 : 1
-        Int DiffuseMapTiles6 : 1
-        Int DiffuseMapTiles7 : 1
-        Int DiffuseMapTiles8 : 1
-        Float DiffuseMapSpeed1 : 1
-        Float DiffuseMapSpeed2 : 1
-        Float DiffuseMapSpeed3 : 1
-        Float DiffuseMapSpeed4 : 1
-        Float DiffuseMapSpeed5 : 1
-        Float DiffuseMapSpeed6 : 1
-        Float DiffuseMapSpeed7 : 1
-        Float DiffuseMapSpeed8 : 1
+        Int DiffuseMapTilesX1 : 1
+        Int DiffuseMapTilesY1 : 1
+        Int DiffuseMapTilesX2 : 1
+        Int DiffuseMapTilesY2 : 1
+        Int DiffuseMapTilesX3 : 1
+        Int DiffuseMapTilesY3 : 1
+        Int DiffuseMapTilesX4 : 1
+        Int DiffuseMapTilesY4 : 1
+        Int DiffuseMapTilesX5 : 1
+        Int DiffuseMapTilesY5 : 1
+        Int DiffuseMapTilesX6 : 1
+        Int DiffuseMapTilesY6 : 1
+        Int DiffuseMapTilesX7 : 1
+        Int DiffuseMapTilesY7 : 1
+        Int DiffuseMapTilesX8 : 1
+        Int DiffuseMapTilesY8 : 1
+        Float DiffuseMapInterval1 : 1
+        Float DiffuseMapInterval2 : 1
+        Float DiffuseMapInterval3 : 1
+        Float DiffuseMapInterval4 : 1
+        Float DiffuseMapInterval5 : 1
+        Float DiffuseMapInterval6 : 1
+        Float DiffuseMapInterval7 : 1
+        Float DiffuseMapInterval8 : 1
         Texture2D FoilMap
         Float Distortion : 0.0025
         Color FoilColor : 1 1 1 1

@@ -14,22 +14,30 @@ uniform sampler2D m_DiffuseMap5;
 uniform sampler2D m_DiffuseMap6;
 uniform sampler2D m_DiffuseMap7;
 uniform sampler2D m_DiffuseMap8;
-uniform int m_DiffuseMapTiles1;
-uniform int m_DiffuseMapTiles2;
-uniform int m_DiffuseMapTiles3;
-uniform int m_DiffuseMapTiles4;
-uniform int m_DiffuseMapTiles5;
-uniform int m_DiffuseMapTiles6;
-uniform int m_DiffuseMapTiles7;
-uniform int m_DiffuseMapTiles8;
-uniform float m_DiffuseMapSpeed1;
-uniform float m_DiffuseMapSpeed2;
-uniform float m_DiffuseMapSpeed3;
-uniform float m_DiffuseMapSpeed4;
-uniform float m_DiffuseMapSpeed5;
-uniform float m_DiffuseMapSpeed6;
-uniform float m_DiffuseMapSpeed7;
-uniform float m_DiffuseMapSpeed8;
+uniform int m_DiffuseMapTilesX1;
+uniform int m_DiffuseMapTilesY1;
+uniform int m_DiffuseMapTilesX2;
+uniform int m_DiffuseMapTilesY2;
+uniform int m_DiffuseMapTilesX3;
+uniform int m_DiffuseMapTilesY3;
+uniform int m_DiffuseMapTilesX4;
+uniform int m_DiffuseMapTilesY4;
+uniform int m_DiffuseMapTilesX5;
+uniform int m_DiffuseMapTilesY5;
+uniform int m_DiffuseMapTilesX6;
+uniform int m_DiffuseMapTilesY6;
+uniform int m_DiffuseMapTilesX7;
+uniform int m_DiffuseMapTilesY7;
+uniform int m_DiffuseMapTilesX8;
+uniform int m_DiffuseMapTilesY8;
+uniform float m_DiffuseMapInterval1;
+uniform float m_DiffuseMapInterval2;
+uniform float m_DiffuseMapInterval3;
+uniform float m_DiffuseMapInterval4;
+uniform float m_DiffuseMapInterval5;
+uniform float m_DiffuseMapInterval6;
+uniform float m_DiffuseMapInterval7;
+uniform float m_DiffuseMapInterval8;
 uniform sampler2D m_FoilMap;
 uniform float m_Time;
 uniform float m_Distortion;
@@ -44,6 +52,15 @@ uniform float m_ShineIntensity;
 
 #define PI 3.1415
 
+vec2 getDiffuseTextureCoordinate(int tilesX, int tilesY, float interval) {
+    float progress = (mod(m_Time, interval) / interval);
+    float progressPerRow = (1.0 / tilesY);
+    float progressPerTile = (progressPerRow / tilesX);
+    float tileIndexX = floor(mod(progress, progressPerRow) / progressPerTile);
+    float tileIndexY = floor(progress / progressPerRow);
+    return vec2((tileIndexX + texCoord.x) / tilesX, (tileIndexY + texCoord.y) / tilesY);
+}
+
 vec4 getDistortedColor(float foilFactor) {
     vec4 rgb = vec4(1);
     float r = 1;
@@ -53,22 +70,18 @@ vec4 getDistortedColor(float foilFactor) {
     float distortionFactor = (distortionWeight * foilFactor * m_Distortion);
 
     #ifdef DIFFUSEMAP1
-        float tileProgress1 = (mod(m_Time, m_DiffuseMapSpeed1) / m_DiffuseMapSpeed1);
-        float tileIndex1 = floor(tileProgress1 * m_DiffuseMapTiles1);
-        vec2 texCoord1 = vec2((tileIndex1 + texCoord.x) / m_DiffuseMapTiles1, texCoord.y);
+        vec2 texCoord1 = getDiffuseTextureCoordinate(m_DiffuseMapTilesX1, m_DiffuseMapTilesY1, m_DiffuseMapInterval1);
         vec4 rgb1 = texture2D(m_DiffuseMap1, texCoord1);
-        vec4 rgbDistorted1 = texture2D(m_DiffuseMap1, texCoord1 + vec2(distortionFactor / m_DiffuseMapTiles1, 0));
+        vec4 rgbDistorted1 = texture2D(m_DiffuseMap1, vec2(texCoord1.x + (distortionFactor / m_DiffuseMapTilesX1), texCoord1.y));
         rgb = mix(rgb, rgb1, rgb1.a);
         r = mix(r, rgbDistorted1.r, rgb1.a);
         b = mix(b, rgbDistorted1.b, rgb1.a);
     #endif
 
-        #ifdef DIFFUSEMAP2
-        float tileProgress2 = (mod(m_Time, m_DiffuseMapSpeed2) / m_DiffuseMapSpeed2);
-        float tileIndex2 = floor(tileProgress2 * m_DiffuseMapTiles2);
-        vec2 texCoord2 = vec2((tileIndex2 + texCoord.x) / m_DiffuseMapTiles2, texCoord.y);
+    #ifdef DIFFUSEMAP2
+        vec2 texCoord2 = getDiffuseTextureCoordinate(m_DiffuseMapTilesX2, m_DiffuseMapTilesY2, m_DiffuseMapInterval2);
         vec4 rgb2 = texture2D(m_DiffuseMap2, texCoord2);
-        vec4 rgbDistorted2 = texture2D(m_DiffuseMap2, texCoord2 + vec2(distortionFactor / m_DiffuseMapTiles2, 0));
+        vec4 rgbDistorted2 = texture2D(m_DiffuseMap2, vec2(texCoord2.x + (distortionFactor / m_DiffuseMapTilesX2), texCoord2.y));
         float r2 = rgbDistorted2.r;
         float b2 = rgbDistorted2.b;
         rgb = mix(rgb, rgb2, rgb2.a);
@@ -77,66 +90,54 @@ vec4 getDistortedColor(float foilFactor) {
     #endif
 
     #ifdef DIFFUSEMAP3
-        float tileProgress3 = (mod(m_Time, m_DiffuseMapSpeed3) / m_DiffuseMapSpeed3);
-        float tileIndex3 = floor(tileProgress3 * m_DiffuseMapTiles3);
-        vec2 texCoord3 = vec2((tileIndex3 + texCoord.x) / m_DiffuseMapTiles3, texCoord.y);
+        vec2 texCoord3 = getDiffuseTextureCoordinate(m_DiffuseMapTilesX3, m_DiffuseMapTilesY3, m_DiffuseMapInterval3);
         vec4 rgb3 = texture2D(m_DiffuseMap3, texCoord3);
-        vec4 rgbDistorted3 = texture2D(m_DiffuseMap3, texCoord3 + vec2(distortionFactor / m_DiffuseMapTiles3, 0));
+        vec4 rgbDistorted3 = texture2D(m_DiffuseMap3, vec2(texCoord3.x + (distortionFactor / m_DiffuseMapTilesX3), texCoord3.y));
         rgb = mix(rgb, rgb3, rgb3.a);
         r = mix(r, rgbDistorted3.r, rgb3.a);
         b = mix(b, rgbDistorted3.b, rgb3.a);
     #endif
 
     #ifdef DIFFUSEMAP4
-        float tileProgress4 = (mod(m_Time, m_DiffuseMapSpeed4) / m_DiffuseMapSpeed4);
-        float tileIndex4 = floor(tileProgress4 * m_DiffuseMapTiles4);
-        vec2 texCoord4 = vec2((tileIndex4 + texCoord.x) / m_DiffuseMapTiles4, texCoord.y);
+        vec2 texCoord4 = getDiffuseTextureCoordinate(m_DiffuseMapTilesX4, m_DiffuseMapTilesY4, m_DiffuseMapInterval4);
         vec4 rgb4 = texture2D(m_DiffuseMap4, texCoord4);
-        vec4 rgbDistorted4 = texture2D(m_DiffuseMap4, texCoord4 + vec2(distortionFactor / m_DiffuseMapTiles4, 0));
+        vec4 rgbDistorted4 = texture2D(m_DiffuseMap4, vec2(texCoord4.x + (distortionFactor / m_DiffuseMapTilesX4), texCoord4.y));
         rgb = mix(rgb, rgb4, rgb4.a);
         r = mix(r, rgbDistorted4.r, rgb4.a);
         b = mix(b, rgbDistorted4.b, rgb4.a);
     #endif
 
     #ifdef DIFFUSEMAP5
-        float tileProgress5 = (mod(m_Time, m_DiffuseMapSpeed5) / m_DiffuseMapSpeed5);
-        float tileIndex5 = floor(tileProgress5 * m_DiffuseMapTiles5);
-        vec2 texCoord5 = vec2((tileIndex5 + texCoord.x) / m_DiffuseMapTiles5, texCoord.y);
+        vec2 texCoord5 = getDiffuseTextureCoordinate(m_DiffuseMapTilesX5, m_DiffuseMapTilesY5, m_DiffuseMapInterval5);
         vec4 rgb5 = texture2D(m_DiffuseMap5, texCoord5);
-        vec4 rgbDistorted5 = texture2D(m_DiffuseMap5, texCoord5 + vec2(distortionFactor / m_DiffuseMapTiles5, 0));
+        vec4 rgbDistorted5 = texture2D(m_DiffuseMap5, vec2(texCoord5.x + (distortionFactor / m_DiffuseMapTilesX5), texCoord5.y));
         rgb = mix(rgb, rgb5, rgb5.a);
         r = mix(r, rgbDistorted5.r, rgb5.a);
         b = mix(b, rgbDistorted5.b, rgb5.a);
     #endif
 
     #ifdef DIFFUSEMAP6
-        float tileProgress6 = (mod(m_Time, m_DiffuseMapSpeed6) / m_DiffuseMapSpeed6);
-        float tileIndex6 = floor(tileProgress6 * m_DiffuseMapTiles6);
-        vec2 texCoord6 = vec2((tileIndex6 + texCoord.x) / m_DiffuseMapTiles6, texCoord.y);
+        vec2 texCoord6 = getDiffuseTextureCoordinate(m_DiffuseMapTilesX6, m_DiffuseMapTilesY6, m_DiffuseMapInterval6);
         vec4 rgb6 = texture2D(m_DiffuseMap6, texCoord6);
-        vec4 rgbDistorted6 = texture2D(m_DiffuseMap6, texCoord6 + vec2(distortionFactor / m_DiffuseMapTiles6, 0));
+        vec4 rgbDistorted6 = texture2D(m_DiffuseMap6, vec2(texCoord6.x + (distortionFactor / m_DiffuseMapTilesX6), texCoord6.y));
         rgb = mix(rgb, rgb6, rgb6.a);
         r = mix(r, rgbDistorted6.r, rgb6.a);
         b = mix(b, rgbDistorted6.b, rgb6.a);
     #endif
 
     #ifdef DIFFUSEMAP7
-        float tileProgress7 = (mod(m_Time, m_DiffuseMapSpeed7) / m_DiffuseMapSpeed7);
-        float tileIndex7 = floor(tileProgress7 * m_DiffuseMapTiles7);
-        vec2 texCoord7 = vec2((tileIndex7 + texCoord.x) / m_DiffuseMapTiles7, texCoord.y);
+        vec2 texCoord7 = getDiffuseTextureCoordinate(m_DiffuseMapTilesX7, m_DiffuseMapTilesY7, m_DiffuseMapInterval7);
         vec4 rgb7 = texture2D(m_DiffuseMap7, texCoord7);
-        vec4 rgbDistorted7 = texture2D(m_DiffuseMap7, texCoord7 + vec2(distortionFactor / m_DiffuseMapTiles7, 0));
+        vec4 rgbDistorted7 = texture2D(m_DiffuseMap7, vec2(texCoord7.x + (distortionFactor / m_DiffuseMapTilesX7), texCoord7.y));
         rgb = mix(rgb, rgb7, rgb7.a);
         r = mix(r, rgbDistorted7.r, rgb7.a);
         b = mix(b, rgbDistorted7.b, rgb7.a);
     #endif
 
     #ifdef DIFFUSEMAP8
-        float tileProgress8 = (mod(m_Time, m_DiffuseMapSpeed8) / m_DiffuseMapSpeed8);
-        float tileIndex8 = floor(tileProgress8 * m_DiffuseMapTiles8);
-        vec2 texCoord8 = vec2((tileIndex8 + texCoord.x) / m_DiffuseMapTiles8, texCoord.y);
+        vec2 texCoord8 = getDiffuseTextureCoordinate(m_DiffuseMapTilesX8, m_DiffuseMapTilesY8, m_DiffuseMapInterval8);
         vec4 rgb8 = texture2D(m_DiffuseMap8, texCoord8);
-        vec4 rgbDistorted8 = texture2D(m_DiffuseMap8, texCoord8 + vec2(distortionFactor / m_DiffuseMapTiles8, 0));
+        vec4 rgbDistorted8 = texture2D(m_DiffuseMap8, vec2(texCoord8.x + (distortionFactor / m_DiffuseMapTilesX8), texCoord8.y));
         rgb = mix(rgb, rgb8, rgb8.a);
         r = mix(r, rgbDistorted8.r, rgb8.a);
         b = mix(b, rgbDistorted8.b, rgb8.a);

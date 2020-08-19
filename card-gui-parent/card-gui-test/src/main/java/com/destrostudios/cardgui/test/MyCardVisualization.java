@@ -36,7 +36,18 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
         String imagePathBackground = "images/templates/template_" + (minified ? "rect" : "full") + "_" + cardModel.getColor().ordinal() + ".png";
         String imagePathArtwork = "images/cards/" + cardModel.getName() + ".png";
 
-        int artworkTiles = (("Copy Cat".equals(cardModel.getName())) ? 20 : 1);
+        int artworkTilesSource;
+        int artworkTilesX;
+        int artworkTilesY;
+        if ("Copy Cat".equals(cardModel.getName())) {
+            artworkTilesSource = 20;
+            artworkTilesX = 5;
+            artworkTilesY = 4;
+        } else {
+            artworkTilesSource = 1;
+            artworkTilesX = 1;
+            artworkTilesY = 1;
+        }
         int artworkX = 36;
         int artworkY = (minified ? 36 : 68);
         int artworkWidth = 328;
@@ -56,16 +67,22 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
         String artworkKey = "artwork_" + minified + "_" + cardModel.getName();
         Texture textureArtwork = cachedTextures.computeIfAbsent(artworkKey, key -> {
             PaintableImage imageArtwork;
-            if (artworkTiles == 1) {
+            if (artworkTilesSource == 1) {
                 imageArtwork = new PaintableImage(textureWidth, textureHeight);
                 imageArtwork.setBackground_Alpha(0);
                 imageArtwork.paintImage(FileAssets.getImage(imagePathArtwork, artworkWidth, artworkHeight), artworkX, artworkY);
             } else {
-                imageArtwork = new PaintableImage(artworkTiles * textureWidth, textureHeight);
+                imageArtwork = new PaintableImage(artworkTilesX * textureWidth, artworkTilesY * textureHeight);
                 imageArtwork.setBackground_Alpha(0);
-                PaintableImage srcImage = new PaintableImage(FileAssets.getImage(imagePathArtwork, artworkTiles * artworkWidth, artworkHeight));
-                for (int i = 0; i < artworkTiles; i++) {
-                    imageArtwork.paintImage(srcImage, i * artworkWidth, 0, artworkWidth, artworkHeight, (i * textureWidth) + artworkX, artworkY, artworkWidth, artworkHeight);
+                PaintableImage srcImage = new PaintableImage(FileAssets.getImage(imagePathArtwork, artworkTilesSource * artworkWidth, artworkHeight));
+                for (int y = 0; y < artworkTilesY; y++) {
+                    for (int x = 0; x < artworkTilesX; x++) {
+                        imageArtwork.paintImage(
+                            srcImage,
+                            ((y * artworkTilesX) + x) * artworkWidth, 0, artworkWidth, artworkHeight,
+                            (x * textureWidth) + artworkX, (y * textureHeight) + artworkY, artworkWidth, artworkHeight
+                        );
+                    }
                 }
             }
             return SimpleModelledCard.flipAndCreateTexture(imageArtwork);
@@ -99,7 +116,8 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
         Material material = foilModelledCard.getMaterial_Front();
         material.setTexture("DiffuseMap1", textureBackground);
         material.setTexture("DiffuseMap2", textureArtwork);
-        material.setInt("DiffuseMapTiles2", artworkTiles);
+        material.setInt("DiffuseMapTilesX2", artworkTilesX);
+        material.setInt("DiffuseMapTilesY2", artworkTilesY);
         material.setTexture("DiffuseMap3", textureDamaged);
         material.setTexture("FoilMap", textureFoilMap);
     }

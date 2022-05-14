@@ -7,6 +7,7 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
     protected BoardObject(ModelType model) {
         this.model = model;
     }
+    private Board board;
     private int id = -1;
     private ModelType model;
     private BoardObjectVisualizer currentVisualizer;
@@ -22,10 +23,16 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
         return model;
     }
 
-    public void setId(int id) {
+    public void onRegister(Board board, int id) {
+        this.board = board;
         this.id = id;
     }
-    
+
+    public void onUnregister() {
+        this.board = null;
+        this.id = -1;
+    }
+
     public int getId() {
         return id;
     }

@@ -1,5 +1,8 @@
 package com.destrostudios.cardgui;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -10,6 +13,9 @@ import java.util.stream.Collectors;
  */
 public class Board implements GameLoopListener {
 
+    @Setter
+    @Getter
+    private BoardSettings settings;
     private int nextId;
     private HashMap<Integer, BoardObject> boardObjects = new HashMap<>();
     private LinkedList<BoardObject> lastFrameRemovedBoardObjects = new LinkedList<>();
@@ -23,7 +29,7 @@ public class Board implements GameLoopListener {
 
     public void register(BoardObject boardObject) {
         if (boardObject.getId() == -1) {
-            boardObject.setId(nextId);
+            boardObject.onRegister(this, nextId);
             boardObjects.put(nextId, boardObject);
             nextId++;
         }
@@ -31,7 +37,7 @@ public class Board implements GameLoopListener {
 
     public void unregister(BoardObject boardObject) {
         boardObjects.remove(boardObject.getId());
-        boardObject.setId(-1);
+        boardObject.onUnregister();
         boardObject.setCurrentVisualizer(null);
         lastFrameRemovedBoardObjects.add(boardObject);
     }

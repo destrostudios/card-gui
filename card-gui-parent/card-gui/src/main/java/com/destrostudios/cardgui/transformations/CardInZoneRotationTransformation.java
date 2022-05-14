@@ -5,8 +5,8 @@ import com.jme3.math.Quaternion;
 
 public class CardInZoneRotationTransformation extends LinearTargetRotationTransformation {
 
-    public CardInZoneRotationTransformation(ZonePosition zonePosition) {
-        super(new Quaternion());
+    public CardInZoneRotationTransformation(ZonePosition zonePosition, TransformationSpeed<Quaternion> transformationSpeed) {
+        super(new Quaternion(), transformationSpeed);
         this.zonePosition = zonePosition;
     }
     private ZonePosition zonePosition;

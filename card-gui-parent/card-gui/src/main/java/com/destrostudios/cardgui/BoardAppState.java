@@ -31,6 +31,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         this.board = board;
         this.rootNode = rootNode;
         this.settings = settings;
+        board.setSettings(settings);
     }
     private Board board;
     private Node rootNode;
@@ -272,9 +273,9 @@ public class BoardAppState extends BaseAppState implements ActionListener {
 
     private void inspect(TransformedBoardObject transformedBoardObject, Vector3f cursorPositionWorld) {
         Quaternion cameraFacingRotation = getCameraFacingRotation();
-        transformedBoardObject.position().setTransformation(new LinearTargetVectorTransformation3F(cursorPositionWorld, settings.getInspectionPositionTransformationSpeed().get()));
+        transformedBoardObject.position().setTransformation(new LinearTargetVectorTransformation3f(cursorPositionWorld, settings.getInspectionPositionTransformationSpeed().get()));
         transformedBoardObject.rotation().setTransformation(new LinearTargetRotationTransformation(cameraFacingRotation, settings.getInspectionRotationTransformationSpeed().get()));
-        transformedBoardObject.scale().setTransformation(new LinearTargetVectorTransformation3F(settings.getInspectionScale(), settings.getInspectionScaleTransformationSpeed().get()));
+        transformedBoardObject.scale().setTransformation(new LinearTargetVectorTransformation3f(settings.getInspectionScale(), settings.getInspectionScaleTransformationSpeed().get()));
         inspectedBoardObject = transformedBoardObject;
         updateAnnotatedModelProperties_IsBoardObjectInspected();
     }

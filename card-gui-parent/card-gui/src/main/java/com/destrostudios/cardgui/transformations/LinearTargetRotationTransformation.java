@@ -7,11 +7,7 @@ import com.jme3.math.Quaternion;
 public class LinearTargetRotationTransformation extends SimpleTargetRotationTransformation {
 
     public LinearTargetRotationTransformation() {
-        this(new Quaternion());
-    }
-
-    public LinearTargetRotationTransformation(Quaternion targetRotation) {
-        this(targetRotation, new TimeBasedRotationTransformationSpeed(1));
+        this(new Quaternion(), new TimeBasedRotationTransformationSpeed(1));
     }
 
     public LinearTargetRotationTransformation(Quaternion targetRotation, TransformationSpeed<Quaternion> transformationSpeed) {

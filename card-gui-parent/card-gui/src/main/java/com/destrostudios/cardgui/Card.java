@@ -18,9 +18,9 @@ public class Card<ModelType extends BoardObjectModel> extends TransformedBoardOb
     @Override
     public void onRegister(Board board, int id) {
         super.onRegister(board, id);
-        position().setDefaultTransformationProvider(() -> new CardInZonePositionTransformation(zonePosition, board.getSettings().getCardInZonePositionTransformationSpeed()));
-        rotation().setDefaultTransformationProvider(() -> new CardInZoneRotationTransformation(zonePosition, board.getSettings().getCardInZoneRotationTransformationSpeed()));
-        scale().setDefaultTransformationProvider(() -> new CardInZoneScaleTransformation(zonePosition, board.getSettings().getCardInZoneScaleTransformationSpeed()));
+        position().setDefaultTransformationProvider(() -> new CardInZonePositionTransformation(zonePosition, board.getSettings().getCardInZonePositionTransformationSpeed().get()));
+        rotation().setDefaultTransformationProvider(() -> new CardInZoneRotationTransformation(zonePosition, board.getSettings().getCardInZoneRotationTransformationSpeed().get()));
+        scale().setDefaultTransformationProvider(() -> new CardInZoneScaleTransformation(zonePosition, board.getSettings().getCardInZoneScaleTransformationSpeed().get()));
     }
 
     public ZonePosition getZonePosition() {

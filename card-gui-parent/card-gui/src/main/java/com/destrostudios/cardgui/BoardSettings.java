@@ -22,11 +22,11 @@ public class BoardSettings {
     @Builder.Default
     private String inputActionPrefix = "cardgui";
     @Builder.Default
-    private TransformationSpeed<Vector3f> cardInZonePositionTransformationSpeed = new TimeBasedVectorTransformationSpeed3f(1.5f);
+    private Supplier<TransformationSpeed<Vector3f>> cardInZonePositionTransformationSpeed = () -> new TimeBasedVectorTransformationSpeed3f(1.5f);
     @Builder.Default
-    private TransformationSpeed<Quaternion> cardInZoneRotationTransformationSpeed = new TimeBasedRotationTransformationSpeed(1);
+    private Supplier<TransformationSpeed<Quaternion>> cardInZoneRotationTransformationSpeed = () -> new TimeBasedRotationTransformationSpeed(1);
     @Builder.Default
-    private TransformationSpeed<Vector3f> cardInZoneScaleTransformationSpeed = new TimeBasedVectorTransformationSpeed3f(1.5f);
+    private Supplier<TransformationSpeed<Vector3f>> cardInZoneScaleTransformationSpeed = () -> new TimeBasedVectorTransformationSpeed3f(1.5f);
     @Builder.Default
     private float dragProjectionZ = 0.8f;
     @Builder.Default

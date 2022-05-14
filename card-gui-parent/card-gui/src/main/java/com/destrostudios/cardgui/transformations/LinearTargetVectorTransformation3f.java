@@ -7,7 +7,11 @@ import com.jme3.math.Vector3f;
 public class LinearTargetVectorTransformation3f extends SimpleTargetVectorTransformation3f {
 
     public LinearTargetVectorTransformation3f() {
-        this(new Vector3f(), new TimeBasedVectorTransformationSpeed3f(1));
+        this(new Vector3f());
+    }
+
+    public LinearTargetVectorTransformation3f(Vector3f targetPosition) {
+        this(targetPosition, new TimeBasedVectorTransformationSpeed3f(1.5f));
     }
 
     public LinearTargetVectorTransformation3f(Vector3f targetPosition, TransformationSpeed<Vector3f> transformationSpeed) {

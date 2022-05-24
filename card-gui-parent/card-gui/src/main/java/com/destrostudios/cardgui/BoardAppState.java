@@ -279,7 +279,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     }
 
     private void uninspect() {
-        inspectedBoardObject.resetTransformations();
+        settings.getInspector().uninspect(inspectedBoardObject);
         inspectedBoardObject = null;
         updateAnnotatedModelProperties_IsBoardObjectInspected();
     }

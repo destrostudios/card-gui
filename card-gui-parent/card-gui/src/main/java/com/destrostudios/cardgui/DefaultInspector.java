@@ -31,4 +31,9 @@ public class DefaultInspector implements Inspector {
         transformedBoardObject.rotation().setTransformation(new LinearTargetRotationTransformation(boardAppState.getCameraFacingRotation(), rotationTransformationSpeed.get()));
         transformedBoardObject.scale().setTransformation(new LinearTargetVectorTransformation3f(scale, scaleTransformationSpeed.get()));
     }
+
+    @Override
+    public void uninspect(TransformedBoardObject<?> transformedBoardObject) {
+        transformedBoardObject.resetTransformations();
+    }
 }

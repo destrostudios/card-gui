@@ -3,7 +3,6 @@ package com.destrostudios.cardgui;
 import com.destrostudios.cardgui.annotations.*;
 import com.destrostudios.cardgui.boardobjects.*;
 import com.destrostudios.cardgui.interactivities.*;
-import com.destrostudios.cardgui.transformations.*;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.collision.CollisionResult;
@@ -18,6 +17,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.util.TempVars;
+import lombok.Getter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -35,20 +35,23 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     }
     private Board board;
     private Node rootNode;
+    private BoardSettings settings;
     private Node mouseVisibleNode = new Node();
     private Node mouseInvisibleNode = new Node();
     private Application application;
     private RayCasting rayCasting;
     private HashMap<BoardObject, Node> boardObjectNodes = new HashMap<>();
+    @Getter
     private BoardObject hoveredBoardObject;
     private float hoverDuration;
+    @Getter
     private BoardObject draggedBoardObject;
     private InteractivitySource draggedBoardObjectInteractivitySource;
+    @Getter
     private TransformedBoardObject inspectedBoardObject;
     private Node draggedNode;
     private DraggedNodeTilter draggedNodeTilter;
     private TargetArrow aimTargetArrow;
-    private BoardSettings settings;
 
     @Override
     protected void initialize(Application app) {
@@ -259,23 +262,18 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     }
 
     private boolean shouldInspectHoveredBoardObject() {
-        if (hoveredBoardObject instanceof TransformedBoardObject) {
-            TransformedBoardObject transformedHoveredBoardObject = (TransformedBoardObject) hoveredBoardObject;
-            if (settings.getIsInspectable().test(transformedHoveredBoardObject)) {
-                Float hoverInspectionDelay = settings.getHoverInspectionDelay();
-                if (hoverInspectionDelay != null) {
-                    return (hoverDuration >= hoverInspectionDelay);
-                }
+        Float hoverInspectionDelay = settings.getHoverInspectionDelay();
+        if ((hoverInspectionDelay != null) && (hoverDuration >= hoverInspectionDelay)) {
+            if (hoveredBoardObject instanceof TransformedBoardObject) {
+                TransformedBoardObject transformedHoveredBoardObject = (TransformedBoardObject) hoveredBoardObject;
+                return settings.getIsInspectable().test(transformedHoveredBoardObject);
             }
         }
         return false;
     }
 
     private void inspect(TransformedBoardObject transformedBoardObject, Vector3f cursorPositionWorld) {
-        Quaternion cameraFacingRotation = getCameraFacingRotation();
-        transformedBoardObject.position().setTransformation(new LinearTargetVectorTransformation3f(cursorPositionWorld, settings.getInspectionPositionTransformationSpeed().get()));
-        transformedBoardObject.rotation().setTransformation(new LinearTargetRotationTransformation(cameraFacingRotation, settings.getInspectionRotationTransformationSpeed().get()));
-        transformedBoardObject.scale().setTransformation(new LinearTargetVectorTransformation3f(settings.getInspectionScale(), settings.getInspectionScaleTransformationSpeed().get()));
+        settings.getInspector().inspect(this, transformedBoardObject, cursorPositionWorld);
         inspectedBoardObject = transformedBoardObject;
         updateAnnotatedModelProperties_IsBoardObjectInspected();
     }
@@ -358,7 +356,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         return application.getCamera().getWorldCoordinates(screenPosition, settings.getDragProjectionZ());
     }
 
-    private Quaternion getCameraFacingRotation() {
+    public Quaternion getCameraFacingRotation() {
         Quaternion quaternion = new Quaternion(application.getCamera().getRotation());
         TempVars vars = TempVars.get();
         Quaternion frontRotation = vars.quat1;
@@ -366,18 +364,6 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         quaternion.multLocal(frontRotation);
         vars.release();
         return quaternion;
-    }
-
-    public BoardObject getHoveredBoardObject() {
-        return hoveredBoardObject;
-    }
-
-    public BoardObject getDraggedBoardObject() {
-        return draggedBoardObject;
-    }
-
-    public TransformedBoardObject getInspectedBoardObject() {
-        return inspectedBoardObject;
     }
 
     @Override

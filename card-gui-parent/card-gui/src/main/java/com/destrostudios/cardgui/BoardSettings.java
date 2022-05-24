@@ -42,14 +42,8 @@ public class BoardSettings {
     @Builder.Default
     private Float hoverInspectionDelay = null;
     @Builder.Default
-    private Predicate<TransformedBoardObject> isInspectable = transformedBoardObject -> transformedBoardObject instanceof Card;
+    private Predicate<TransformedBoardObject<?>> isInspectable = transformedBoardObject -> transformedBoardObject instanceof Card;
     @Builder.Default
-    private Supplier<TransformationSpeed<Vector3f>> inspectionPositionTransformationSpeed = () -> new TimeBasedVectorTransformationSpeed3f(0.3f);
-    @Builder.Default
-    private Supplier<TransformationSpeed<Quaternion>> inspectionRotationTransformationSpeed = () -> new TimeBasedRotationTransformationSpeed(0.3f);
-    @Builder.Default
-    private Supplier<TransformationSpeed<Vector3f>> inspectionScaleTransformationSpeed = () -> new TimeBasedVectorTransformationSpeed3f(0.3f);
-    @Builder.Default
-    private Vector3f inspectionScale = new Vector3f(1, 1, 1);
+    private Inspector inspector = new DefaultInspector();
 
 }

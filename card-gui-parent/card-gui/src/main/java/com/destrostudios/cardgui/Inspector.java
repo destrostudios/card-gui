@@ -6,5 +6,7 @@ public interface Inspector {
 
     void inspect(BoardAppState boardAppState, TransformedBoardObject<?> transformedBoardObject, Vector3f cursorPositionWorld);
 
+    boolean isReadyToUninspect(TransformedBoardObject<?> transformedBoardObject);
+
     void uninspect(TransformedBoardObject<?> transformedBoardObject);
 }

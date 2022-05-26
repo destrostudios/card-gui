@@ -33,6 +33,11 @@ public class DefaultInspector implements Inspector {
     }
 
     @Override
+    public boolean isReadyToUninspect(TransformedBoardObject<?> transformedBoardObject) {
+        return transformedBoardObject.hasReachedTargetTransform();
+    }
+
+    @Override
     public void uninspect(TransformedBoardObject<?> transformedBoardObject) {
         transformedBoardObject.resetTransformations();
     }

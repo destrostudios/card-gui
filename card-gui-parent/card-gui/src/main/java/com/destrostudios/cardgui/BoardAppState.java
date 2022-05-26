@@ -253,12 +253,12 @@ public class BoardAppState extends BaseAppState implements ActionListener {
             }
         } else {
             hoverDuration = 0;
-            if ((inspectedBoardObject != null) && inspectedBoardObject.hasReachedTargetTransform()) {
-                uninspect();
-            }
         }
         hoveredBoardObject = newHoveredBoardObject;
         updateAnnotatedModelProperties_IsBoardObjectHovered();
+        if ((inspectedBoardObject != null) && (inspectedBoardObject != hoveredBoardObject) && settings.getInspector().isReadyToUninspect(inspectedBoardObject)) {
+            uninspect();
+        }
     }
 
     private boolean shouldInspectHoveredBoardObject() {

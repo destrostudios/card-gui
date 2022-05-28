@@ -368,6 +368,9 @@ public class BoardAppState extends BaseAppState implements ActionListener {
 
     @Override
     protected void cleanup(Application app) {
+        application.getInputManager().deleteMapping(settings.getInputActionPrefix() + "_mouse_click_left");
+        application.getInputManager().deleteMapping(settings.getInputActionPrefix() + "_mouse_click_middle");
+        application.getInputManager().deleteMapping(settings.getInputActionPrefix() + "_mouse_click_right");
         application.getInputManager().removeListener(this);
         rootNode.detachChild(mouseVisibleNode);
         rootNode.detachChild(mouseInvisibleNode);

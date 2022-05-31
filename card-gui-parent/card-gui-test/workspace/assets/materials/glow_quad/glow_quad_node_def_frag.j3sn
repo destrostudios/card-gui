@@ -1,7 +1,7 @@
-ShaderNodeDefinitions{
-      ShaderNodeDefinition GlowBoxFrag{
+ShaderNodeDefinitions {
+      ShaderNodeDefinition GlowQuadFrag {
             Type : Fragment
-            Shader GLSL100 : materials/glow_box/glow_box_shader.frag
+            Shader GLSL100 : materials/glow_quad/glow_quad_shader.frag
             Documentation {
 
             } 

@@ -1,4 +1,4 @@
-MaterialDef GlowBox {
+MaterialDef GlowQuad {
     MaterialParameters {
         Texture2D GlowMap
         Color Color
@@ -9,8 +9,8 @@ MaterialDef GlowBox {
             WorldViewProjectionMatrix
         }
         VertexShaderNodes {
-            ShaderNode GlowBoxVert {
-                Definition : GlowBoxVert : materials/glow_box/glow_box_node_def_vert.j3sn
+            ShaderNode GlowQuadVert {
+                Definition : GlowQuadVert : materials/glow_quad/glow_quad_node_def_vert.j3sn
                 InputMappings {
                     worldViewProjectionMatrix = WorldParam.WorldViewProjectionMatrix
                     vertPosition = Global.position.xyz
@@ -23,10 +23,10 @@ MaterialDef GlowBox {
             }
         }
         FragmentShaderNodes {
-            ShaderNode GlowBoxFrag {
-                Definition : GlowBoxFrag : materials/glow_box/glow_box_node_def_frag.j3sn
+            ShaderNode GlowQuadFrag {
+                Definition : GlowQuadFrag : materials/glow_quad/glow_quad_node_def_frag.j3sn
                 InputMappings {
-                    texCoord = GlowBoxVert.texCoord
+                    texCoord = GlowQuadVert.texCoord
                     glowMap = MatParam.GlowMap
                     color = MatParam.Color
                     alpha = MatParam.Alpha

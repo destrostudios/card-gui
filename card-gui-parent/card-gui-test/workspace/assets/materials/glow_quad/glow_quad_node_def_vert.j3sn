@@ -1,7 +1,7 @@
-ShaderNodeDefinitions{
-      ShaderNodeDefinition GlowBoxVert{
+ShaderNodeDefinitions {
+      ShaderNodeDefinition GlowQuadVert {
             Type : Vertex
-            Shader GLSL100 : materials/glow_box/glow_box_shader.vert
+            Shader GLSL100 : materials/glow_quad/glow_quad_shader.vert
             Documentation {
 
             } 

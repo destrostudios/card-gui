@@ -35,9 +35,9 @@ public class MyCardVisualizer extends CustomAttachmentVisualizer<Card<MyCardMode
         }
 
         if (card.getModel().isDamaged()) {
-            visualization.setBackgroundColor(new ColorRGBA(1, 0, 0, 0.3f));
+            visualization.setBoxColor(new ColorRGBA(1, 0, 0, 0.3f));
         } else {
-            visualization.removeBackgroundColor();
+            visualization.removeBoxColor();
         }
     }
 }

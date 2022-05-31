@@ -1,9 +1,9 @@
 package com.destrostudios.cardgui.test;
 
 import com.destrostudios.cardgui.samples.visualization.*;
-import com.destrostudios.cardgui.samples.visualization.boxes.ColorBox;
-import com.destrostudios.cardgui.samples.visualization.boxes.GlowBox;
-import com.destrostudios.cardgui.samples.visualization.boxes.TextureBox;
+import com.destrostudios.cardgui.samples.visualization.background.ColorBox;
+import com.destrostudios.cardgui.samples.visualization.background.GlowQuad;
+import com.destrostudios.cardgui.samples.visualization.background.TextureQuad;
 import com.destrostudios.cardgui.samples.visualization.cards.modelled.FoilModelledCard;
 import com.destrostudios.cardgui.samples.visualization.cards.modelled.SimpleModelledCard;
 import com.destrostudios.cardgui.test.files.FileAssets;
@@ -24,18 +24,18 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
         node = new Node();
         foilModelledCard = new FoilModelledCard(assetManager, "models/card/card.j3o", "images/cardbacks/magic.png", ColorRGBA.Black);
         node.attachChild(foilModelledCard.getNode());
-        float boxWidth = 1.05f;
-        float boxHeight = 1.43f;
-        glowBox = new GlowBox(assetManager, boxWidth, boxHeight);
-        textureBox = new TextureBox(assetManager, boxWidth, boxHeight);
-        colorBox = new ColorBox(assetManager, boxWidth, boxHeight);
+        float backgroundWidth = 1.05f;
+        float backgroundHeight = 1.43f;
+        glowQuad = new GlowQuad(assetManager, backgroundWidth, backgroundHeight);
+        textureQuad = new TextureQuad(assetManager, backgroundWidth, backgroundHeight);
+        colorBox = new ColorBox(assetManager, backgroundWidth / 2.5f, 0.1f, backgroundHeight / 2.5f);
     }
     private static HashMap<String, Texture> cachedTextures = new HashMap<>();
     private boolean minified;
     private Node node;
     private FoilModelledCard foilModelledCard;
-    private GlowBox glowBox;
-    private TextureBox textureBox;
+    private GlowQuad glowQuad;
+    private TextureQuad textureQuad;
     private ColorBox colorBox;
 
     public void updateCardFront(MyCardModel cardModel) {
@@ -132,29 +132,29 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
     }
 
     public void setGlow(ColorRGBA colorRGBA) {
-        glowBox.setColor(colorRGBA);
-        node.attachChild(glowBox.getGeometry());
+        glowQuad.setColor(colorRGBA);
+        node.attachChild(glowQuad.getGeometry());
     }
 
     public void removeGlow() {
-        node.detachChild(glowBox.getGeometry());
+        node.detachChild(glowQuad.getGeometry());
     }
 
     public void setBackgroundTexture(Texture texture) {
-        textureBox.setTexture(texture);
-        node.attachChild(textureBox.getGeometry());
+        textureQuad.setTexture(texture);
+        node.attachChild(textureQuad.getGeometry());
     }
 
     public void removeBackgroundTexture() {
-        node.detachChild(textureBox.getGeometry());
+        node.detachChild(textureQuad.getGeometry());
     }
 
-    public void setBackgroundColor(ColorRGBA color) {
+    public void setBoxColor(ColorRGBA color) {
         colorBox.setColor(color);
         node.attachChild(colorBox.getGeometry());
     }
 
-    public void removeBackgroundColor() {
+    public void removeBoxColor() {
         node.detachChild(colorBox.getGeometry());
     }
 

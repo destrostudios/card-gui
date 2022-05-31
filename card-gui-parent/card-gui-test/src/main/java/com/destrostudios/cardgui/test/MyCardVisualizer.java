@@ -21,12 +21,23 @@ public class MyCardVisualizer extends CustomAttachmentVisualizer<Card<MyCardMode
     @Override
     protected void updateVisualizationObject(MyCardVisualization visualization, Card<MyCardModel> card, AssetManager assetManager) {
         visualization.updateCardFront(card.getModel());
+
         if (card.getModel().isInspected()) {
-            visualization.setGlow(ColorRGBA.Blue);
-        } else if (card.getModel().isDamaged()) {
             visualization.setGlow(ColorRGBA.randomColor());
         } else {
             visualization.removeGlow();
+        }
+
+        if (card.getModel().isDragged()) {
+            visualization.setBackgroundTexture(assetManager.loadTexture("images/effects/shield.png"));
+        } else {
+            visualization.removeBackgroundTexture();
+        }
+
+        if (card.getModel().isDamaged()) {
+            visualization.setBackgroundColor(new ColorRGBA(1, 0, 0, 0.3f));
+        } else {
+            visualization.removeBackgroundColor();
         }
     }
 }

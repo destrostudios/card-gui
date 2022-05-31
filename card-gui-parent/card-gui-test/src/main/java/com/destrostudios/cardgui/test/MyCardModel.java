@@ -1,6 +1,7 @@
 package com.destrostudios.cardgui.test;
 
 import com.destrostudios.cardgui.BoardObjectModel;
+import com.destrostudios.cardgui.annotations.IsBoardObjectDragged;
 import com.destrostudios.cardgui.annotations.IsBoardObjectInspected;
 import com.destrostudios.cardgui.test.game.MyCard;
 
@@ -11,6 +12,8 @@ public class MyCardModel extends BoardObjectModel {
     private boolean isDamaged;
     @IsBoardObjectInspected
     private boolean isInspected;
+    @IsBoardObjectDragged
+    private boolean isDragged;
 
     public void setColor(MyCard.Color color) {
         updateIfNotEquals(this.color, color, () -> this.color = color);
@@ -38,5 +41,9 @@ public class MyCardModel extends BoardObjectModel {
 
     public boolean isInspected() {
         return isInspected;
+    }
+
+    public boolean isDragged() {
+        return isDragged;
     }
 }

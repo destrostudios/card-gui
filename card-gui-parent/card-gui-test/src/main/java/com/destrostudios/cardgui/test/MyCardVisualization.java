@@ -1,6 +1,9 @@
 package com.destrostudios.cardgui.test;
 
 import com.destrostudios.cardgui.samples.visualization.*;
+import com.destrostudios.cardgui.samples.visualization.boxes.ColorBox;
+import com.destrostudios.cardgui.samples.visualization.boxes.GlowBox;
+import com.destrostudios.cardgui.samples.visualization.boxes.TextureBox;
 import com.destrostudios.cardgui.samples.visualization.cards.modelled.FoilModelledCard;
 import com.destrostudios.cardgui.samples.visualization.cards.modelled.SimpleModelledCard;
 import com.destrostudios.cardgui.test.files.FileAssets;
@@ -21,13 +24,19 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
         node = new Node();
         foilModelledCard = new FoilModelledCard(assetManager, "models/card/card.j3o", "images/cardbacks/magic.png", ColorRGBA.Black);
         node.attachChild(foilModelledCard.getNode());
-        glowBox = new GlowBox(assetManager, 1.05f, 1.43f);
+        float boxWidth = 1.05f;
+        float boxHeight = 1.43f;
+        glowBox = new GlowBox(assetManager, boxWidth, boxHeight);
+        textureBox = new TextureBox(assetManager, boxWidth, boxHeight);
+        colorBox = new ColorBox(assetManager, boxWidth, boxHeight);
     }
     private static HashMap<String, Texture> cachedTextures = new HashMap<>();
     private boolean minified;
     private Node node;
     private FoilModelledCard foilModelledCard;
     private GlowBox glowBox;
+    private TextureBox textureBox;
+    private ColorBox colorBox;
 
     public void updateCardFront(MyCardModel cardModel) {
         int textureWidth = 400;
@@ -129,6 +138,24 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
 
     public void removeGlow() {
         node.detachChild(glowBox.getGeometry());
+    }
+
+    public void setBackgroundTexture(Texture texture) {
+        textureBox.setTexture(texture);
+        node.attachChild(textureBox.getGeometry());
+    }
+
+    public void removeBackgroundTexture() {
+        node.detachChild(textureBox.getGeometry());
+    }
+
+    public void setBackgroundColor(ColorRGBA color) {
+        colorBox.setColor(color);
+        node.attachChild(colorBox.getGeometry());
+    }
+
+    public void removeBackgroundColor() {
+        node.detachChild(colorBox.getGeometry());
     }
 
     @Override

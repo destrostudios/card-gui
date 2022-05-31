@@ -15,7 +15,6 @@ public class GlowQuad extends BackgroundQuad {
 
     public GlowQuad(AssetManager assetManager, float width, float height, float alphaMinimum, float alphaMaximum, float alphaInterval) {
         super(width, height);
-        // FIXME: The GlowQuad shader transforms vertices wrong, resulting in smaller dimensions than specified (Can be worked around with bigger values for now...)
         Material material = new Material(assetManager, "materials/glow_quad/glow_quad.j3md");
         material.setTexture("GlowMap", assetManager.loadTexture("images/effects/card_glow.png"));
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);

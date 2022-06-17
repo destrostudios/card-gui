@@ -268,7 +268,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
         sphere.getModel().setColorRGBA(ColorRGBA.randomColor());
         sphere.position().setTransformation(new ConstantButTargetedTransformation<>(source.position().getCurrentValue()));
         board.register(sphere);
-        board.playAnimation(new TargetedArcAnimation(sphere, target, 5, 0.75f));
+        board.playAnimation(new TargetedArcAnimation(sphere, target, 5, 1));
         removeAfterReachingTargetObjects.add(sphere);
     }
 

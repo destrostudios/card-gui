@@ -38,7 +38,6 @@ public class Board implements GameLoopListener {
     public void unregister(BoardObject boardObject) {
         boardObjects.remove(boardObject.getId());
         boardObject.onUnregister();
-        boardObject.setCurrentVisualizer(null);
         lastFrameRemovedBoardObjects.add(boardObject);
     }
 

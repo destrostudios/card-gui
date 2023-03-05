@@ -162,6 +162,12 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         Node node = getNode(boardObject);
         // The node can be null if the board object was registered and instantly unregistered before the node was ever created
         if (node != null) {
+            BoardObjectVisualizer visualizer = boardObject.getCurrentVisualizer();
+            if (visualizer != null) {
+                // Important as the visualizer could've done a lot of stuff besides attaching something to the node
+                visualizer.removeVisualization(node);
+                boardObject.setCurrentVisualizer(null);
+            }
             node.getParent().detachChild(node);
             boardObjectNodes.remove(boardObject);
         }
@@ -340,9 +346,9 @@ public class BoardAppState extends BaseAppState implements ActionListener {
             Spatial spatial = collisionResult.getGeometry();
             while (spatial.getParent() != null) {
                 spatial = spatial.getParent();
-                Integer cardId = spatial.getUserData("boardObjectId");
-                if (cardId != null) {
-                    BoardObject boardObject = board.getBoardObject(cardId);
+                Integer boardObjectId = spatial.getUserData("boardObjectId");
+                if (boardObjectId != null) {
+                    BoardObject boardObject = board.getBoardObject(boardObjectId);
                     if ((filter == null) || filter.test(boardObject)) {
                         return boardObject;
                     }

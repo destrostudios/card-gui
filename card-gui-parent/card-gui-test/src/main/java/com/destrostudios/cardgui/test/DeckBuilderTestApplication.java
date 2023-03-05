@@ -2,7 +2,6 @@ package com.destrostudios.cardgui.test;
 
 import com.destrostudios.cardgui.*;
 import com.destrostudios.cardgui.samples.tools.deckbuilder.DeckBuilderAppState;
-import com.destrostudios.cardgui.samples.tools.deckbuilder.DeckBuilderDeckCardModel;
 import com.destrostudios.cardgui.samples.tools.deckbuilder.DeckBuilderSettings;
 import com.destrostudios.cardgui.samples.visualization.DebugZoneVisualizer;
 import com.destrostudios.cardgui.test.files.FileAssets;
@@ -40,7 +39,7 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
         app.start();
     }
 
-    private List<MyCardModel> allCardModels;
+    private HashMap<MyCardModel, Integer> collectionCards;
 
     @Override
     public void simpleInitApp() {
@@ -81,12 +80,13 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
     }
 
     private void initDeckBuilder() {
-        allCardModels = new LinkedList<>();
+        collectionCards = new HashMap<>();
         for (int i = 0; i < 300; i++) {
             MyCardModel cardModel = new MyCardModel();
             cardModel.setColor(MyCard.Color.values()[(int) (Math.random() * MyCard.Color.values().length)]);
             cardModel.setName((Math.random() < 0.33) ? "Shyvana" : ((Math.random() < 0.5) ? "Aether Adept" : "Copy Cat"));
-            allCardModels.add(cardModel);
+            int amount = (int) (Math.random() * 4);
+            collectionCards.put(cardModel, amount);
         }
         CardZone collectionZone = new SimpleIntervalZone(new Vector3f(-2, 0, 0), new Vector3f(1, 1, 1.4f));
         CardZone deckZone = new SimpleIntervalZone(new Vector3f(8.25f, 0, -4.715f), new Vector3f(1, 1, 0.57f));
@@ -111,17 +111,16 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
                 return new Vector2f(4, 10);
             }
         };
-        BoardObjectVisualizer<Card<MyCardModel>> collectionCardVisualizer = new MyCardVisualizer(false);
-        BoardObjectVisualizer<Card<DeckBuilderDeckCardModel<MyCardModel>>> deckCardVisualizer = new MyDeckBuilderDeckCardVisualizer();
         Comparator<MyCardModel> deckCardOrder = Comparator.comparing(MyCardModel::getName);
         DeckBuilderSettings<MyCardModel> settings = DeckBuilderSettings.<MyCardModel>builder()
-                .allCardModels(allCardModels)
+                .collectionCards(collectionCards)
                 .collectionZone(collectionZone)
                 .deckZone(deckZone)
                 .collectionZoneVisualizer(collectionZoneVisualizer)
                 .deckZoneVisualizer(deckZoneVisualizer)
-                .collectionCardVisualizer(collectionCardVisualizer)
-                .deckCardVisualizer(deckCardVisualizer)
+                .collectionCardVisualizer(new MyCardVisualizer(false))
+                .collectionCardAmountVisualizer(new MyDeckBuilderCollectionCardAmountVisualizer())
+                .deckCardVisualizer(new MyDeckBuilderDeckCardVisualizer())
                 .deckCardOrder(deckCardOrder)
                 .deckCardsMaximumTotal(30)
                 .collectionCardsPerRow(16)
@@ -158,10 +157,10 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
             deckBuilderAppState.clearDeck();
         } else if ("3".equals(name) && isPressed) {
             Map<MyCardModel, Integer> deck = new HashMap<>();
-            for (int i = 0; i < 30; i++) {
-                MyCardModel cardModel = allCardModels.get((int) (Math.random() * 10));
-                Integer currentAmount = deck.computeIfAbsent(cardModel, cm -> 0);
-                deck.put(cardModel, currentAmount + 1);
+            LinkedList<MyCardModel> collectionCardModels = new LinkedList<>(collectionCards.keySet());
+            for (int i = 0; i < 15; i++) {
+                MyCardModel cardModel = collectionCardModels.get((int) (Math.random() * collectionCardModels.size()));
+                deck.put(cardModel, 2);
             }
             deckBuilderAppState.setDeck(deck);
         }  else if ("4".equals(name) && isPressed) {
@@ -176,7 +175,7 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
             }
         } else if ("right".equals(name) && isPressed) {
             if (deckBuilderAppState.getCollectionPage() < (deckBuilderAppState.getCollectionPagesCount() - 1)) {
-                deckBuilderAppState.goToNextColletionPage();
+                deckBuilderAppState.goToNextCollectionPage();
             }
         }
     }

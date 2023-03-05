@@ -5,7 +5,6 @@ import com.jme3.math.Vector3f;
 import lombok.*;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -16,12 +15,13 @@ import java.util.function.Function;
 @Getter
 public class DeckBuilderSettings<CardModelType extends BoardObjectModel> {
 
-    private List<CardModelType> allCardModels;
+    private Map<CardModelType, Integer> collectionCards;
     private CardZone collectionZone;
     private CardZone deckZone;
     private BoardObjectVisualizer<CardZone> collectionZoneVisualizer;
     private BoardObjectVisualizer<CardZone> deckZoneVisualizer;
     private BoardObjectVisualizer<Card<CardModelType>> collectionCardVisualizer;
+    private BoardObjectVisualizer<DeckBuilderCollectionCardAmount> collectionCardAmountVisualizer;
     private BoardObjectVisualizer<Card<DeckBuilderDeckCardModel<CardModelType>>> deckCardVisualizer;
     private Comparator<CardModelType> deckCardOrder;
     private Integer deckCardsMaximumTotal;

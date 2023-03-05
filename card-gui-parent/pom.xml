@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.cardgui>1.0.0</version.cardgui>
         <version.jme3>3.2.1-stable</version.jme3>
-        <version.lombok>1.18.12</version.lombok>
+        <version.lombok>1.18.26</version.lombok>
     </properties>
     <build>
         <plugins>

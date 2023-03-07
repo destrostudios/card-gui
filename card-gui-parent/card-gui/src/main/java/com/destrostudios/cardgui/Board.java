@@ -1,19 +1,16 @@
 package com.destrostudios.cardgui;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-/**
- *
- * @author Carl
- */
 public class Board implements GameLoopListener {
 
-    @Setter
+    public Board(BoardSettings settings) {
+        this.settings = settings;
+    }
     @Getter
     private BoardSettings settings;
     private int nextId;
@@ -30,6 +27,9 @@ public class Board implements GameLoopListener {
     public void register(BoardObject boardObject) {
         if (boardObject.getId() == -1) {
             boardObject.onRegister(this, nextId);
+            if (boardObject instanceof TransformedBoardObject) {
+                settings.getInspector().onBoardObjectRegister((TransformedBoardObject<?>) boardObject);
+            }
             boardObjects.put(nextId, boardObject);
             nextId++;
         }
@@ -37,6 +37,9 @@ public class Board implements GameLoopListener {
 
     public void unregister(BoardObject boardObject) {
         boardObjects.remove(boardObject.getId());
+        if (boardObject instanceof TransformedBoardObject) {
+            settings.getInspector().onBoardObjectUnregister((TransformedBoardObject<?>) boardObject);
+        }
         boardObject.onUnregister();
         lastFrameRemovedBoardObjects.add(boardObject);
     }
@@ -107,22 +110,22 @@ public class Board implements GameLoopListener {
 
     public <T extends BoardObject> BoardObjectVisualizer<T> getVisualizer(T boardObject) {
         return boardObjectVisualizers.entrySet().stream()
-                .filter(entry -> entry.getKey().test(boardObject))
-                .findAny()
-                .map(entry -> (BoardObjectVisualizer<T>) entry.getValue())
-                .orElse(null);
+            .filter(entry -> entry.getKey().test(boardObject))
+            .findAny()
+            .map(entry -> (BoardObjectVisualizer<T>) entry.getValue())
+            .orElse(null);
     }
 
     public List<Card> getCardsInZone(CardZone cardZone) {
         return boardObjects.values().stream()
-                .filter(boardObject -> {
-                    if (boardObject instanceof Card) {
-                        Card card = (Card) boardObject;
-                        return (card.getZonePosition().getZone() == cardZone);
-                    }
-                    return false;
-                })
-                .map(boardObject -> (Card) boardObject)
-                .collect(Collectors.toList());
+            .filter(boardObject -> {
+                if (boardObject instanceof Card) {
+                    Card card = (Card) boardObject;
+                    return (card.getZonePosition().getZone() == cardZone);
+                }
+                return false;
+            })
+            .map(boardObject -> (Card) boardObject)
+            .collect(Collectors.toList());
     }
 }

@@ -1,14 +1,9 @@
 package com.destrostudios.cardgui.transformations;
 
 import com.destrostudios.cardgui.FloatInterpolate;
-import com.destrostudios.cardgui.transformations.speeds.TimeBasedRotationTransformationSpeed;
 import com.jme3.math.Quaternion;
 
 public class LinearTargetRotationTransformation extends SimpleTargetRotationTransformation {
-
-    public LinearTargetRotationTransformation() {
-        this(new Quaternion(), new TimeBasedRotationTransformationSpeed(1));
-    }
 
     public LinearTargetRotationTransformation(Quaternion targetRotation, TransformationSpeed<Quaternion> transformationSpeed) {
         super(new Quaternion(), targetRotation, transformationSpeed);

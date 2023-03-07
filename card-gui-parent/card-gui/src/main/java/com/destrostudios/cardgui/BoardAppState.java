@@ -27,15 +27,12 @@ import java.util.function.Predicate;
 
 public class BoardAppState extends BaseAppState implements ActionListener {
 
-    public BoardAppState(Board board, Node rootNode, BoardSettings settings) {
+    public BoardAppState(Board board, Node rootNode) {
         this.board = board;
         this.rootNode = rootNode;
-        this.settings = settings;
-        board.setSettings(settings);
     }
     private Board board;
     private Node rootNode;
-    private BoardSettings settings;
     private Node mouseVisibleNode = new Node();
     private Node mouseInvisibleNode = new Node();
     private Application application;
@@ -59,20 +56,20 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         rootNode.attachChild(mouseVisibleNode);
         rootNode.attachChild(mouseInvisibleNode);
         rayCasting = new RayCasting(application);
-        draggedNodeTilter = new DraggedNodeTilter(settings);
+        draggedNodeTilter = new DraggedNodeTilter(board.getSettings());
         aimTargetArrow = new TargetArrow();
         initializeInputs();
     }
 
     private void initializeInputs() {
-        application.getInputManager().addMapping(settings.getInputActionPrefix() + "_mouse_click_left", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-        application.getInputManager().addMapping(settings.getInputActionPrefix() + "_mouse_click_middle", new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
-        application.getInputManager().addMapping(settings.getInputActionPrefix() + "_mouse_click_right", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+        application.getInputManager().addMapping(board.getSettings().getInputActionPrefix() + "_mouse_click_left", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        application.getInputManager().addMapping(board.getSettings().getInputActionPrefix() + "_mouse_click_middle", new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
+        application.getInputManager().addMapping(board.getSettings().getInputActionPrefix() + "_mouse_click_right", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         application.getInputManager().addListener(
             this,
-            settings.getInputActionPrefix() + "_mouse_click_left",
-            settings.getInputActionPrefix() + "_mouse_click_middle",
-            settings.getInputActionPrefix() + "_mouse_click_right"
+            board.getSettings().getInputActionPrefix() + "_mouse_click_left",
+            board.getSettings().getInputActionPrefix() + "_mouse_click_middle",
+            board.getSettings().getInputActionPrefix() + "_mouse_click_right"
         );
     }
 
@@ -138,7 +135,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     private void updateDragTransformation(Vector2f cursorPositionScreen, Vector3f cursorPositionWorld, float lastTimePerFrame) {
         draggedNode.setLocalTranslation(cursorPositionWorld);
         draggedNode.setLocalRotation(getCameraFacingRotation());
-        if (settings.isDragTiltEnabled()) {
+        if (board.getSettings().isDragTiltEnabled()) {
             draggedNodeTilter.update(draggedNode, cursorPositionScreen, application.getCamera().getUp(), lastTimePerFrame);
         }
         if (draggedBoardObject instanceof TransformedBoardObject) {
@@ -216,11 +213,11 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     }
 
     private InteractivitySource getInteractivitySource(String actionName) {
-        if (actionName.equals(settings.getInputActionPrefix() + "_mouse_click_left")) {
+        if (actionName.equals(board.getSettings().getInputActionPrefix() + "_mouse_click_left")) {
             return InteractivitySource.MOUSE_LEFT;
-        } else if (actionName.equals(settings.getInputActionPrefix() + "_mouse_click_middle")) {
+        } else if (actionName.equals(board.getSettings().getInputActionPrefix() + "_mouse_click_middle")) {
             return InteractivitySource.MOUSE_MIDDLE;
-        } else if (actionName.equals(settings.getInputActionPrefix() + "_mouse_click_right")) {
+        } else if (actionName.equals(board.getSettings().getInputActionPrefix() + "_mouse_click_right")) {
             return InteractivitySource.MOUSE_RIGHT;
         }
         return null;
@@ -262,30 +259,30 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         }
         hoveredBoardObject = newHoveredBoardObject;
         updateAnnotatedModelProperties_IsBoardObjectHovered();
-        if ((inspectedBoardObject != null) && (inspectedBoardObject != hoveredBoardObject) && settings.getInspector().isReadyToUninspect(inspectedBoardObject)) {
+        if ((inspectedBoardObject != null) && (inspectedBoardObject != hoveredBoardObject) && board.getSettings().getInspector().isReadyToUninspect()) {
             uninspect();
         }
     }
 
     private boolean shouldInspectHoveredBoardObject() {
-        Float hoverInspectionDelay = settings.getHoverInspectionDelay();
+        Float hoverInspectionDelay = board.getSettings().getHoverInspectionDelay();
         if ((hoverInspectionDelay != null) && (hoverDuration >= hoverInspectionDelay)) {
             if (hoveredBoardObject instanceof TransformedBoardObject) {
                 TransformedBoardObject transformedHoveredBoardObject = (TransformedBoardObject) hoveredBoardObject;
-                return settings.getIsInspectable().test(transformedHoveredBoardObject);
+                return board.getSettings().getIsInspectable().test(transformedHoveredBoardObject);
             }
         }
         return false;
     }
 
     private void inspect(TransformedBoardObject transformedBoardObject, Vector3f cursorPositionWorld) {
-        settings.getInspector().inspect(this, transformedBoardObject, cursorPositionWorld);
+        board.getSettings().getInspector().inspect(this, transformedBoardObject, cursorPositionWorld);
         inspectedBoardObject = transformedBoardObject;
         updateAnnotatedModelProperties_IsBoardObjectInspected();
     }
 
     private void uninspect() {
-        settings.getInspector().uninspect(inspectedBoardObject);
+        board.getSettings().getInspector().uninspect();
         inspectedBoardObject = null;
         updateAnnotatedModelProperties_IsBoardObjectInspected();
     }
@@ -359,7 +356,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     }
 
     private Vector3f getWorldPosition(Vector2f screenPosition) {
-        return application.getCamera().getWorldCoordinates(screenPosition, settings.getDragProjectionZ());
+        return application.getCamera().getWorldCoordinates(screenPosition, board.getSettings().getDragProjectionZ());
     }
 
     public Quaternion getCameraFacingRotation() {
@@ -374,9 +371,9 @@ public class BoardAppState extends BaseAppState implements ActionListener {
 
     @Override
     protected void cleanup(Application app) {
-        application.getInputManager().deleteMapping(settings.getInputActionPrefix() + "_mouse_click_left");
-        application.getInputManager().deleteMapping(settings.getInputActionPrefix() + "_mouse_click_middle");
-        application.getInputManager().deleteMapping(settings.getInputActionPrefix() + "_mouse_click_right");
+        application.getInputManager().deleteMapping(board.getSettings().getInputActionPrefix() + "_mouse_click_left");
+        application.getInputManager().deleteMapping(board.getSettings().getInputActionPrefix() + "_mouse_click_middle");
+        application.getInputManager().deleteMapping(board.getSettings().getInputActionPrefix() + "_mouse_click_right");
         application.getInputManager().removeListener(this);
         rootNode.detachChild(mouseVisibleNode);
         rootNode.detachChild(mouseInvisibleNode);

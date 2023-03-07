@@ -69,7 +69,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
     };
 
     private void initBoard() {
-        board = new Board();
+        board = new Board(settings.getBoardSettings());
         board.addZone(settings.getCollectionZone());
         board.addZone(settings.getDeckZone());
         board.registerVisualizer(settings.getCollectionZone(), settings.getCollectionZoneVisualizer());
@@ -79,7 +79,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         if (settings.getCollectionCardAmountVisualizer() != null) {
             board.registerVisualizer_Class(DeckBuilderCollectionCardAmount.class, settings.getCollectionCardAmountVisualizer());
         }
-        boardAppState = new BoardAppState(board, rootNode, settings.getBoardSettings());
+        boardAppState = new BoardAppState(board, rootNode);
         initCollection();
         updateCollection();
     }

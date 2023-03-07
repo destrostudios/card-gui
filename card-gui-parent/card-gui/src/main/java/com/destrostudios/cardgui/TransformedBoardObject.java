@@ -1,6 +1,7 @@
 package com.destrostudios.cardgui;
 
-import com.destrostudios.cardgui.transformations.handlers.VectorTransformationHandler3f;
+import com.destrostudios.cardgui.transformations.handlers.PositionTransformationHandler3f;
+import com.destrostudios.cardgui.transformations.handlers.ScaleTransformationHandler3f;
 import com.destrostudios.cardgui.transformations.handlers.RotationTransformationHandler;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -10,9 +11,9 @@ public abstract class TransformedBoardObject<ModelType extends BoardObjectModel>
     protected TransformedBoardObject(ModelType model) {
         super(model);
     }
-    private VectorTransformationHandler3f positionTransformationHandler3f = new VectorTransformationHandler3f(Vector3f::new);
+    private PositionTransformationHandler3f positionTransformationHandler3f = new PositionTransformationHandler3f(Vector3f::new);
     private RotationTransformationHandler rotationTransformationHandler = new RotationTransformationHandler(Quaternion::new);
-    private VectorTransformationHandler3f scaleTransformationHandler3f = new VectorTransformationHandler3f(() -> new Vector3f(1, 1, 1));
+    private ScaleTransformationHandler3f scaleTransformationHandler3f = new ScaleTransformationHandler3f(() -> new Vector3f(1, 1, 1));
     private boolean isTransformationEnabled = true;
 
     @Override
@@ -51,7 +52,7 @@ public abstract class TransformedBoardObject<ModelType extends BoardObjectModel>
         return (positionTransformationHandler3f.hasReachedTarget() && rotationTransformationHandler.hasReachedTarget() && scaleTransformationHandler3f.hasReachedTarget());
     }
 
-    public VectorTransformationHandler3f position() {
+    public PositionTransformationHandler3f position() {
         return positionTransformationHandler3f;
     }
 
@@ -59,7 +60,7 @@ public abstract class TransformedBoardObject<ModelType extends BoardObjectModel>
         return rotationTransformationHandler;
     }
 
-    public VectorTransformationHandler3f scale() {
+    public ScaleTransformationHandler3f scale() {
         return scaleTransformationHandler3f;
     }
 }

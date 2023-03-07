@@ -102,7 +102,9 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
     }
 
     private void initBoardGui() {
-        board = new Board();
+        board = new Board(BoardSettings.builder()
+            .hoverInspectionDelay(1f)
+            .build());
         board.registerVisualizer_Class(CardZone.class, new DebugZoneVisualizer() {
 
             @Override
@@ -160,9 +162,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
             playerZones[i] = new PlayerZones(deckZone, handZone, boardZone);
         }
 
-        stateManager.attach(new BoardAppState(board, rootNode, BoardSettings.builder()
-                .hoverInspectionDelay(1f)
-                .build()));
+        stateManager.attach(new BoardAppState(board, rootNode));
     }
 
     private void updateBoard() {

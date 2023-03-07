@@ -1,5 +1,6 @@
 package com.destrostudios.cardgui;
 
+import com.destrostudios.cardgui.inspectors.DefaultInspector;
 import com.destrostudios.cardgui.transformations.TransformationSpeed;
 import com.destrostudios.cardgui.transformations.speeds.TimeBasedVectorTransformationSpeed2f;
 import com.destrostudios.cardgui.transformations.speeds.TimeBasedVectorTransformationSpeed3f;
@@ -44,6 +45,6 @@ public class BoardSettings {
     @Builder.Default
     private Predicate<TransformedBoardObject<?>> isInspectable = transformedBoardObject -> transformedBoardObject instanceof Card;
     @Builder.Default
-    private Inspector inspector = new DefaultInspector();
+    private Inspector inspector = new DefaultInspector(0.3f);
 
 }

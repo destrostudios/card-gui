@@ -5,13 +5,13 @@ import com.destrostudios.cardgui.samples.visualization.background.ColorBox;
 import com.destrostudios.cardgui.samples.visualization.background.GlowQuad;
 import com.destrostudios.cardgui.samples.visualization.background.TextureQuad;
 import com.destrostudios.cardgui.samples.visualization.cards.modelled.FoilModelledCard;
-import com.destrostudios.cardgui.samples.visualization.cards.modelled.SimpleModelledCard;
 import com.destrostudios.cardgui.test.files.FileAssets;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
+import com.jme3.texture.Texture2D;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -22,7 +22,7 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
     public MyCardVisualization(AssetManager assetManager, boolean minified) {
         this.minified = minified;
         node = new Node();
-        foilModelledCard = new FoilModelledCard(assetManager, "models/card/card.j3o", "images/cardbacks/magic.png", ColorRGBA.Black);
+        foilModelledCard = new FoilModelledCard(assetManager, "images/cardbacks/magic.png", ColorRGBA.Black);
         node.attachChild(foilModelledCard.getNode());
         float backgroundWidth = 1.05f;
         float backgroundHeight = 1.43f;
@@ -69,7 +69,7 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
             imageBackground.setBackground(Color.BLACK);
             BufferedImage bufferedImageBackground = FileAssets.getImage(imagePathBackground, imageBackground.getWidth(), imageBackground.getHeight());
             imageBackground.paintSameSizeImage(new PaintableImage(bufferedImageBackground));
-            return SimpleModelledCard.flipAndCreateTexture(imageBackground);
+            return flipAndCreateTexture(imageBackground);
         });
 
         // Artwork
@@ -94,7 +94,7 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
                     }
                 }
             }
-            return SimpleModelledCard.flipAndCreateTexture(imageArtwork);
+            return flipAndCreateTexture(imageArtwork);
         });
 
         // Damaged (Not caching this one to represent something that could be more dynamic and might have to be redrawn each time)
@@ -107,7 +107,7 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
                 }
             }
         }
-        Texture textureDamaged = SimpleModelledCard.flipAndCreateTexture(imageDamaged);
+        Texture textureDamaged = flipAndCreateTexture(imageDamaged);
 
         // FoilMap
         String foilMapKey = "foilmap";
@@ -119,7 +119,7 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
                     imageFoilMap.setPixel_Alpha(artworkX + x, artworkY + y, 255);
                 }
             }
-            return SimpleModelledCard.flipAndCreateTexture(imageFoilMap);
+            return flipAndCreateTexture(imageFoilMap);
         });
 
         Material material = foilModelledCard.getMaterial_Front();
@@ -161,5 +161,12 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
     @Override
     public Node getSpatial() {
         return node;
+    }
+
+    private static Texture2D flipAndCreateTexture(PaintableImage paintableImage) {
+        paintableImage.flipY();
+        Texture2D texture = new Texture2D();
+        texture.setImage(paintableImage.getImage());
+        return texture;
     }
 }

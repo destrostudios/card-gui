@@ -15,8 +15,8 @@ public class GlowQuad extends BackgroundQuad {
 
     public GlowQuad(AssetManager assetManager, float width, float height, float alphaMinimum, float alphaMaximum, float alphaInterval) {
         super(width, height);
-        Material material = new Material(assetManager, "materials/glow_quad/glow_quad.j3md");
-        material.setTexture("GlowMap", assetManager.loadTexture("images/effects/card_glow.png"));
+        Material material = new Material(assetManager, "card-gui/samples/materials/glow_quad/glow_quad.j3md");
+        material.setTexture("GlowMap", assetManager.loadTexture("card-gui/samples/textures/card_glow.png"));
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         geometry.setMaterial(material);
         geometry.setQueueBucket(RenderQueue.Bucket.Translucent);

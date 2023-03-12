@@ -62,7 +62,7 @@ MaterialDef FoilCard {
             FOILCOLOR : FoilColor
             SHINEINTERVAL : ShineInterval
         }
-        VertexShader GLSL100 GLSL150 : materials/foil_card/foil_card.vert
-        FragmentShader GLSL100 GLSL150 : materials/foil_card/foil_card.frag
+        VertexShader GLSL100 GLSL150 : card-gui/samples/materials/foil_card/foil_card.vert
+        FragmentShader GLSL100 GLSL150 : card-gui/samples/materials/foil_card/foil_card.frag
     }
 }

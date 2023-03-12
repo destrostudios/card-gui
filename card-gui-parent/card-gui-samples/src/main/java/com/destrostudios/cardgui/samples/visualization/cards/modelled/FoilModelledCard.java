@@ -8,8 +8,8 @@ import com.jme3.scene.Geometry;
 
 public class FoilModelledCard extends SimpleModelledCard {
 
-    public FoilModelledCard(AssetManager assetManager, String modelPath, String backTexturePath, ColorRGBA sideColor) {
-        super(assetManager, modelPath, backTexturePath, sideColor);
+    public FoilModelledCard(AssetManager assetManager, String backTexturePath, ColorRGBA sideColor) {
+        super(assetManager, backTexturePath, sideColor);
 
         Geometry front = getGeometry_Front();
         front.addControl(new TimeMaterialParamControl("Time"));
@@ -17,6 +17,6 @@ public class FoilModelledCard extends SimpleModelledCard {
 
     @Override
     protected Material createMaterial_Front(AssetManager assetManager) {
-        return new Material(assetManager, "materials/foil_card/foil_card.j3md");
+        return new Material(assetManager, "card-gui/samples/materials/foil_card/foil_card.j3md");
     }
 }

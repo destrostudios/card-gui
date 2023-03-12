@@ -25,9 +25,9 @@ public class SnowAnimation extends Animation {
     @Override
     public void start() {
         super.start();
-        ParticleEmitter particleEmitter = new ParticleEmitter("buff", ParticleMesh.Type.Triangle, 80);
+        ParticleEmitter particleEmitter = new ParticleEmitter("snow", ParticleMesh.Type.Triangle, 80);
         Material material = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-        material.setTexture("Texture", assetManager.loadTexture("images/effects/snow_additive.png"));
+        material.setTexture("Texture", assetManager.loadTexture("card-gui/samples/textures/snow_additive.png"));
         particleEmitter.setMaterial(material);
         particleEmitter.setImagesX(2);
         particleEmitter.setImagesY(2);

@@ -10,7 +10,7 @@ MaterialDef GlowQuad {
         }
         VertexShaderNodes {
             ShaderNode GlowQuadVert {
-                Definition : GlowQuadVert : materials/glow_quad/glow_quad_node_def_vert.j3sn
+                Definition : GlowQuadVert : card-gui/samples/materials/glow_quad/glow_quad_node_def_vert.j3sn
                 InputMappings {
                     worldViewProjectionMatrix = WorldParam.WorldViewProjectionMatrix
                     vertPosition = Global.position.xyz
@@ -24,7 +24,7 @@ MaterialDef GlowQuad {
         }
         FragmentShaderNodes {
             ShaderNode GlowQuadFrag {
-                Definition : GlowQuadFrag : materials/glow_quad/glow_quad_node_def_frag.j3sn
+                Definition : GlowQuadFrag : card-gui/samples/materials/glow_quad/glow_quad_node_def_frag.j3sn
                 InputMappings {
                     texCoord = GlowQuadVert.texCoord
                     glowMap = MatParam.GlowMap

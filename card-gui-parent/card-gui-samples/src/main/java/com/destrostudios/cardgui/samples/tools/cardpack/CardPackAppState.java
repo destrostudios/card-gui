@@ -18,6 +18,7 @@ import com.jme3.scene.Node;
 import lombok.Getter;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class CardPackAppState<CardModelType extends BoardObjectModel> extends BaseAppState {
 
@@ -30,7 +31,7 @@ public class CardPackAppState<CardModelType extends BoardObjectModel> extends Ba
     private CardPackSettings<CardModelType> settings;
     private Board board;
     private BoardAppState boardAppState;
-    private HashMap<CardModelType, Card<CardModelType>> cards;
+    private LinkedHashMap<CardModelType, Card<CardModelType>> cards;
     @Getter
     private boolean packOpen;
     private HashMap<CardModelType, Boolean> cardsRevealed;
@@ -56,7 +57,7 @@ public class CardPackAppState<CardModelType extends BoardObjectModel> extends Ba
     }
 
     private void initCards() {
-        cards = new HashMap<>();
+        cards = new LinkedHashMap<>();
         cardsRevealed = new HashMap<>();
         float openAndCloseScaleDuration = (settings.getPackOpenDuration() * settings.getPackOpenDurationFactorScale());
         for (CardModelType cardModel : settings.getCards()) {

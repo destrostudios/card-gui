@@ -219,9 +219,13 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         if (amountInDeck >= amountInCollection) {
             return false;
         }
-        Map<CardModelType, Integer> deckCardsMaximumUnique = settings.getDeckCardsMaximumUnique();
-        if (deckCardsMaximumUnique != null) {
-            Integer maximum = deckCardsMaximumUnique.get(cardModel);
+        Integer deckCardsMaximumGeneralUnique = settings.getDeckCardsMaximumGeneralUnique();
+        if ((deckCardsMaximumGeneralUnique != null) && (amountInDeck >= deckCardsMaximumGeneralUnique)) {
+            return false;
+        }
+        Map<CardModelType, Integer> deckCardsMaximumCustomUnique = settings.getDeckCardsMaximumCustomUnique();
+        if (deckCardsMaximumCustomUnique != null) {
+            Integer maximum = deckCardsMaximumCustomUnique.get(cardModel);
             if ((maximum != null) && (amountInDeck >= maximum)) {
                 return false;
             }

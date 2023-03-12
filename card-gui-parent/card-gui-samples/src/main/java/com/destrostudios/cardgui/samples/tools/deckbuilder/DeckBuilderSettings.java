@@ -25,7 +25,8 @@ public class DeckBuilderSettings<CardModelType extends BoardObjectModel> {
     private BoardObjectVisualizer<Card<DeckBuilderDeckCardModel<CardModelType>>> deckCardVisualizer;
     private Comparator<CardModelType> deckCardOrder;
     private Integer deckCardsMaximumTotal;
-    private Map<CardModelType, Integer> deckCardsMaximumUnique;
+    private Integer deckCardsMaximumGeneralUnique;
+    private Map<CardModelType, Integer> deckCardsMaximumCustomUnique;
     private Consumer<CardModelType> cardNotAddableCallback;
     private Function<Card<DeckBuilderDeckCardModel<CardModelType>>, Animation> deckCardEntryAnimation;
     @Builder.Default

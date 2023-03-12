@@ -84,7 +84,6 @@ public class CardPackAppState<CardModelType extends BoardObjectModel> extends Ba
             cards.put(cardModel, card);
             cardsRevealed.put(cardModel, false);
         }
-        board.finishAllTransformations();
     }
 
     public void openPack() {

@@ -163,7 +163,6 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
 
             index++;
         }
-        board.finishAllTransformations();
     }
 
     private List<CardModelType> getDisplayedCollectionCardModels() {

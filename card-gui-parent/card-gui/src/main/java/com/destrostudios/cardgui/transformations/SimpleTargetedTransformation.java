@@ -34,8 +34,11 @@ public abstract class SimpleTargetedTransformation<ValueType> extends TargetedTr
 
     @Override
     public ValueType getNewValue(ValueType currentValue, float lastTimePerFrame) {
-        float speed = transformationSpeed.getSpeed(currentValue, targetValue);
-        return getNewValue(currentValue, targetValue, speed, lastTimePerFrame);
+        Float speed = transformationSpeed.getSpeed(currentValue, targetValue);
+        if (speed != null) {
+            return getNewValue(currentValue, targetValue, speed, lastTimePerFrame);
+        }
+        return targetValue;
     }
 
     protected abstract ValueType getNewValue(ValueType currentValue, ValueType targetValue, float speed, float lastTimePerFrame);

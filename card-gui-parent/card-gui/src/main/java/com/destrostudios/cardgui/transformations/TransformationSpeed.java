@@ -13,7 +13,8 @@ public abstract class TransformationSpeed<T> implements Cloneable, GameLoopListe
 
     }
 
-    public abstract float getSpeed(T currentValue, T targetValue);
+    // A speed of null means the transformation should be immediately finished
+    public abstract Float getSpeed(T currentValue, T targetValue);
 
     @Override
     public abstract TransformationSpeed<T> clone();

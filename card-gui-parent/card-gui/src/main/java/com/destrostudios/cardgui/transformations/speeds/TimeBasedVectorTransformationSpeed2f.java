@@ -9,9 +9,12 @@ public class TimeBasedVectorTransformationSpeed2f extends TimeBasedTransformatio
     }
 
     @Override
-    public float getSpeed(Vector2f currentValue, Vector2f targetValue) {
-        float distance = currentValue.distance(targetValue);
-        return (distance / (duration - passedTime));
+    public Float getSpeed(Vector2f currentValue, Vector2f targetValue) {
+        if (passedTime < duration) {
+            float distance = currentValue.distance(targetValue);
+            return (distance / (duration - passedTime));
+        }
+        return null;
     }
 
     @Override

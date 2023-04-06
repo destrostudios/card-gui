@@ -11,7 +11,7 @@ public class EaseOutDistanceBasedVectorTransformationSpeed3f extends Transformat
     private float minimumSpeed;
 
     @Override
-    public float getSpeed(Vector3f currentValue, Vector3f targetValue) {
+    public Float getSpeed(Vector3f currentValue, Vector3f targetValue) {
         float distance = currentValue.distance(targetValue);
         return Math.max(minimumSpeed, distance);
     }

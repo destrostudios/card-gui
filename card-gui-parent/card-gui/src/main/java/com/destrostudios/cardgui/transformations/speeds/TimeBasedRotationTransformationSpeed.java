@@ -10,9 +10,12 @@ public class TimeBasedRotationTransformationSpeed extends TimeBasedTransformatio
     }
 
     @Override
-    public float getSpeed(Quaternion currentValue, Quaternion targetValue) {
-        float distance = FloatInterpolate.getDistanceLikeNumber(currentValue, targetValue);
-        return (distance / (duration - passedTime));
+    public Float getSpeed(Quaternion currentValue, Quaternion targetValue) {
+        if (passedTime < duration) {
+            float distance = FloatInterpolate.getDistanceLikeNumber(currentValue, targetValue);
+            return (distance / (duration - passedTime));
+        }
+        return null;
     }
 
     @Override

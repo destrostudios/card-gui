@@ -8,6 +8,7 @@ public class DeckBuilderCollectionCardAmountModel extends BoardObjectModel {
 
     private int x;
     private int y;
+    private Integer maximumAmountDeck;
     private int amountCollection;
     private int amountDeck;
 
@@ -17,6 +18,10 @@ public class DeckBuilderCollectionCardAmountModel extends BoardObjectModel {
 
     public void setY(int y) {
         updateIfNotEquals(this.y, y, () -> this.y = y);
+    }
+
+    public void setMaximumAmountDeck(Integer maximumAmountDeck) {
+        updateIfNotEquals(this.maximumAmountDeck, maximumAmountDeck, () -> this.maximumAmountDeck = maximumAmountDeck);
     }
 
     public void setAmountCollection(int amountCollection) {

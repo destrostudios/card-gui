@@ -10,6 +10,7 @@ import com.jme3.scene.Node;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -94,6 +95,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
             collectionCards.put(cardModel, card);
             // Amount
             DeckBuilderCollectionCardAmount amountBoardObject = new DeckBuilderCollectionCardAmount();
+            amountBoardObject.getModel().setMaximumAmountDeck(getMaximumAmountInDeck(cardModel));
             amountBoardObject.getModel().setAmountCollection(amount);
             collectionAmounts.put(cardModel, amountBoardObject);
         }
@@ -219,18 +221,16 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         if (amountInDeck >= amountInCollection) {
             return false;
         }
-        Integer deckCardsMaximumGeneralUnique = settings.getDeckCardsMaximumGeneralUnique();
-        if ((deckCardsMaximumGeneralUnique != null) && (amountInDeck >= deckCardsMaximumGeneralUnique)) {
-            return false;
+        Integer maximum = getMaximumAmountInDeck(cardModel);
+        return ((maximum == null) || (amountInDeck < maximum));
+    }
+
+    private Integer getMaximumAmountInDeck(CardModelType cardModel) {
+        Function<CardModelType, Integer> deckCardsMaximumUnique = settings.getDeckCardsMaximumUnique();
+        if (deckCardsMaximumUnique != null) {
+            return deckCardsMaximumUnique.apply(cardModel);
         }
-        Map<CardModelType, Integer> deckCardsMaximumCustomUnique = settings.getDeckCardsMaximumCustomUnique();
-        if (deckCardsMaximumCustomUnique != null) {
-            Integer maximum = deckCardsMaximumCustomUnique.get(cardModel);
-            if ((maximum != null) && (amountInDeck >= maximum)) {
-                return false;
-            }
-        }
-        return true;
+        return null;
     }
 
     private void changeDeckCardAmount(CardModelType cardModel, int amountChange) {

@@ -7,8 +7,8 @@ import com.destrostudios.cardgui.samples.visualization.cards.SimpleCardQuadVisua
 
 public abstract class SimpleDeckBuilderDeckCardVisualizer<CardModelType extends BoardObjectModel> extends SimpleCardQuadVisualizer<DeckBuilderDeckCardModel<CardModelType>> {
 
-    public SimpleDeckBuilderDeckCardVisualizer(float geometryWidth, float geometryHeight, int amountPixelWidth) {
-        super(geometryWidth, geometryHeight);
+    public SimpleDeckBuilderDeckCardVisualizer(float geometryWidth, float geometryHeight, int amountPixelWidth, boolean lightingMaterial) {
+        super(geometryWidth, geometryHeight, lightingMaterial);
         this.amountPixelWidth = amountPixelWidth;
     }
     protected int amountPixelWidth;

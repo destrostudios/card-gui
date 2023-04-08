@@ -6,6 +6,10 @@ import com.jme3.math.ColorRGBA;
 
 public abstract class MaterialFactory {
 
+    public static Material unshaded(AssetManager assetManager) {
+        return new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    }
+
     public static Material textureLighting(AssetManager assetManager) {
         return textureLighting(assetManager, null);
     }

@@ -12,14 +12,18 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.texture.Texture2D;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public abstract class SimpleCardVisualizer<CardModelType extends BoardObjectModel> extends SimpleAttachmentVisualizer<Card<CardModelType>, Geometry> {
+
+    private boolean lightingMaterial;
 
     @Override
     protected Geometry createVisualizationObject(AssetManager assetManager) {
         Geometry geometry = new Geometry();
         geometry.setMesh(createMesh());
-        Material material = MaterialFactory.textureLighting(assetManager);
+        Material material = (lightingMaterial ? MaterialFactory.textureLighting(assetManager) : MaterialFactory.unshaded(assetManager));
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         geometry.setMaterial(material);
         geometry.setQueueBucket(RenderQueue.Bucket.Transparent);
@@ -34,7 +38,7 @@ public abstract class SimpleCardVisualizer<CardModelType extends BoardObjectMode
         PaintableImage paintableImage = paintCard(card.getModel());
         Texture2D texture = new Texture2D();
         texture.setImage(paintableImage.getImage());
-        geometry.getMaterial().setTexture("DiffuseMap", texture);
+        geometry.getMaterial().setTexture((lightingMaterial ? "DiffuseMap" : "ColorMap"), texture);
     }
 
     protected abstract PaintableImage paintCard(CardModelType cardModel);

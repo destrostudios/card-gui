@@ -7,7 +7,8 @@ import com.jme3.scene.shape.Box;
 
 public abstract class SimpleCardBoxVisualizer<CardModelType extends BoardObjectModel> extends SimpleCardVisualizer<CardModelType> {
 
-    public SimpleCardBoxVisualizer(float width, float height) {
+    public SimpleCardBoxVisualizer(float width, float height, boolean lightingMaterial) {
+        super(lightingMaterial);
         this.width = width;
         this.height = height;
     }

@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 public class MyDeckBuilderDeckCardVisualizer extends SimpleDeckBuilderDeckCardVisualizer<MyCardModel> {
 
     public MyDeckBuilderDeckCardVisualizer() {
-        super(4, 0.57f, 57);
+        super(4, 0.57f, 57, false);
     }
     private static final Font FONT = new Font("Tahoma", Font.BOLD, 22);
 

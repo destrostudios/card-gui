@@ -5,7 +5,8 @@ import com.jme3.scene.Mesh;
 
 public abstract class SimpleCardQuadVisualizer<CardModelType extends BoardObjectModel> extends SimpleCardVisualizer<CardModelType> {
 
-    public SimpleCardQuadVisualizer(float width, float height) {
+    public SimpleCardQuadVisualizer(float width, float height, boolean lightingMaterial) {
+        super(lightingMaterial);
         this.width = width;
         this.height = height;
     }

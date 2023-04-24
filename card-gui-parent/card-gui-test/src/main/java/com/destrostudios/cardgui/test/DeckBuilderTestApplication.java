@@ -35,6 +35,7 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
         settings.setWidth(1280);
         settings.setHeight(720);
         settings.setTitle("CardGui - TestApp (DeckBuilder)");
+        settings.setGammaCorrection(false);
         app.setSettings(settings);
         app.start();
     }

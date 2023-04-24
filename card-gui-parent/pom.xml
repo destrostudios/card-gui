@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.cardgui>1.0.0</version.cardgui>
-        <version.jme3>3.2.1-stable</version.jme3>
+        <version.jme3>3.6.0-stable</version.jme3>
         <version.lombok>1.18.26</version.lombok>
     </properties>
     <build>
@@ -70,7 +70,7 @@
             </dependency>
             <dependency>
                 <groupId>org.jmonkeyengine</groupId>
-                <artifactId>jme3-lwjgl</artifactId>
+                <artifactId>jme3-lwjgl3</artifactId>
                 <version>${version.jme3}</version>
             </dependency>
             <!--jME3 Effekseer-->

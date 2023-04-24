@@ -34,6 +34,7 @@ public class CardPackTestApplication extends SimpleApplication implements Action
         settings.setWidth(1280);
         settings.setHeight(720);
         settings.setTitle("CardGui - TestApp (CardPack)");
+        settings.setGammaCorrection(false);
         app.setSettings(settings);
         app.start();
     }

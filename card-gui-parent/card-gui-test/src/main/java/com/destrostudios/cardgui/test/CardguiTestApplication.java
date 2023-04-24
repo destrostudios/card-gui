@@ -41,6 +41,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
         settings.setWidth(1280);
         settings.setHeight(720);
         settings.setTitle("CardGui - TestApp");
+        settings.setGammaCorrection(false);
         app.setSettings(settings);
         app.start();
     }

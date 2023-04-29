@@ -7,6 +7,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import lombok.Getter;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -23,6 +24,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
     }
     private Node rootNode;
     private DeckBuilderSettings<CardModelType> settings;
+    @Getter
     private Board board;
     private BoardAppState boardAppState;
     private HashMap<CardModelType, Card<CardModelType>> collectionCards = new HashMap<>();

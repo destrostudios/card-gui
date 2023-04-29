@@ -90,7 +90,7 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
             collectionCards.put(cardModel, amount);
         }
         CardZone collectionZone = new SimpleIntervalZone(new Vector3f(-2, 0, 0), new Vector3f(1, 1, 1.4f));
-        CardZone deckZone = new SimpleIntervalZone(new Vector3f(8.25f, 0, -4.715f), new Vector3f(1, 1, 0.57f));
+        CardZone deckZone = new SimpleIntervalZone(new Vector3f(8.25f, 0, -5), new Vector3f(1, 1, 0.57f));
         BoardObjectVisualizer<CardZone> collectionZoneVisualizer = new DebugZoneVisualizer() {
 
             @Override
@@ -103,7 +103,7 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
             @Override
             protected Geometry createVisualizationObject(AssetManager assetManager) {
                 Geometry visualizationObject = super.createVisualizationObject(assetManager);
-                visualizationObject.move(0,0, 4.715f);
+                visualizationObject.move(0,0, 5);
                 return visualizationObject;
             }
 

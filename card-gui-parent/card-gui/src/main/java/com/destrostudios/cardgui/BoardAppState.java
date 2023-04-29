@@ -31,6 +31,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         this.board = board;
         this.rootNode = rootNode;
     }
+    @Getter
     private Board board;
     private Node rootNode;
     private Node mouseVisibleNode = new Node();

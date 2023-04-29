@@ -132,7 +132,8 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
 
     private void updateCollection() {
         // Remove old
-        for (Card card : settings.getCollectionZone().getCards()) {
+        // TODO: Can be replaced with toArray(Card[]::new) when updating Java
+        for (Card card : settings.getCollectionZone().getCards().toArray(new Card[0])) {
             board.unregister(card);
         }
         for (DeckBuilderCollectionCardAmount amount : displayedCollectionCardAmounts) {

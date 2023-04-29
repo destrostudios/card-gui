@@ -23,6 +23,14 @@ public class Card<ModelType extends BoardObjectModel> extends TransformedBoardOb
         scale().setDefaultTransformationProvider(() -> new CardInZoneScaleTransformation(zonePosition, board.getSettings().getCardInZoneScaleTransformationSpeed().get()));
     }
 
+    @Override
+    public void onUnregister() {
+        if (zonePosition.getZone() != null) {
+            zonePosition.getZone().removeCard(this);
+        }
+        super.onUnregister();
+    }
+
     public ZonePosition getZonePosition() {
         return zonePosition;
     }

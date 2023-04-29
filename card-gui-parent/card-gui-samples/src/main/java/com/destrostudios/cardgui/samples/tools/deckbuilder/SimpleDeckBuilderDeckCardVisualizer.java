@@ -4,11 +4,10 @@ import com.destrostudios.cardgui.BoardObjectModel;
 import com.destrostudios.cardgui.samples.visualization.PaintableImage;
 import com.destrostudios.cardgui.samples.visualization.cards.SimpleCardQuadVisualizer;
 
-
 public abstract class SimpleDeckBuilderDeckCardVisualizer<CardModelType extends BoardObjectModel> extends SimpleCardQuadVisualizer<DeckBuilderDeckCardModel<CardModelType>> {
 
     public SimpleDeckBuilderDeckCardVisualizer(float geometryWidth, float geometryHeight, int amountPixelWidth, boolean lightingMaterial) {
-        super(geometryWidth, geometryHeight, lightingMaterial);
+        super(geometryWidth, geometryHeight, true, false, lightingMaterial);
         this.amountPixelWidth = amountPixelWidth;
     }
     protected int amountPixelWidth;

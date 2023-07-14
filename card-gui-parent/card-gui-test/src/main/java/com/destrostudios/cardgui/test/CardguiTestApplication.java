@@ -1,6 +1,7 @@
 package com.destrostudios.cardgui.test;
 
-import com.destroflyer.jme3.effekseer.model.ParticleEffectSettings;
+import com.destroflyer.jme3.effekseer.nativ.Effekseer;
+import com.destroflyer.jme3.effekseer.nativ.EffekseerControl;
 import com.destrostudios.cardgui.*;
 import com.destrostudios.cardgui.boardobjects.TargetArrow;
 import com.destrostudios.cardgui.events.*;
@@ -56,6 +57,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
     public void simpleInitApp() {
         assetManager.registerLocator(FileAssets.ROOT, FileLocator.class);
         viewPort.setBackgroundColor(ColorRGBA.Black);
+        Effekseer.initialize(stateManager, viewPort, assetManager, context.getSettings().isGammaCorrection(), false, false);
 
         initCamera();
         initLight();
@@ -302,15 +304,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
         } else if ("3".equals(name) && isPressed) {
             board.playAnimation(new SnowAnimation(assetManager, cam, rootNode));
         } else if ("4".equals(name) && isPressed) {
-            board.playAnimation(new EffekseerAnimation(
-                    rootNode,
-                    FileAssets.ROOT,
-                    FileAssets.ROOT + "effekseer/Pierre02/Benediction.efkproj",
-                    ParticleEffectSettings.builder()
-                            .loop(false)
-                            .build(),
-                    assetManager
-            ));
+            board.playAnimation(new EffekseerAnimation(rootNode, new EffekseerControl(assetManager, "effekseer/Pierre02/Benediction.efkefc")));
         }
     }
 }

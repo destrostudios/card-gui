@@ -14,6 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.cardgui>1.0.0</version.cardgui>
         <version.jme3>3.6.0-stable</version.jme3>
+        <version.jme3-effekseer>5503b6830a3ea99d3d478a9584c7770a5a829566</version.jme3-effekseer>
         <version.lombok>1.18.26</version.lombok>
     </properties>
     <build>
@@ -76,8 +77,15 @@
             <!--jME3 Effekseer-->
             <dependency>
                 <groupId>com.github.destroflyer.jme3-effekseer</groupId>
-                <artifactId>jme3-effekseer</artifactId>
-                <version>44aff53b24d90d5431b742bc2da16859c80f9b2a</version>
+                <artifactId>jme3-effekseer-native</artifactId>
+                <version>${version.jme3-effekseer}</version>
+                <exclusions>
+                    <!--Directly included in jme3-effekseer-native jar-->
+                    <exclusion>
+                        <groupId>effekseer</groupId>
+                        <artifactId>effekseer-native</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <!--Lombok-->
             <dependency>

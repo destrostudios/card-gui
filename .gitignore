@@ -62,6 +62,9 @@ nbactions.xml
 .idea
 *.iml
 
-# jme specific #
+# jME specific #
 lwjgl64.dll
 OpenAL64.dll
+
+# Effekseer specific #
+EffekseerNativeForJava.dll

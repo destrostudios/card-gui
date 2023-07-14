@@ -21,7 +21,7 @@
         <!--jME3 Effekseer-->
         <dependency>
             <groupId>com.github.destroflyer.jme3-effekseer</groupId>
-            <artifactId>jme3-effekseer</artifactId>
+            <artifactId>jme3-effekseer-native</artifactId>
         </dependency>
         <!--Lombok-->
         <dependency>

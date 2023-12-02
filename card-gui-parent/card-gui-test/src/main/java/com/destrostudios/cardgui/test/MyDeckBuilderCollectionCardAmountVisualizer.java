@@ -1,7 +1,7 @@
 package com.destrostudios.cardgui.test;
 
-import com.destrostudios.cardgui.samples.tools.deckbuilder.DeckBuilderCollectionCardAmount;
-import com.destrostudios.cardgui.samples.tools.deckbuilder.DeckBuilderCollectionCardAmountModel;
+import com.destrostudios.cardgui.samples.tools.deckbuilder.collection.CollectionDeckBuilderCardAmount;
+import com.destrostudios.cardgui.samples.tools.deckbuilder.collection.CollectionDeckBuilderCardAmountModel;
 import com.destrostudios.cardgui.samples.visualization.SimpleAttachmentVisualizer;
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapText;
@@ -12,7 +12,7 @@ import com.jme3.math.Vector3f;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class MyDeckBuilderCollectionCardAmountVisualizer extends SimpleAttachmentVisualizer<DeckBuilderCollectionCardAmount, BitmapText> {
+public class MyDeckBuilderCollectionCardAmountVisualizer extends SimpleAttachmentVisualizer<CollectionDeckBuilderCardAmount, BitmapText> {
 
     @Override
     protected BitmapText createVisualizationObject(AssetManager assetManager) {
@@ -23,8 +23,8 @@ public class MyDeckBuilderCollectionCardAmountVisualizer extends SimpleAttachmen
     }
 
     @Override
-    protected void updateVisualizationObject(BitmapText bitmapText, DeckBuilderCollectionCardAmount amount, AssetManager assetManager) {
-        DeckBuilderCollectionCardAmountModel model = amount.getModel();
+    protected void updateVisualizationObject(BitmapText bitmapText, CollectionDeckBuilderCardAmount amount, AssetManager assetManager) {
+        CollectionDeckBuilderCardAmountModel model = amount.getModel();
 
         float xOffset = -9.56f;
         float yOffset = -3.7f;

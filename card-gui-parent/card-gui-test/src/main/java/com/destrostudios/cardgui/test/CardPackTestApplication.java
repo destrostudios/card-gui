@@ -6,7 +6,6 @@ import com.destrostudios.cardgui.samples.tools.cardpack.CardPackAppState;
 import com.destrostudios.cardgui.samples.tools.cardpack.CardPackSettings;
 import com.destrostudios.cardgui.samples.visualization.DebugZoneVisualizer;
 import com.destrostudios.cardgui.test.files.FileAssets;
-import com.destrostudios.cardgui.test.game.MyCard;
 import com.destrostudios.cardgui.zones.SimpleIntervalZone;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
@@ -82,10 +81,7 @@ public class CardPackTestApplication extends SimpleApplication implements Action
     private void initCardPack() {
         cards = new LinkedList<>();
         for (int i = 0; i < 5; i++) {
-            MyCardModel cardModel = new MyCardModel();
-            cardModel.setColor(MyCard.Color.values()[i]);
-            cardModel.setName((Math.random() < 0.33) ? "Shyvana" : ((Math.random() < 0.5) ? "Aether Adept" : "Copy Cat"));
-            cards.add(cardModel);
+            cards.add(TestCards.getRandomCardModel());
         }
         CardZone cardZone = new SimpleIntervalZone(new Vector3f(), new Vector3f(1.3f, 1.3f, 1.3f));
         BoardObjectVisualizer<CardZone> cardZoneVisualizer = new DebugZoneVisualizer() {

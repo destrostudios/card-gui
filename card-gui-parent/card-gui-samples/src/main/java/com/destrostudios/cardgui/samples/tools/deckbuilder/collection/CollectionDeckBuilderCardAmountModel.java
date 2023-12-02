@@ -1,10 +1,10 @@
-package com.destrostudios.cardgui.samples.tools.deckbuilder;
+package com.destrostudios.cardgui.samples.tools.deckbuilder.collection;
 
 import com.destrostudios.cardgui.BoardObjectModel;
 import lombok.Getter;
 
 @Getter
-public class DeckBuilderCollectionCardAmountModel extends BoardObjectModel {
+public class CollectionDeckBuilderCardAmountModel extends BoardObjectModel {
 
     private int x;
     private int y;

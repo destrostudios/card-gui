@@ -4,7 +4,9 @@ import com.destrostudios.cardgui.BoardObjectModel;
 import com.destrostudios.cardgui.annotations.IsBoardObjectDragged;
 import com.destrostudios.cardgui.annotations.IsBoardObjectInspected;
 import com.destrostudios.cardgui.test.game.MyCard;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(exclude = {"isInspected", "isDragged"})
 public class MyCardModel extends BoardObjectModel {
 
     private MyCard.Color color;

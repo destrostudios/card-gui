@@ -96,9 +96,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
         MyPlayer[] players = new MyPlayer[]{new MyPlayer(), new MyPlayer()};
         for (MyPlayer player : players) {
             for (int i = 0; i < 30; i++) {
-                MyCard.Color color = MyCard.Color.values()[(int) (Math.random() * MyCard.Color.values().length)];
-                String name = ((Math.random() < 0.33) ? "Shyvana" : ((Math.random() < 0.5) ? "Aether Adept" : "Copy Cat"));
-                player.getDeck().addCard(new MyCard(color, name));
+                player.getDeck().addCard(TestCards.getRandomCard());
             }
         }
         game = new MyGame(players);

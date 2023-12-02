@@ -1,11 +1,13 @@
 package com.destrostudios.cardgui.test;
 
-import com.destrostudios.cardgui.*;
+import com.destrostudios.cardgui.BoardObjectVisualizer;
+import com.destrostudios.cardgui.BoardSettings;
+import com.destrostudios.cardgui.Card;
+import com.destrostudios.cardgui.CardZone;
 import com.destrostudios.cardgui.samples.tools.deckbuilder.DeckBuilderAppState;
 import com.destrostudios.cardgui.samples.tools.deckbuilder.DeckBuilderSettings;
 import com.destrostudios.cardgui.samples.visualization.DebugZoneVisualizer;
 import com.destrostudios.cardgui.test.files.FileAssets;
-import com.destrostudios.cardgui.test.game.MyCard;
 import com.destrostudios.cardgui.zones.SimpleIntervalZone;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
@@ -21,26 +23,21 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.system.AppSettings;
 
-import java.util.*;
-import java.util.function.Predicate;
+import java.util.Comparator;
+import java.util.Map;
 
-public class DeckBuilderTestApplication extends SimpleApplication implements ActionListener {
+public abstract class DeckBuilderTestApplication<DBAS extends DeckBuilderAppState<MyCardModel>> extends SimpleApplication implements ActionListener {
 
-    public static void main(String[] args) {
-        FileAssets.readRootFile();
-
-        DeckBuilderTestApplication app = new DeckBuilderTestApplication();
-        app.setShowSettings(false);
+    protected DeckBuilderTestApplication() {
         AppSettings settings = new AppSettings(true);
         settings.setWidth(1280);
         settings.setHeight(720);
         settings.setTitle("CardGui - TestApp (DeckBuilder)");
         settings.setGammaCorrection(false);
-        app.setSettings(settings);
-        app.start();
+        setSettings(settings);
+        setShowSettings(false);
     }
-
-    private HashMap<MyCardModel, Integer> collectionCards;
+    protected DBAS deckBuilderAppState;
 
     @Override
     public void simpleInitApp() {
@@ -81,23 +78,14 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
     }
 
     private void initDeckBuilder() {
-        collectionCards = new HashMap<>();
-        for (int i = 0; i < 300; i++) {
-            MyCardModel cardModel = new MyCardModel();
-            cardModel.setColor(MyCard.Color.values()[(int) (Math.random() * MyCard.Color.values().length)]);
-            cardModel.setName((Math.random() < 0.33) ? "Shyvana" : ((Math.random() < 0.5) ? "Aether Adept" : "Copy Cat"));
-            int amount = (int) (Math.random() * 4);
-            collectionCards.put(cardModel, amount);
-        }
-        CardZone collectionZone = new SimpleIntervalZone(new Vector3f(-2, 0, 0), new Vector3f(1, 1, 1.4f));
-        CardZone deckZone = new SimpleIntervalZone(new Vector3f(8.25f, 0, -5), new Vector3f(1, 1, 0.57f));
-        BoardObjectVisualizer<CardZone> collectionZoneVisualizer = new DebugZoneVisualizer() {
+        deckBuilderAppState = createDeckBuilder(getDeckBuilderSettings());
+        stateManager.attach(deckBuilderAppState);
+    }
 
-            @Override
-            protected Vector2f getSize(CardZone zone) {
-                return new Vector2f(16.5f, 10);
-            }
-        };
+    protected abstract DBAS createDeckBuilder(DeckBuilderSettings<MyCardModel> deckBuilderSettings);
+
+    protected DeckBuilderSettings<MyCardModel> getDeckBuilderSettings() {
+        CardZone deckZone = new SimpleIntervalZone(new Vector3f(8.25f, 0, -5), new Vector3f(1, 1, 0.57f));
         BoardObjectVisualizer<CardZone> deckZoneVisualizer = new DebugZoneVisualizer() {
 
             @Override
@@ -113,71 +101,48 @@ public class DeckBuilderTestApplication extends SimpleApplication implements Act
             }
         };
         Comparator<MyCardModel> deckCardOrder = Comparator.comparing(MyCardModel::getName);
-        DeckBuilderSettings<MyCardModel> settings = DeckBuilderSettings.<MyCardModel>builder()
-                .collectionCards(collectionCards)
-                .collectionZone(collectionZone)
+        return DeckBuilderSettings.<MyCardModel>builder()
                 .deckZone(deckZone)
-                .collectionZoneVisualizer(collectionZoneVisualizer)
                 .deckZoneVisualizer(deckZoneVisualizer)
-                .collectionCardVisualizer(new MyCardVisualizer(false))
-                .collectionCardAmountVisualizer(new MyDeckBuilderCollectionCardAmountVisualizer())
                 .deckCardVisualizer(new MyDeckBuilderDeckCardVisualizer())
                 .deckCardOrder(deckCardOrder)
                 .deckCardsMaximumTotal(30)
-                .collectionCardsPerRow(16)
-                .collectionRowsPerPage(7)
+                .cardNotAddableCallback(cardModel -> onCallback("cardNotAddable", cardModel))
+                .cardAddedCallback(cardModel -> onCallback("cardAdded", cardModel))
+                .cardRemovedCallback(cardModel -> onCallback("cardRemoved", cardModel))
+                .cardClearedCallback(cardModel -> onCallback("cardCleared", cardModel))
                 .boardSettings(BoardSettings.builder()
                         .hoverInspectionDelay(1f)
                         .isInspectable(transformedBoardObject -> {
                             if (transformedBoardObject instanceof Card) {
                                 Card card = (Card) transformedBoardObject;
-                                return (card.getZonePosition().getZone() == collectionZone);
+                                return (card.getZonePosition().getZone() != deckZone);
                             }
                             return false;
                         })
                         .build())
                 .build();
-        stateManager.attach(new DeckBuilderAppState<>(rootNode, settings));
+    }
+
+    protected void onCallback(String key, MyCardModel cardModel) {
+        System.out.println("Callback '" + key + "': " + cardModel.getColor().name() + " " + cardModel.getName());
     }
 
     @Override
     public void onAction(String name, boolean isPressed, float lastTimePerFrame) {
-        DeckBuilderAppState<MyCardModel> deckBuilderAppState = stateManager.getState(DeckBuilderAppState.class);
         if ("space".equals(name) && isPressed) {
             inputManager.setCursorVisible(flyCam.isEnabled());
             flyCam.setEnabled(!flyCam.isEnabled());
         } else if ("1".equals(name) && isPressed) {
             System.out.println("---Deck---");
             for (Map.Entry<MyCardModel, Integer> entry : deckBuilderAppState.getDeck().entrySet()) {
-                MyCardModel myCardModel = entry.getKey();
+                MyCardModel cardModel = entry.getKey();
                 int amount = entry.getValue();
-                System.out.println(amount + "x " + myCardModel.getColor().name() + " " + myCardModel.getName());
+                System.out.println(amount + "x " + cardModel.getColor().name() + " " + cardModel.getName());
             }
             System.out.println("----------");
         } else if ("2".equals(name) && isPressed) {
             deckBuilderAppState.clearDeck();
-        } else if ("3".equals(name) && isPressed) {
-            Map<MyCardModel, Integer> deck = new HashMap<>();
-            LinkedList<MyCardModel> collectionCardModels = new LinkedList<>(collectionCards.keySet());
-            for (int i = 0; i < 15; i++) {
-                MyCardModel cardModel = collectionCardModels.get((int) (Math.random() * collectionCardModels.size()));
-                deck.put(cardModel, 2);
-            }
-            deckBuilderAppState.setDeck(deck);
-        }  else if ("4".equals(name) && isPressed) {
-            Predicate<MyCardModel> collectionCardFilter = deckBuilderAppState.getCollectionCardFilter();
-            deckBuilderAppState.setCollectionCardFilter((collectionCardFilter == null) ? cardModel -> cardModel.getColor() == MyCard.Color.RED : null);
-        }   else if ("5".equals(name) && isPressed) {
-            Comparator<MyCardModel> collectionCardOrder = deckBuilderAppState.getCollectionCardOrder();
-            deckBuilderAppState.setCollectionCardOrder((collectionCardOrder == null) ? Comparator.comparing(MyCardModel::getName) : null);
-        } else if ("left".equals(name) && isPressed) {
-            if (deckBuilderAppState.getCollectionPage() > 0) {
-                deckBuilderAppState.goToPreviousCollectionPage();
-            }
-        } else if ("right".equals(name) && isPressed) {
-            if (deckBuilderAppState.getCollectionPage() < (deckBuilderAppState.getCollectionPagesCount() - 1)) {
-                deckBuilderAppState.goToNextCollectionPage();
-            }
         }
     }
 }

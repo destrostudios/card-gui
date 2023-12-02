@@ -19,6 +19,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
     public DeckBuilderAppState(Node rootNode, DeckBuilderSettings<CardModelType> settings) {
         this.rootNode = rootNode;
         this.settings = settings;
+        initBoard();
     }
     private Node rootNode;
     private DeckBuilderSettings<CardModelType> settings;
@@ -64,13 +65,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         }
     };
 
-    @Override
-    protected void initialize(Application app) {
-        initBoard();
-        getStateManager().attach(boardAppState);
-    }
-
-    protected void initBoard() {
+    private void initBoard() {
         board = new Board(settings.getBoardSettings());
         addZone(settings.getDeckZone(), settings.getDeckZoneVisualizer(), settings.getDeckCardVisualizer());
         boardAppState = new BoardAppState(board, rootNode);
@@ -91,11 +86,15 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
     }
 
     public void clearDeck() {
-        for (Card<DeckBuilderDeckCardModel<CardModelType>> deckCard : deckCards.values()) {
-            board.unregister(deckCard);
-        }
+        clearZone(settings.getDeckZone());
         deckCards.clear();
         updateDeck();
+    }
+
+    protected void clearZone(CardZone zone) {
+        for (Card card : zone.getCards().toArray(Card[]::new)) {
+            board.unregister(card);
+        }
     }
 
     protected boolean isAllowedToAdd(CardModelType cardModel) {
@@ -180,6 +179,11 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         if (callback != null) {
             callback.accept(data);
         }
+    }
+
+    @Override
+    protected void initialize(Application app) {
+        getStateManager().attach(boardAppState);
     }
 
     @Override

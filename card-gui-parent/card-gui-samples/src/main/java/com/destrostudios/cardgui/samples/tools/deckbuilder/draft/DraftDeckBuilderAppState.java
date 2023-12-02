@@ -16,21 +16,18 @@ public class DraftDeckBuilderAppState<CardModelType extends BoardObjectModel> ex
     public DraftDeckBuilderAppState(Node rootNode, DraftDeckBuilderSettings<CardModelType> settings) {
         super(rootNode, settings.getDeckBuilderSettings());
         this.settings = settings;
+        init();
     }
     private DraftDeckBuilderSettings<CardModelType> settings;
     private HashMap<CardModelType, Card<CardModelType>> draftCards = new HashMap<>();
 
-    @Override
-    protected void initBoard() {
-        super.initBoard();
+    private void init() {
         addZone(settings.getDraftZone(), settings.getDraftZoneVisualizer(), settings.getDraftCardVisualizer());
     }
 
     public void setDraftCards(Collection<CardModelType> draftCards) {
         // Remove old
-        for (Card<CardModelType> card : this.draftCards.values()) {
-            board.unregister(card);
-        }
+        clearZone(settings.getDraftZone());
         this.draftCards.clear();
 
         // Add new

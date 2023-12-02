@@ -6,15 +6,17 @@ import com.destrostudios.cardgui.annotations.IsBoardObjectInspected;
 import com.destrostudios.cardgui.test.game.MyCard;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(exclude = {"isInspected", "isDragged"})
+@EqualsAndHashCode
 public class MyCardModel extends BoardObjectModel {
 
     private MyCard.Color color;
     private String name;
     private boolean isDamaged;
     @IsBoardObjectInspected
+    @EqualsAndHashCode.Exclude
     private boolean isInspected;
     @IsBoardObjectDragged
+    @EqualsAndHashCode.Exclude
     private boolean isDragged;
 
     public void setColor(MyCard.Color color) {

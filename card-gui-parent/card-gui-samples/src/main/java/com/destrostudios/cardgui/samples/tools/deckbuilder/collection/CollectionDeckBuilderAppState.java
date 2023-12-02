@@ -16,6 +16,7 @@ public class CollectionDeckBuilderAppState<CardModelType extends BoardObjectMode
     public CollectionDeckBuilderAppState(Node rootNode, CollectionDeckBuilderSettings<CardModelType> settings) {
         super(rootNode, settings.getDeckBuilderSettings());
         this.settings = settings;
+        init();
     }
     private CollectionDeckBuilderSettings<CardModelType> settings;
     private HashMap<CardModelType, Card<CardModelType>> collectionCards = new HashMap<>();
@@ -28,9 +29,7 @@ public class CollectionDeckBuilderAppState<CardModelType extends BoardObjectMode
     @Getter
     private int collectionPage;
 
-    @Override
-    protected void initBoard() {
-        super.initBoard();
+    private void init() {
         addZone(settings.getCollectionZone(), settings.getCollectionZoneVisualizer(), settings.getCollectionCardVisualizer());
         if (settings.getCollectionCardAmountVisualizer() != null) {
             board.registerVisualizer_Class(CollectionDeckBuilderCardAmount.class, settings.getCollectionCardAmountVisualizer());
@@ -86,9 +85,7 @@ public class CollectionDeckBuilderAppState<CardModelType extends BoardObjectMode
 
     private void updateCollection() {
         // Remove old
-        for (Card card : settings.getCollectionZone().getCards().toArray(Card[]::new)) {
-            board.unregister(card);
-        }
+        clearZone(settings.getCollectionZone());
         for (CollectionDeckBuilderCardAmount amount : displayedCollectionCardAmounts) {
             board.unregister(amount);
         }

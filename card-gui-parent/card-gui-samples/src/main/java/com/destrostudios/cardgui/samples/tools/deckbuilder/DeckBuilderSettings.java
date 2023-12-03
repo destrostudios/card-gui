@@ -6,6 +6,7 @@ import lombok.*;
 import java.util.Comparator;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -19,6 +20,7 @@ public class DeckBuilderSettings<CardModelType extends BoardObjectModel> {
     private Comparator<CardModelType> deckCardOrder;
     private Integer deckCardsMaximumTotal;
     private Function<CardModelType, Integer> deckCardsMaximumUnique;
+    private Predicate<CardModelType> isAllowedToAdd;
     private Consumer<CardModelType> cardNotAddableCallback;
     private Consumer<CardModelType> cardAddedCallback;
     private Consumer<CardModelType> cardRemovedCallback;

@@ -103,7 +103,13 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
             return false;
         }
         Integer maximumOfCard = getMaximumAmountInDeck(cardModel);
-        return ((maximumOfCard == null) || (getAmountInDeck(cardModel) < maximumOfCard));
+        if ((maximumOfCard != null) && (getAmountInDeck(cardModel) >= maximumOfCard)) {
+            return false;
+        }
+        if ((settings.getIsAllowedToAdd() != null) && !settings.getIsAllowedToAdd().test(cardModel)) {
+            return false;
+        }
+        return true;
     }
 
     protected Integer getMaximumAmountInDeck(CardModelType cardModel) {

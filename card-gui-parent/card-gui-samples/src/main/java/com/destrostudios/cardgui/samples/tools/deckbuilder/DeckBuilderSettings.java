@@ -20,7 +20,7 @@ public class DeckBuilderSettings<CardModelType extends BoardObjectModel> {
     private Comparator<CardModelType> deckCardOrder;
     private Integer deckCardsMaximumTotal;
     private Function<CardModelType, Integer> deckCardsMaximumUnique;
-    private Predicate<CardModelType> isAllowedToAdd;
+    private Predicate<CardModelType> isAllowedToAddCard;
     private Consumer<CardModelType> cardNotAddableCallback;
     private Consumer<CardModelType> cardAddedCallback;
     private Consumer<CardModelType> cardRemovedCallback;

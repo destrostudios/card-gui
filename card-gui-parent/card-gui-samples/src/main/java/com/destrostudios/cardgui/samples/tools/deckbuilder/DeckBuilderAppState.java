@@ -33,7 +33,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         public void trigger(BoardObject source, BoardObject target) {
             Card<CardModelType> card = (Card<CardModelType>) source;
             CardModelType cardModel = card.getModel();
-            if (isAllowedToAdd(cardModel)) {
+            if (isAllowedToAddCard(cardModel)) {
                 changeDeckCardAmount(cardModel, 1);
                 updateDeck();
                 callbackIfExisting(settings.getCardAddedCallback(), cardModel);
@@ -97,7 +97,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         }
     }
 
-    protected boolean isAllowedToAdd(CardModelType cardModel) {
+    protected boolean isAllowedToAddCard(CardModelType cardModel) {
         Integer deckCardsMaximumTotal = settings.getDeckCardsMaximumTotal();
         if ((deckCardsMaximumTotal != null) && (getDeckSize() >= deckCardsMaximumTotal)) {
             return false;
@@ -106,7 +106,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         if ((maximumOfCard != null) && (getAmountInDeck(cardModel) >= maximumOfCard)) {
             return false;
         }
-        if ((settings.getIsAllowedToAdd() != null) && !settings.getIsAllowedToAdd().test(cardModel)) {
+        if ((settings.getIsAllowedToAddCard() != null) && !settings.getIsAllowedToAddCard().test(cardModel)) {
             return false;
         }
         return true;

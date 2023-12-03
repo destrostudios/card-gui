@@ -146,8 +146,8 @@ public class CollectionDeckBuilderAppState<CardModelType extends BoardObjectMode
     }
 
     @Override
-    protected boolean isAllowedToAdd(CardModelType cardModel) {
-        if (!super.isAllowedToAdd(cardModel)) {
+    protected boolean isAllowedToAddCard(CardModelType cardModel) {
+        if (!super.isAllowedToAddCard(cardModel)) {
             return false;
         }
         int amountInDeck = getAmountInDeck(cardModel);

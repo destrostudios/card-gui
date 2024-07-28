@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.cardgui>1.0.0</version.cardgui>
         <version.jme3>3.6.1-stable</version.jme3>
-        <version.jme3-effekseer>5503b6830a3ea99d3d478a9584c7770a5a829566</version.jme3-effekseer>
+        <version.jme3-effekseer>a9980f6230eaf15ed12831ad60c46d3581f009ee</version.jme3-effekseer>
         <version.lombok>1.18.34</version.lombok>
         <version.maven-compiler-plugin>3.13.0</version.maven-compiler-plugin>
         <version.maven-source-plugin>3.3.1</version.maven-source-plugin>

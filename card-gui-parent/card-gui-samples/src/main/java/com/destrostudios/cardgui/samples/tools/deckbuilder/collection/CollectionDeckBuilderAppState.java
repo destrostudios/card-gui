@@ -68,14 +68,26 @@ public class CollectionDeckBuilderAppState<CardModelType extends BoardObjectMode
         return (int) Math.ceil(((float) getFilteredCollectionCardModels().size()) / getCollectionCardsPerPage());
     }
 
+    public boolean canGoToPreviousCollectionPage() {
+        return collectionPage > 0;
+    }
+
     public void goToPreviousCollectionPage() {
-        collectionPage--;
-        updateCollection();
+        if (canGoToPreviousCollectionPage()) {
+            collectionPage--;
+            updateCollection();
+        }
+    }
+
+    public boolean canGoToNextCollectionPage() {
+        return collectionPage < (getCollectionPagesCount() - 1);
     }
 
     public void goToNextCollectionPage() {
-        collectionPage++;
-        updateCollection();
+        if (canGoToNextCollectionPage()) {
+            collectionPage++;
+            updateCollection();
+        }
     }
 
     public void goToCollectionPage(int page) {

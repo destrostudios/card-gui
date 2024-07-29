@@ -24,6 +24,8 @@ public class MyCardVisualizer extends CustomAttachmentVisualizer<Card<MyCardMode
 
         if (card.getModel().isInspected()) {
             visualization.setGlow(ColorRGBA.randomColor());
+        } else if (card.getModel().getGlowColor() != null) {
+            visualization.setGlow(card.getModel().getGlowColor());
         } else {
             visualization.removeGlow();
         }

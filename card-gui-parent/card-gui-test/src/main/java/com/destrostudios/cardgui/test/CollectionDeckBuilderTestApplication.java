@@ -70,13 +70,9 @@ public class CollectionDeckBuilderTestApplication extends DeckBuilderTestApplica
             Comparator<MyCardModel> collectionCardOrder = deckBuilderAppState.getCollectionCardOrder();
             deckBuilderAppState.setCollectionCardOrder((collectionCardOrder == null) ? Comparator.comparing(MyCardModel::getName) : null);
         } else if ("left".equals(name) && isPressed) {
-            if (deckBuilderAppState.getCollectionPage() > 0) {
-                deckBuilderAppState.goToPreviousCollectionPage();
-            }
+            deckBuilderAppState.goToPreviousCollectionPage();
         } else if ("right".equals(name) && isPressed) {
-            if (deckBuilderAppState.getCollectionPage() < (deckBuilderAppState.getCollectionPagesCount() - 1)) {
-                deckBuilderAppState.goToNextCollectionPage();
-            }
+            deckBuilderAppState.goToNextCollectionPage();
         }
     }
 }

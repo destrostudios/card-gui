@@ -111,11 +111,11 @@ public class CardPackAppState<CardModelType extends BoardObjectModel> extends Ba
     }
 
     public void revealAllCards() {
-        settings.getCards().forEach(this::revealCard);
+        cards.keySet().forEach(this::revealCard);
     }
 
     public void hideAllCards() {
-        settings.getCards().forEach(this::hideCard);
+        cards.keySet().forEach(this::hideCard);
     }
 
     public void revealCard(CardModelType cardModel) {

@@ -68,3 +68,4 @@ OpenAL64.dll
 
 # Effekseer specific #
 EffekseerNativeForJava.dll
+hs_err_pid*.log

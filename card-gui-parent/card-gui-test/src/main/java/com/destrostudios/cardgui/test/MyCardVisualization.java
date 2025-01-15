@@ -4,7 +4,7 @@ import com.destrostudios.cardgui.samples.visualization.*;
 import com.destrostudios.cardgui.samples.visualization.background.ColorBox;
 import com.destrostudios.cardgui.samples.visualization.background.GlowQuad;
 import com.destrostudios.cardgui.samples.visualization.background.TextureQuad;
-import com.destrostudios.cardgui.samples.visualization.cards.modelled.FoilModelledCard;
+import com.destrostudios.cardgui.samples.visualization.cards.modelled.FoilSimpleModelledCard;
 import com.destrostudios.cardgui.test.files.FileAssets;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
@@ -22,8 +22,8 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
     public MyCardVisualization(AssetManager assetManager, boolean minified) {
         this.minified = minified;
         node = new Node();
-        foilModelledCard = new FoilModelledCard(assetManager, "images/cardbacks/magic.png", ColorRGBA.Black);
-        node.attachChild(foilModelledCard.getNode());
+        modelledCard = new FoilSimpleModelledCard(assetManager, "images/cardbacks/magic.png", ColorRGBA.Black);
+        node.attachChild(modelledCard.getNode());
         float backgroundWidth = 1.05f;
         float backgroundHeight = 1.43f;
         glowQuad = new GlowQuad(assetManager, backgroundWidth, backgroundHeight);
@@ -33,7 +33,7 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
     private static HashMap<String, Texture> cachedTextures = new HashMap<>();
     private boolean minified;
     private Node node;
-    private FoilModelledCard foilModelledCard;
+    private FoilSimpleModelledCard modelledCard;
     private GlowQuad glowQuad;
     private TextureQuad textureQuad;
     private ColorBox colorBox;
@@ -122,7 +122,7 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
             return flipAndCreateTexture(imageFoilMap);
         });
 
-        Material material = foilModelledCard.getMaterial_Front();
+        Material material = modelledCard.getMaterial_Front();
         material.setTexture("DiffuseMap1", textureBackground);
         material.setTexture("DiffuseMap2", textureArtwork);
         material.setInt("DiffuseMapTilesX2", artworkTilesX);

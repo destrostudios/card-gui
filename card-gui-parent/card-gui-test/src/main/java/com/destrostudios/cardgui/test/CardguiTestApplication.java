@@ -13,6 +13,8 @@ import com.destrostudios.cardgui.samples.visualization.*;
 import com.destrostudios.cardgui.TargetSnapMode;
 import com.destrostudios.cardgui.test.game.*;
 import com.destrostudios.cardgui.transformations.*;
+import com.destrostudios.cardgui.transformations.relative.*;
+import com.destrostudios.cardgui.transformations.speeds.*;
 import com.destrostudios.cardgui.zones.*;
 import com.destrostudios.cardgui.test.files.FileAssets;
 import com.jme3.app.SimpleApplication;
@@ -51,6 +53,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
     private PlayerZones[] playerZones;
     private HashMap<MyCard, Card<MyCardModel>> visualCards = new HashMap<>();
     private HashMap<Card<MyCardModel>, MyCard> gameCards = new HashMap<>();
+    private MyCircle circle;
     private LinkedList<TransformedBoardObject> removeAfterReachingTargetObjects = new LinkedList<>();
 
     @Override
@@ -89,7 +92,8 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
         inputManager.addMapping("2", new KeyTrigger(KeyInput.KEY_2));
         inputManager.addMapping("3", new KeyTrigger(KeyInput.KEY_3));
         inputManager.addMapping("4", new KeyTrigger(KeyInput.KEY_4));
-        inputManager.addListener(this, "space", "1", "2", "3", "4");
+        inputManager.addMapping("5", new KeyTrigger(KeyInput.KEY_5));
+        inputManager.addListener(this, "space", "1", "2", "3", "4", "5");
     }
 
     private void initGame() {
@@ -139,6 +143,7 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
                         .build()
         ));
         board.registerVisualizer_Class(MyColoredSphere.class, new MyColoredSphereVisualizer());
+        board.registerVisualizer_Class(MyCircle.class, new MyCircleVisualizer());
 
         int playersCount = game.getPlayers().length;
         playerZones = new PlayerZones[playersCount];
@@ -162,6 +167,17 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
             board.addZone(boardZone);
             playerZones[i] = new PlayerZones(deckZone, handZone, boardZone);
         }
+
+        circle = new MyCircle();
+        circle.getModel().setName("Fireblast");
+        circle.position().setTransformation(new ConstantButTargetedTransformation<>(new Vector3f(10, 0, -1)));
+        float circleFlipDuration = 0.25f;
+        circle.rotation().addRelativeTransformation(new ConditionalRelativeTransformation<>(
+            new LinearTargetRotationTransformation(new Quaternion().fromAngleAxis(-1 * FastMath.PI, Vector3f.UNIT_X), new TimeBasedRotationTransformationSpeed(circleFlipDuration)),
+            new LinearTargetRotationTransformation(new Quaternion(), new TimeBasedRotationTransformationSpeed(circleFlipDuration)),
+            () -> circle.getModel().isFaceDown()
+        ));
+        board.register(circle);
 
         stateManager.attach(new BoardAppState(board, rootNode));
     }
@@ -303,6 +319,8 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
             board.playAnimation(new SnowAnimation(assetManager, cam, rootNode));
         } else if ("4".equals(name) && isPressed) {
             board.playAnimation(new EffekseerAnimation(rootNode, new EffekseerControl(assetManager, "effekseer/Pierre02/Benediction.efkefc")));
+        } else if ("5".equals(name) && isPressed) {
+            circle.getModel().setFaceDown(!circle.getModel().isFaceDown());
         }
     }
 }

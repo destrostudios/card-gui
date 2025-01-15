@@ -15,7 +15,7 @@
         <version.cardgui>1.0.0</version.cardgui>
         <version.jme3>3.6.1-stable</version.jme3>
         <version.jme3-effekseer>32a569408e39d58cda8f795fcd1e154cf6722221</version.jme3-effekseer>
-        <version.lombok>1.18.34</version.lombok>
+        <version.lombok>1.18.36</version.lombok>
         <version.maven-compiler-plugin>3.13.0</version.maven-compiler-plugin>
         <version.maven-source-plugin>3.3.1</version.maven-source-plugin>
     </properties>

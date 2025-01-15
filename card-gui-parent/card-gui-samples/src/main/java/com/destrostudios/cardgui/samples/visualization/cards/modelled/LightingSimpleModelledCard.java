@@ -4,11 +4,11 @@ import com.destrostudios.cardgui.samples.visualization.materials.MaterialFactory
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.texture.Texture2D;
+import com.jme3.texture.Texture;
 
-public class LightingModelledCard extends SimpleModelledCard {
+public class LightingSimpleModelledCard extends SimpleModelledCard {
 
-    public LightingModelledCard(AssetManager assetManager, String backTexturePath, ColorRGBA sideColor) {
+    public LightingSimpleModelledCard(AssetManager assetManager, String backTexturePath, ColorRGBA sideColor) {
         super(assetManager, backTexturePath, sideColor);
     }
 
@@ -17,7 +17,7 @@ public class LightingModelledCard extends SimpleModelledCard {
         return MaterialFactory.textureLighting(assetManager);
     }
 
-    public void setFront(Texture2D texture) {
+    public void setFront(Texture texture) {
         Material material = getGeometry_Front().getMaterial();
         material.setTexture("DiffuseMap", texture);
     }

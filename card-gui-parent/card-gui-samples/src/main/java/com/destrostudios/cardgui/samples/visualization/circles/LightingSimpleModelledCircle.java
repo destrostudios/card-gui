@@ -14,11 +14,20 @@ public class LightingSimpleModelledCircle extends SimpleModelledCircle {
 
     @Override
     protected Material createMaterial_Front(AssetManager assetManager) {
-        return MaterialFactory.textureLighting(assetManager);
+        return MaterialFactory.lightingTexture(assetManager);
+    }
+
+    @Override
+    protected Material createMaterial_Back(AssetManager assetManager) {
+        return MaterialFactory.lightingTexture(assetManager, backTexturePath);
+    }
+
+    @Override
+    protected Material createMaterial_Side(AssetManager assetManager) {
+        return MaterialFactory.lightingColor(assetManager, sideColor);
     }
 
     public void setFront(Texture texture) {
-        Material material = getGeometry_Front().getMaterial();
-        material.setTexture("DiffuseMap", texture);
+        getMaterial_Front().setTexture("DiffuseMap", texture);
     }
 }

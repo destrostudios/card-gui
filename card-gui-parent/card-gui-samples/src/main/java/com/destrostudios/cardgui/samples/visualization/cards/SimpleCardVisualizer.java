@@ -23,7 +23,7 @@ public abstract class SimpleCardVisualizer<CardModelType extends BoardObjectMode
     protected Geometry createVisualizationObject(AssetManager assetManager) {
         Geometry geometry = new Geometry();
         geometry.setMesh(createMesh());
-        Material material = (lightingMaterial ? MaterialFactory.textureLighting(assetManager) : MaterialFactory.unshaded(assetManager));
+        Material material = (lightingMaterial ? MaterialFactory.lightingTexture(assetManager) : MaterialFactory.unshaded(assetManager));
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         geometry.setMaterial(material);
         geometry.setQueueBucket(RenderQueue.Bucket.Transparent);

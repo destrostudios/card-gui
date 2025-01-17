@@ -9,6 +9,7 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
+import lombok.Getter;
 
 public class CardBox {
 
@@ -27,6 +28,7 @@ public class CardBox {
     private AssetManager assetManager;
     private String backTexturePath;
     private String sidesTexturePath;
+    @Getter
     private Node node = new Node("cardBox");
 
     private void initializeFaces() {
@@ -58,7 +60,7 @@ public class CardBox {
     private Geometry createAndAttachFace(String name, float width, float height, String texturePath) {
         Quad quad = new Quad(width, height);
         Geometry geometry = new Geometry(name, quad);
-        Material material = MaterialFactory.textureLighting(assetManager);
+        Material material = MaterialFactory.lightingTexture(assetManager);
         material.setTexture("DiffuseMap", assetManager.loadTexture(texturePath));
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         geometry.setMaterial(material);
@@ -66,9 +68,5 @@ public class CardBox {
         geometry.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         node.attachChild(geometry);
         return geometry;
-    }
-
-    public Node getNode() {
-        return node;
     }
 }

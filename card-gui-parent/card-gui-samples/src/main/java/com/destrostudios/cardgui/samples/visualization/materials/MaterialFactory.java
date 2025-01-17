@@ -10,26 +10,45 @@ public abstract class MaterialFactory {
         return new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
     }
 
-    public static Material textureLighting(AssetManager assetManager) {
-        return textureLighting(assetManager, null);
+    public static Material unshadedTexture(AssetManager assetManager) {
+        return unshaded(assetManager);
     }
 
-    public static Material textureLighting(AssetManager assetManager, String texturePath) {
-        Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+    public static Material unshadedColor(AssetManager assetManager, ColorRGBA color) {
+        Material material = unshaded(assetManager);
+        material.setColor("Color", color);
+        return material;
+    }
+
+    public static Material unshadedTexture(AssetManager assetManager, String texturePath) {
+        Material material = unshaded(assetManager);
+        material.setTexture("ColorMap", assetManager.loadTexture(texturePath));
+        return material;
+    }
+
+    public static Material lighting(AssetManager assetManager) {
+        return new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+    }
+
+    public static Material lightingColor(AssetManager assetManager, ColorRGBA color) {
+        Material material = lighting(assetManager);
+        material.setBoolean("UseMaterialColors", true);
+        material.setColor("Diffuse", color);
+        return material;
+    }
+
+    public static Material lightingTexture(AssetManager assetManager) {
+        Material material = lighting(assetManager);
         material.setBoolean("UseMaterialColors", true);
         material.setColor("Ambient", ColorRGBA.White);
         material.setColor("Diffuse", new ColorRGBA(0.75f, 0.75f, 0.75f, 1));
         material.setColor("Specular", ColorRGBA.Black);
-        if (texturePath != null) {
-            material.setTexture("DiffuseMap", assetManager.loadTexture(texturePath));
-        }
         return material;
     }
 
-    public static Material colorLighting(AssetManager assetManager, ColorRGBA color) {
-        Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        material.setBoolean("UseMaterialColors", true);
-        material.setColor("Diffuse", color);
+    public static Material lightingTexture(AssetManager assetManager, String texturePath) {
+        Material material = lightingTexture(assetManager);
+        material.setTexture("DiffuseMap", assetManager.loadTexture(texturePath));
         return material;
     }
 }

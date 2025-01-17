@@ -12,7 +12,7 @@ public class MyColoredSphereVisualizer extends SimpleAttachmentVisualizer<MyColo
     protected Geometry createVisualizationObject(AssetManager assetManager) {
         Sphere sphereMesh = new Sphere(16, 16, 0.5f);
         Geometry geometry = new Geometry(null, sphereMesh);
-        geometry.setMaterial(MaterialFactory.colorLighting(assetManager, null));
+        geometry.setMaterial(MaterialFactory.lightingColor(assetManager, null));
         return geometry;
     }
 

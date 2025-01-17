@@ -174,17 +174,13 @@ vec4 blend(vec4 color1, vec4 color2, float weight) {
 }
 
 void main(){
-    #ifdef FOILMAP
-        float foilFactor = texture2D(m_FoilMap, texCoord).a;
-        vec4 outColor = getDistortedColor(foilFactor);
-        #ifdef FOILCOLOR
-            outColor = blend(outColor, getFoilColor(), foilFactor * m_FoilColorIntensity);
-        #endif
-        #ifdef SHINEINTERVAL
-            outColor = blend(outColor, getShineColor(), foilFactor * m_ShineIntensity);
-        #endif
-        gl_FragColor = outColor;
-    #else
-        gl_FragColor = texture2D(m_DiffuseMap, texCoord);
+    float foilFactor = texture2D(m_FoilMap, texCoord).a;
+    vec4 outColor = getDistortedColor(foilFactor);
+    #ifdef FOILCOLOR
+        outColor = blend(outColor, getFoilColor(), foilFactor * m_FoilColorIntensity);
     #endif
+    #ifdef SHINEINTERVAL
+        outColor = blend(outColor, getShineColor(), foilFactor * m_ShineIntensity);
+    #endif
+    gl_FragColor = outColor;
 }

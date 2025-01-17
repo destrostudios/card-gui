@@ -1,5 +1,8 @@
 package com.destrostudios.cardgui;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 
 public class BoardObject<ModelType extends BoardObjectModel> implements GameLoopListener {
@@ -8,19 +11,21 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
         this.model = model;
     }
     private Board board;
+    @Getter
     private int id = -1;
+    @Getter
     private ModelType model;
+    @Setter
+    @Getter
     private BoardObjectVisualizer currentVisualizer;
     private HashMap<InteractivitySource, Interactivity> interactivities = new HashMap<>();
+    @Setter
+    @Getter
     private boolean visibleToMouse = true;
 
     @Override
     public void update(float lastTimePerFrame) {
 
-    }
-
-    public ModelType getModel() {
-        return model;
     }
 
     public void onRegister(Board board, int id) {
@@ -33,10 +38,6 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
         this.id = -1;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public boolean needsVisualizationUpdate() {
         return model.wasChanged();
     }
@@ -44,14 +45,6 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
     public void onVisualizationUpdated(BoardObjectVisualizer boardObjectVisualizer) {
         setCurrentVisualizer(boardObjectVisualizer);
         model.onUpdate();
-    }
-
-    public void setCurrentVisualizer(BoardObjectVisualizer currentVisualizer) {
-        this.currentVisualizer = currentVisualizer;
-    }
-
-    public BoardObjectVisualizer getCurrentVisualizer() {
-        return currentVisualizer;
     }
 
     public void clearInteractivities() {
@@ -68,13 +61,5 @@ public class BoardObject<ModelType extends BoardObjectModel> implements GameLoop
 
     public Interactivity getInteractivity(InteractivitySource source) {
         return interactivities.get(source);
-    }
-
-    public boolean isVisibleToMouse() {
-        return visibleToMouse;
-    }
-
-    public void setVisibleToMouse(boolean visibleToMouse) {
-        this.visibleToMouse = visibleToMouse;
     }
 }

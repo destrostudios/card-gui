@@ -59,6 +59,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
         rayCasting = new RayCasting(application);
         draggedNodeTilter = new DraggedNodeTilter(board.getSettings());
         aimTargetArrow = new TargetArrow();
+        aimTargetArrow.setVisibleToMouse(false);
         initializeInputs();
     }
 
@@ -245,9 +246,10 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     private void updateHoveredBoardObject(Vector3f cursorPositionWorld, float lastTimePerFrame) {
         BoardObject newHoveredBoardObject = null;
         if (draggedBoardObject == null) {
-            newHoveredBoardObject = getHoveredBoardObjectByFilter(BoardObjectFilter.CARD);
+            CollisionResults hoveredCollisionResults = getHoveredCollisionResults();
+            newHoveredBoardObject = getHoveredBoardObjectByFilter(hoveredCollisionResults, boardObject -> !(boardObject instanceof CardZone));
             if (newHoveredBoardObject == null) {
-                newHoveredBoardObject = getHoveredBoardObjectByFilter(BoardObjectFilter.ZONE);
+                newHoveredBoardObject = getHoveredBoardObjectByFilter(hoveredCollisionResults, null);
             }
         }
         if ((newHoveredBoardObject != null) && (newHoveredBoardObject == hoveredBoardObject)) {
@@ -327,18 +329,17 @@ public class BoardAppState extends BaseAppState implements ActionListener {
     private BoardObject getHoveredInteractivityTarget(boolean filterValidTargets) {
         BoardObjectFilter targetFilter = null;
         Interactivity interactivity = draggedBoardObject.getInteractivity(draggedBoardObjectInteractivitySource);
-        if (filterValidTargets && (interactivity instanceof BoardObjectFilter)) {
-            targetFilter = (BoardObjectFilter) interactivity;
+        if (filterValidTargets && (interactivity instanceof BoardObjectFilter boardObjectFilter)) {
+            targetFilter = boardObjectFilter;
         }
-        return getHoveredBoardObjectByFilter(targetFilter);
+        return getHoveredBoardObjectByFilter(getHoveredCollisionResults(), targetFilter);
     }
 
-    private BoardObject getHoveredBoardObjectByFilter(BoardObjectFilter filter) {
-        return getHoveredBoardObject(filter::isValid);
+    private CollisionResults getHoveredCollisionResults() {
+        return rayCasting.getResults_Cursor(mouseVisibleNode);
     }
 
-    private BoardObject getHoveredBoardObject(Predicate<BoardObject> filter) {
-        CollisionResults collisionResults = rayCasting.getResults_Cursor(mouseVisibleNode);
+    private BoardObject getHoveredBoardObjectByFilter(CollisionResults collisionResults, BoardObjectFilter filter) {
         for (int i = 0; i < collisionResults.size(); i++) {
             CollisionResult collisionResult = collisionResults.getCollision(i);
             Spatial spatial = collisionResult.getGeometry();
@@ -347,7 +348,7 @@ public class BoardAppState extends BaseAppState implements ActionListener {
                 Integer boardObjectId = spatial.getUserData("boardObjectId");
                 if (boardObjectId != null) {
                     BoardObject boardObject = board.getBoardObject(boardObjectId);
-                    if ((filter == null) || filter.test(boardObject)) {
+                    if ((filter == null) || filter.isValid(boardObject)) {
                         return boardObject;
                     }
                 }

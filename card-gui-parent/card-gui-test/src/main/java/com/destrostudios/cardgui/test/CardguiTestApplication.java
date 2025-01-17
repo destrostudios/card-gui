@@ -177,6 +177,13 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
             new LinearTargetRotationTransformation(new Quaternion(), new TimeBasedRotationTransformationSpeed(circleFlipDuration)),
             () -> circle.getModel().isFaceDown()
         ));
+        circle.setInteractivity(InteractivitySource.MOUSE_LEFT, new ClickInteractivity() {
+
+            @Override
+            public void trigger(BoardObject boardObject, BoardObject boardObject1) {
+                circle.getModel().setFaceDown(!circle.getModel().isFaceDown());
+            }
+        });
         board.register(circle);
 
         stateManager.attach(new BoardAppState(board, rootNode));
@@ -319,8 +326,6 @@ public class CardguiTestApplication extends SimpleApplication implements ActionL
             board.playAnimation(new SnowAnimation(assetManager, cam, rootNode));
         } else if ("4".equals(name) && isPressed) {
             board.playAnimation(new EffekseerAnimation(rootNode, new EffekseerControl(assetManager, "effekseer/Pierre02/Benediction.efkefc")));
-        } else if ("5".equals(name) && isPressed) {
-            circle.getModel().setFaceDown(!circle.getModel().isFaceDown());
         }
     }
 }

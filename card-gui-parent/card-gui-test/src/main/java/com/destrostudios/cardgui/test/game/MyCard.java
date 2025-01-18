@@ -1,9 +1,13 @@
 package com.destrostudios.cardgui.test.game;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  *
  * @author Carl
  */
+@Getter
 public class MyCard {
 
     public MyCard(Color color, String name) {
@@ -20,21 +24,6 @@ public class MyCard {
     }
     private Color color;
     private String name;
+    @Setter
     private boolean damaged;
-
-    public Color getColor() {
-        return color;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setDamaged(boolean damaged) {
-        this.damaged = damaged;
-    }
-
-    public boolean isDamaged() {
-        return damaged;
-    }
 }

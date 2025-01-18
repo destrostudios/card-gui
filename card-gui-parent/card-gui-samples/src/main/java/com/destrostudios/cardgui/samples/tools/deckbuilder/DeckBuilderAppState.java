@@ -130,8 +130,10 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
             DeckBuilderDeckCardModel<CardModelType> deckCardModel = new DeckBuilderDeckCardModel<>();
             deckCardModel.setCardModel(cardModel);
             deckCardModel.setAmount(0);
+            boolean removable = canRemoveCardFromDeck(cardModel);
+            deckCardModel.setRemovable(removable);
             Card<DeckBuilderDeckCardModel<CardModelType>> newDeckCard = new Card<>(deckCardModel);
-            if (canRemoveCardFromDeck(cardModel)) {
+            if (removable) {
                 newDeckCard.setInteractivity(InteractivitySource.MOUSE_LEFT, clickToRemoveInteractivity);
                 newDeckCard.setInteractivity(InteractivitySource.MOUSE_RIGHT, clickToClearInteractivity);
             }

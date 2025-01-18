@@ -25,6 +25,7 @@ public class DeckBuilderSettings<CardModelType extends BoardObjectModel> {
     private Consumer<CardModelType> cardAddedCallback;
     private Consumer<CardModelType> cardRemovedCallback;
     private Consumer<CardModelType> cardClearedCallback;
+    private Consumer<Integer> deckSizeChangedCallback;
     private Function<Card<DeckBuilderDeckCardModel<CardModelType>>, Animation> deckCardEntryAnimation;
     @Builder.Default
     private BoardSettings boardSettings = new BoardSettings();

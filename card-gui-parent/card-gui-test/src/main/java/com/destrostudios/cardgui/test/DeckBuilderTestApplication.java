@@ -111,6 +111,7 @@ public abstract class DeckBuilderTestApplication<DBAS extends DeckBuilderAppStat
                 .cardAddedCallback(cardModel -> onCallback("cardAdded", cardModel))
                 .cardRemovedCallback(cardModel -> onCallback("cardRemoved", cardModel))
                 .cardClearedCallback(cardModel -> onCallback("cardCleared", cardModel))
+                .deckSizeChangedCallback(deckSize -> onCallback("deckSizeChanged", deckSize))
                 .boardSettings(BoardSettings.builder()
                         .hoverInspectionDelay(1f)
                         .isInspectable(transformedBoardObject -> {
@@ -125,7 +126,15 @@ public abstract class DeckBuilderTestApplication<DBAS extends DeckBuilderAppStat
     }
 
     protected void onCallback(String key, MyCardModel cardModel) {
-        System.out.println("Callback '" + key + "': " + cardModel.getColor().name() + " " + cardModel.getName());
+        onCallback(key, cardModel.getColor().name() + " " + cardModel.getName());
+    }
+
+    private void onCallback(String key, int value) {
+        onCallback(key, "" + value);
+    }
+
+    private void onCallback(String key, String text) {
+        System.out.println("Callback '" + key + "': " + text);
     }
 
     @Override

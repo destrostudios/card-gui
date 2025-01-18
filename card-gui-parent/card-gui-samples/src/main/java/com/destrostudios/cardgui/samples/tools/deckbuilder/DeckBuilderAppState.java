@@ -35,7 +35,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
             CardModelType cardModel = card.getModel();
             if (isAllowedToAddCard(cardModel)) {
                 changeDeckCardAmount(cardModel, 1);
-                updateDeck();
+                onDeckChanged();
                 callbackIfExisting(settings.getCardAddedCallback(), cardModel);
             } else {
                 callbackIfExisting(settings.getCardNotAddableCallback(), cardModel);
@@ -49,7 +49,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
             Card<DeckBuilderDeckCardModel<CardModelType>> card = (Card<DeckBuilderDeckCardModel<CardModelType>>) source;
             CardModelType cardModel = card.getModel().getCardModel();
             changeDeckCardAmount(cardModel, -1);
-            updateDeck();
+            onDeckChanged();
             callbackIfExisting(settings.getCardRemovedCallback(), cardModel);
         }
     };
@@ -60,7 +60,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
             Card<DeckBuilderDeckCardModel<CardModelType>> card = (Card<DeckBuilderDeckCardModel<CardModelType>>) source;
             DeckBuilderDeckCardModel<CardModelType> deckBuilderCardModel = card.getModel();
             changeDeckCardAmount(deckBuilderCardModel.getCardModel(), -1 * deckBuilderCardModel.getAmount());
-            updateDeck();
+            onDeckChanged();
             callbackIfExisting(settings.getCardClearedCallback(), deckBuilderCardModel.getCardModel());
         }
     };
@@ -82,13 +82,13 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         for (Map.Entry<CardModelType, Integer> entry : deck.entrySet()) {
             changeDeckCardAmount(entry.getKey(), entry.getValue());
         }
-        updateDeck();
+        onDeckChanged();
     }
 
     public void clearDeck() {
         clearZone(settings.getDeckZone());
         deckCards.clear();
-        updateDeck();
+        onDeckChanged();
     }
 
     protected void clearZone(CardZone zone) {
@@ -155,7 +155,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         return true;
     }
 
-    private void updateDeck() {
+    private void onDeckChanged() {
         int i = 0;
         List<CardModelType> sortedCardModels = deckCards.keySet().stream().sorted(settings.getDeckCardOrder()).collect(Collectors.toList());
         for (CardModelType cardModel : sortedCardModels) {
@@ -166,6 +166,7 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
             }
             i++;
         }
+        callbackIfExisting(settings.getDeckSizeChangedCallback(), getDeckSize());
     }
 
     public Map<CardModelType, Integer> getDeck() {

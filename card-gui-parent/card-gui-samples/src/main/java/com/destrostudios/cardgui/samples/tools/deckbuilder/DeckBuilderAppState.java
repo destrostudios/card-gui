@@ -12,6 +12,7 @@ import lombok.Getter;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends BaseAppState {
@@ -34,9 +35,11 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
             Card<CardModelType> card = (Card<CardModelType>) source;
             CardModelType cardModel = card.getModel();
             if (isAllowedToAddCard(cardModel)) {
-                changeDeckCardAmount(cardModel, 1);
-                onDeckChanged();
-                callbackIfExisting(settings.getCardAddedCallback(), cardModel);
+                if (checkInterceptorIfExisting(settings.getCardAddedInterceptor(), cardModel)) {
+                    changeDeckCardAmount(cardModel, 1);
+                    onDeckChanged();
+                    callbackIfExisting(settings.getCardAddedCallback(), cardModel);
+                }
             } else {
                 callbackIfExisting(settings.getCardNotAddableCallback(), cardModel);
             }
@@ -48,9 +51,11 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         public void trigger(BoardObject source, BoardObject target) {
             Card<DeckBuilderDeckCardModel<CardModelType>> card = (Card<DeckBuilderDeckCardModel<CardModelType>>) source;
             CardModelType cardModel = card.getModel().getCardModel();
-            changeDeckCardAmount(cardModel, -1);
-            onDeckChanged();
-            callbackIfExisting(settings.getCardRemovedCallback(), cardModel);
+            if (checkInterceptorIfExisting(settings.getCardRemovedInterceptor(), cardModel)) {
+                changeDeckCardAmount(cardModel, -1);
+                onDeckChanged();
+                callbackIfExisting(settings.getCardRemovedCallback(), cardModel);
+            }
         }
     };
     private ClickInteractivity clickToClearInteractivity = new ClickInteractivity() {
@@ -59,9 +64,11 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         public void trigger(BoardObject source, BoardObject target) {
             Card<DeckBuilderDeckCardModel<CardModelType>> card = (Card<DeckBuilderDeckCardModel<CardModelType>>) source;
             DeckBuilderDeckCardModel<CardModelType> deckBuilderCardModel = card.getModel();
-            changeDeckCardAmount(deckBuilderCardModel.getCardModel(), -1 * deckBuilderCardModel.getAmount());
-            onDeckChanged();
-            callbackIfExisting(settings.getCardClearedCallback(), deckBuilderCardModel.getCardModel());
+            if (checkInterceptorIfExisting(settings.getCardClearedInterceptor(), deckBuilderCardModel.getCardModel())) {
+                changeDeckCardAmount(deckBuilderCardModel.getCardModel(), -1 * deckBuilderCardModel.getAmount());
+                onDeckChanged();
+                callbackIfExisting(settings.getCardClearedCallback(), deckBuilderCardModel.getCardModel());
+            }
         }
     };
 
@@ -73,8 +80,12 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
 
     protected void addZone(CardZone zone, BoardObjectVisualizer<CardZone> zoneVisualizer, BoardObjectVisualizer cardVisualizer) {
         board.addZone(zone);
-        board.registerVisualizer(zone, zoneVisualizer);
-        board.registerVisualizer_ZonePosition(zonePosition -> zonePosition.getZone() == zone, cardVisualizer);
+        if (zoneVisualizer != null) {
+            board.registerVisualizer(zone, zoneVisualizer);
+        }
+        if (cardVisualizer != null) {
+            board.registerVisualizer_ZonePosition(zonePosition -> zonePosition.getZone() == zone, cardVisualizer);
+        }
     }
 
     public void setDeck(Map<CardModelType, Integer> deck) {
@@ -188,6 +199,10 @@ public class DeckBuilderAppState<CardModelType extends BoardObjectModel> extends
         if (callback != null) {
             callback.accept(data);
         }
+    }
+
+    private <T> boolean checkInterceptorIfExisting(Predicate<T> interceptor, T data) {
+        return (interceptor == null) || interceptor.test(data);
     }
 
     @Override

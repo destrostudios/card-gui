@@ -34,24 +34,23 @@ public class CollectionDeckBuilderAppState<CardModelType extends BoardObjectMode
         if (settings.getCollectionCardAmountVisualizer() != null) {
             board.registerVisualizer_Class(CollectionDeckBuilderCardAmount.class, settings.getCollectionCardAmountVisualizer());
         }
-        initCollection();
-        updateCollection();
     }
 
-    private void initCollection() {
-        for (Map.Entry<CardModelType, Integer> entry : settings.getCollectionCards().entrySet()) {
-            CardModelType cardModel = entry.getKey();
-            int amount = entry.getValue();
+    public void setCollectionCards(Map<CardModelType, Integer> collectionCards) {
+        this.collectionCards.clear();
+        collectionAmounts.clear();
+        collectionCards.forEach((cardModel, amount) -> {
             // Card
             Card<CardModelType> card = new Card<>(cardModel);
             card.setInteractivity(InteractivitySource.MOUSE_LEFT, clickToAddInteractivity);
-            collectionCards.put(cardModel, card);
+            this.collectionCards.put(cardModel, card);
             // Amount
             CollectionDeckBuilderCardAmount amountBoardObject = new CollectionDeckBuilderCardAmount();
             amountBoardObject.getModel().setMaximumAmountDeck(getMaximumAmountInDeck(cardModel));
             amountBoardObject.getModel().setAmountCollection(amount);
             collectionAmounts.put(cardModel, amountBoardObject);
-        }
+        });
+        updateCollection();
     }
 
     public void setCollectionCardFilter(Predicate<CardModelType> collectionCardFilter) {
@@ -146,7 +145,7 @@ public class CollectionDeckBuilderAppState<CardModelType extends BoardObjectMode
     }
 
     private List<CardModelType> getFilteredCollectionCardModels() {
-        List<CardModelType> cardModels = new LinkedList<>(settings.getCollectionCards().keySet());
+        List<CardModelType> cardModels = new ArrayList<>(collectionCards.keySet());
         if (collectionCardFilter != null) {
             cardModels = cardModels.stream().filter(cardModel -> collectionCardFilter.test(cardModel)).collect(Collectors.toList());;
         }
@@ -163,14 +162,17 @@ public class CollectionDeckBuilderAppState<CardModelType extends BoardObjectMode
             return false;
         }
         int amountInDeck = getAmountInDeck(cardModel);
-        int amountInCollection = settings.getCollectionCards().get(cardModel);
+        int amountInCollection = collectionAmounts.get(cardModel).getModel().getAmountCollection();
         return (amountInDeck < amountInCollection);
     }
 
     @Override
     protected int changeDeckCardAmount(CardModelType cardModel, int amountChange) {
         int newAmount = super.changeDeckCardAmount(cardModel, amountChange);
-        collectionAmounts.get(cardModel).getModel().setAmountDeck(newAmount);
+        CollectionDeckBuilderCardAmount collectionAmount = collectionAmounts.get(cardModel);
+        if (collectionAmount != null) {
+            collectionAmount.getModel().setAmountDeck(newAmount);
+        }
         return newAmount;
     }
 }

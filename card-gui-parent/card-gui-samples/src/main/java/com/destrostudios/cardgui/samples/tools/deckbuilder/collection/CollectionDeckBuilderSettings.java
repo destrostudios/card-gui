@@ -9,14 +9,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.Map;
-
 @SuperBuilder
 @Getter
 public class CollectionDeckBuilderSettings<CardModelType extends BoardObjectModel> {
 
     private DeckBuilderSettings<CardModelType> deckBuilderSettings;
-    private Map<CardModelType, Integer> collectionCards;
     private CardZone collectionZone;
     private BoardObjectVisualizer<CardZone> collectionZoneVisualizer;
     private BoardObjectVisualizer<Card<CardModelType>> collectionCardVisualizer;

@@ -41,7 +41,6 @@ public class CollectionDeckBuilderTestApplication extends DeckBuilderTestApplica
         };
         CollectionDeckBuilderSettings<MyCardModel> settings = CollectionDeckBuilderSettings.<MyCardModel>builder()
                 .deckBuilderSettings(deckBuilderSettings)
-                .collectionCards(collectionCards)
                 .collectionZone(collectionZone)
                 .collectionZoneVisualizer(collectionZoneVisualizer)
                 .collectionCardVisualizer(new MyCardVisualizer(false))
@@ -49,7 +48,9 @@ public class CollectionDeckBuilderTestApplication extends DeckBuilderTestApplica
                 .collectionCardsPerRow(16)
                 .collectionRowsPerPage(7)
                 .build();
-        return new CollectionDeckBuilderAppState<>(rootNode, settings);
+        CollectionDeckBuilderAppState<MyCardModel> deckBuilderAppState = new CollectionDeckBuilderAppState<>(rootNode, settings);
+        deckBuilderAppState.setCollectionCards(getRandomCollectionCards());
+        return deckBuilderAppState;
     }
 
     @Override
@@ -63,16 +64,27 @@ public class CollectionDeckBuilderTestApplication extends DeckBuilderTestApplica
                 deck.put(cardModel, 2);
             }
             deckBuilderAppState.setDeck(deck);
-        }  else if ("4".equals(name) && isPressed) {
+        } else if ("4".equals(name) && isPressed) {
             Predicate<MyCardModel> collectionCardFilter = deckBuilderAppState.getCollectionCardFilter();
             deckBuilderAppState.setCollectionCardFilter((collectionCardFilter == null) ? cardModel -> cardModel.getColor() == MyCard.Color.RED : null);
-        }   else if ("5".equals(name) && isPressed) {
+        } else if ("5".equals(name) && isPressed) {
             Comparator<MyCardModel> collectionCardOrder = deckBuilderAppState.getCollectionCardOrder();
             deckBuilderAppState.setCollectionCardOrder((collectionCardOrder == null) ? Comparator.comparing(MyCardModel::getName) : null);
+        }  else if ("6".equals(name) && isPressed) {
+            deckBuilderAppState.setCollectionCards(getRandomCollectionCards());
         } else if ("left".equals(name) && isPressed) {
             deckBuilderAppState.goToPreviousCollectionPage();
         } else if ("right".equals(name) && isPressed) {
             deckBuilderAppState.goToNextCollectionPage();
         }
+    }
+
+    private HashMap<MyCardModel, Integer> getRandomCollectionCards() {
+        HashMap<MyCardModel, Integer> collectionCards = new HashMap<>();
+        for (int i = 0; i < 300; i++) {
+            int amount = (int) (Math.random() * 4);
+            collectionCards.put(TestCards.getRandomCardModel(), amount);
+        }
+        return collectionCards;
     }
 }

@@ -22,8 +22,11 @@ public class DeckBuilderSettings<CardModelType extends BoardObjectModel> {
     private Function<CardModelType, Integer> deckCardsMaximumUnique;
     private Predicate<CardModelType> isAllowedToAddCard;
     private Consumer<CardModelType> cardNotAddableCallback;
+    private Predicate<CardModelType> cardAddedInterceptor;
     private Consumer<CardModelType> cardAddedCallback;
+    private Predicate<CardModelType> cardRemovedInterceptor;
     private Consumer<CardModelType> cardRemovedCallback;
+    private Predicate<CardModelType> cardClearedInterceptor;
     private Consumer<CardModelType> cardClearedCallback;
     private Consumer<Integer> deckSizeChangedCallback;
     private Function<Card<DeckBuilderDeckCardModel<CardModelType>>, Animation> deckCardEntryAnimation;

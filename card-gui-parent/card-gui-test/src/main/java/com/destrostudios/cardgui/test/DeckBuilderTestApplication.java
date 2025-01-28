@@ -72,9 +72,10 @@ public abstract class DeckBuilderTestApplication<DBAS extends DeckBuilderAppStat
         inputManager.addMapping("3", new KeyTrigger(KeyInput.KEY_3));
         inputManager.addMapping("4", new KeyTrigger(KeyInput.KEY_4));
         inputManager.addMapping("5", new KeyTrigger(KeyInput.KEY_5));
+        inputManager.addMapping("6", new KeyTrigger(KeyInput.KEY_6));
         inputManager.addMapping("left", new KeyTrigger(KeyInput.KEY_LEFT));
         inputManager.addMapping("right", new KeyTrigger(KeyInput.KEY_RIGHT));
-        inputManager.addListener(this, "space", "1", "2", "3", "4", "5", "left", "right");
+        inputManager.addListener(this, "space", "1", "2", "3", "4", "5", "6", "left", "right");
     }
 
     private void initDeckBuilder() {
@@ -84,7 +85,7 @@ public abstract class DeckBuilderTestApplication<DBAS extends DeckBuilderAppStat
 
     protected abstract DBAS createDeckBuilder(DeckBuilderSettings<MyCardModel> deckBuilderSettings);
 
-    protected DeckBuilderSettings<MyCardModel> getDeckBuilderSettings() {
+    private DeckBuilderSettings<MyCardModel> getDeckBuilderSettings() {
         CardZone deckZone = new SimpleIntervalZone(new Vector3f(8.25f, 0, -5), new Vector3f(1, 1, 0.57f));
         BoardObjectVisualizer<CardZone> deckZoneVisualizer = new DebugZoneVisualizer() {
 
@@ -109,8 +110,11 @@ public abstract class DeckBuilderTestApplication<DBAS extends DeckBuilderAppStat
                 .deckCardsMaximumTotal(30)
                 .cardNotAddableCallback(cardModel -> onCallback("cardNotAddable", cardModel))
                 .cardAddedCallback(cardModel -> onCallback("cardAdded", cardModel))
+                .cardAddedInterceptor(cardModel -> onInterceptor("cardAdded", cardModel))
                 .cardRemovedCallback(cardModel -> onCallback("cardRemoved", cardModel))
+                .cardRemovedInterceptor(cardModel -> onInterceptor("cardRemoved", cardModel))
                 .cardClearedCallback(cardModel -> onCallback("cardCleared", cardModel))
+                .cardClearedInterceptor(cardModel -> onInterceptor("cardCleared", cardModel))
                 .deckSizeChangedCallback(deckSize -> onCallback("deckSizeChanged", deckSize))
                 .boardSettings(BoardSettings.builder()
                         .hoverInspectionDelay(1f)
@@ -123,6 +127,11 @@ public abstract class DeckBuilderTestApplication<DBAS extends DeckBuilderAppStat
                         })
                         .build())
                 .build();
+    }
+
+    protected boolean onInterceptor(String key, MyCardModel cardModel) {
+        onCallback(key + "Interceptor", cardModel);
+        return !cardModel.getName().equals("Ookazi");
     }
 
     protected void onCallback(String key, MyCardModel cardModel) {

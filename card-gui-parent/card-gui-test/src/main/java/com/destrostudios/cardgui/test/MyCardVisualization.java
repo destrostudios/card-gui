@@ -2,7 +2,7 @@ package com.destrostudios.cardgui.test;
 
 import com.destrostudios.cardgui.samples.visualization.*;
 import com.destrostudios.cardgui.samples.visualization.background.ColorBox;
-import com.destrostudios.cardgui.samples.visualization.background.GlowQuad;
+import com.destrostudios.cardgui.samples.visualization.background.SimpleGlowQuad;
 import com.destrostudios.cardgui.samples.visualization.background.TextureQuad;
 import com.destrostudios.cardgui.samples.visualization.cards.modelled.FoilSimpleModelledCard;
 import com.destrostudios.cardgui.test.files.FileAssets;
@@ -26,7 +26,7 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
         node.attachChild(modelledCard.getNode());
         float backgroundWidth = 1.05f;
         float backgroundHeight = 1.43f;
-        glowQuad = new GlowQuad(assetManager, backgroundWidth, backgroundHeight);
+        glowQuad = new SimpleGlowQuad(assetManager, backgroundWidth, backgroundHeight, SimpleGlowQuad.Shape.RECT);
         textureQuad = new TextureQuad(assetManager, backgroundWidth, backgroundHeight);
         colorBox = new ColorBox(assetManager, backgroundWidth / 2.5f, 0.1f, backgroundHeight / 2.5f);
     }
@@ -34,7 +34,7 @@ public class MyCardVisualization extends CustomAttachmentVisualization<Node> {
     private boolean minified;
     private Node node;
     private FoilSimpleModelledCard modelledCard;
-    private GlowQuad glowQuad;
+    private SimpleGlowQuad glowQuad;
     private TextureQuad textureQuad;
     private ColorBox colorBox;
 

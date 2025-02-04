@@ -9,9 +9,9 @@ public class BackgroundQuad {
 
     public BackgroundQuad(float width, float height) {
         geometry = new Geometry("backgroundQuad", new RectangleMesh(
+            new Vector3f((width / -2), 0, (height / 2)),
             new Vector3f((width / 2), 0, (height / 2)),
-            new Vector3f((width / 2), 0, (height / -2)),
-            new Vector3f((width / -2), 0, (height / 2))
+            new Vector3f((width / -2), 0, (height / -2))
         ));
     }
     @Getter
